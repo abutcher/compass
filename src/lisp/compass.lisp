@@ -43,17 +43,17 @@
     
     (list right left)))
 
-(defun print-nodes (left right)
+(defun print-nodes (left right &optional (stream *standard-output*))
   "Pretty print built nodes"
   (labels ((walk (node &optional (level 0))
-	     (format t "LEVEL: ~A~%" level)
+	     (format stream "LEVEL: ~A~%" level)
 	     (if (node-rootp node)
-		 (format t "LOOKING AT ROOT NODE~%"))
-	     (format t "HEAD: ~A~%" (node-head node))
-	     (format t "CONTENTS:~%")
+		 (format stream "LOOKING AT ROOT NODE~%"))
+	     (format stream "HEAD: ~A~%" (node-head node))
+	     (format stream "CONTENTS:~%")
 	     (dolist (element (node-contents node))
-	       (format t "~A~%" element))
-	     (format t "~%~%")
+	       (format stream "~A~%" element))
+	     (format stream "~%~%")
 	     (if (not (null (node-right node)))
 		 (walk (node-right node) (1+ level)))
 	     (if (not (null (node-left node)))
@@ -61,10 +61,16 @@
     (walk left)
     (walk right)))
 
-(defun test-compass ()
+(defun test-compass (file)
   "Sample run"
-  (let ((tree (compass (generator))))
-    (print-nodes (first tree) (second tree))))
+  (with-open-file (stream file
+                          :direction :output
+                          :if-exists :supersede
+                          :if-does-not-exist :create )
+    (let* ((mitigations (generator))
+	   (tree (compass mitigations)))
+      (format stream "TEST SIZE: ~A~%~%" (length mitigations))
+      (print-nodes (first tree) (second tree) stream))))
 
 (defun separate (these)
   "Turn one list into two lists using euclidean distance and farthest
