@@ -1,0 +1,6 @@
+(defun distance (this that)
+  (let ((d 0))
+    (dolist (one this)
+      (if (eql one (nth (position one this) that))
+	  (incf d)))
+    d))
