@@ -9,6 +9,8 @@
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/distance"
+	"lisp/ddp/model"
+	"lisp/ddp/model2"
 	))
 
 (make-compass)
