@@ -1,3 +1,5 @@
+; Mitigation size = 31
+
 (defun make-model-2 ()
   (make-ddp-model
    :o-weight (list 1)

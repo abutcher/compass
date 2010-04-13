@@ -75,7 +75,7 @@
 (defun separate (these)
   "Turn one list into two lists using euclidean distance and farthest
    neighbors"
-  (let ((this)(that)(this-group)(that-group))
+  (let (this that this-group that-group)
     ; Pick one at random, this
     (setf this (random-element these))
     ; Remove this from these
