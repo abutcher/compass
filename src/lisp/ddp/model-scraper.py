@@ -17,27 +17,29 @@ for line in infile:
     line = line.replace(";","")
     line = line.replace("\n","")
     if re.match("^ *mCost", line):
-        mcost.append(line.split(" ")[7])
+        mcost.append(line.split("=")[1])
     if re.match("^ *roImpact", line):
+        line = line.replace("="," ")
         split = line.split(" ")
         s = "(make-ro-impact"
-        s = s + " :r " + split[5]
-        s = s + " :o " + split[7]
-        s = s + " :impact " + split[10]
+        s = s + " :r " + split[3]
+        s = s + " :o " + split[5]
+        s = s + " :impact " + split[7]
         s = s + ")"
         roimpact.append(s)
     if re.match("^ *mrEffect", line):
+        line = line.replace("="," = ")
         split = line.split(" ")
         s = "(make-mr-effect "
-        s = s + " :m " + split[5]
-        s = s + " :r " + split[7]
-        s = s + " :effect " + split[10]
+        s = s + " :m " + split[3]
+        s = s + " :r " + split[5]
+        s = s + " :effect " + split[8]
         s = s + ")"
         mreffect.append(s)
     if re.match("^ *rAPL", line):
-        rapl.append(line.split(" ")[7])
+        rapl.append(line.split("=")[1])
     if re.match("^ *oWeight", line):
-        oweight.append(line.split(" ")[7])
+        oweight.append(line.split("=")[1])
 
 
 print "(make-ddp-model"        

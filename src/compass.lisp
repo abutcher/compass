@@ -11,6 +11,7 @@
 	"lisp/distance"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
+	"lisp/ddp/model24"
 	))
 
 (make-compass)
