@@ -7,9 +7,9 @@
   )
 
 (defun compass (mitigations &key (min-cluster-size 4))
-  (let* ((left (make-node :rootp T))
-	 (right (make-node :rootp T)))
-
+  (let ((left (make-node :rootp T))
+	(right (make-node :rootp T)))
+    
     ; Make initial split
     (let ((initial-split (separate mitigations)))
       ; Set up left node with a header and it's contents
