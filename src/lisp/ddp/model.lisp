@@ -65,8 +65,8 @@
     (model (make-model-2) mit)))
 
 "CL-USER> (test-model)
- MITIGATION: (1 1 0 1 0 1 0 0 1 1 1 1 1 1 0 0 0 1 1 1 1 1 0 1 0 1 0 0 1 0 0)
- (0.03969 20675)"
+MITIGATION: (1 1 1 0 0 1 0 1 1 0 1 1 1 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 0 1 1)
+(0.1323 18440)"
 
 (defun applicable-mr-effects (n this-model)
   "Give me the mr-effects that match the risk at hand"
