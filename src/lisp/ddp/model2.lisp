@@ -151,5 +151,6 @@
 		(make-mr-effect  :m 21 :r 29 :effect 0.3)
 		(make-mr-effect  :m 30 :r 29 :effect 0.3)
 		)
+   :base-cost 1710
    )
   )

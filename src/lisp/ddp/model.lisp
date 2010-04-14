@@ -7,6 +7,7 @@
   m-cost
   ro-impacts
   mr-effects
+  base-cost
   )
   
 (defstruct mr-effect m r effect)
@@ -19,7 +20,6 @@
   ; Calculate likelihoods
   (let (likelihoods)
     (dotimes (i (length (ddp-model-r-apl this-model)))
-      (format t "Calculating likelihood: ~A~%" i)
       (let ((mr-effects (applicable-mr-effects i this-model)))
 	(if (null mr-effects)
 	    (push (nth i (ddp-model-r-apl this-model)) likelihoods)
@@ -39,24 +39,25 @@
       (let ((at-risk-prop 0))
 	(dolist (ro-impact (applicable-ro-impacts i this-model))
 	  (setf at-risk-prop
-		(+ (* (nth (ro-impact-r ro-impact) 
+		(+ at-risk-prop 
+		   (* (nth (ro-impact-r ro-impact) 
 			   (ddp-model-r-likelihood this-model))
 		      (ro-impact-impact ro-impact)))))
-	  (push at-risk-prop at-risk-props)))
+	(push at-risk-prop at-risk-props)))
     (format t "There are ~A at-risk-props~%" (length at-risk-props))
     (format t "AT-RISK-PROPS: ~A" (reverse at-risk-props))
-   (setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
+    (setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
 
   ; Calculate attainments
   (let (o-attainments)
     (dotimes (i (length (ddp-model-o-weight this-model)))
       (push (* (nth i (ddp-model-o-weight this-model))
-	       (min 1 (nth i (ddp-model-o-at-risk-prop this-model))))
+	       (- 1(min 1 (nth i (ddp-model-o-at-risk-prop this-model)))))
 	    o-attainments))
     (setf (ddp-model-o-attainment this-model) (reverse o-attainments)))
   
   ; Calculate total attainment and cost
-  (let ((cost-total 0) (att-total 0))
+  (let ((cost-total (ddp-model-base-cost this-model)) (att-total 0))
     (dotimes (i (length (ddp-model-o-attainment this-model)))
       (setf att-total (+ att-total (nth i (ddp-model-o-attainment this-model)))))
     (dotimes (i (length mitigation))
@@ -68,10 +69,6 @@
   (let ((mit '(1 1 1 0 0 1 0 1 1 0 1 1 1 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 0 1 1)))
     (format t "MITIGATION: ~A~%" mit)
     (model (make-model-2) mit)))
-
-"CL-USER> (test-model)
-MITIGATION: (1 1 1 0 0 1 0 1 1 0 1 1 1 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 0 1 0)
-(0.1323 18440)"
 
 "(model (make-model-2) (car (generator :n 1 :s 31)))"
 

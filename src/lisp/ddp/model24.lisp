@@ -583,5 +583,6 @@
 		(make-mr-effect  :m 38 :r 117 :effect 0.30)
 		(make-mr-effect  :m 60 :r 117 :effect 1.00)
 		)
+   :base-cost 0
    )
   )
