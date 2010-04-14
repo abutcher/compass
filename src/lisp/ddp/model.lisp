@@ -29,8 +29,6 @@
 				    (- 1 (* (nth (mr-effect-m effect) mitigation)
 					    (mr-effect-effect effect))))))
 	      (push likelihood likelihoods)))))
-    (format t "There are ~A likelihoods~%" (length likelihoods))
-    (format t "LIKELIHOODS: ~A~%" (reverse likelihoods))
     (setf (ddp-model-r-likelihood this-model) (reverse likelihoods)))
   
    ; Calculate at-risk-props
@@ -44,8 +42,6 @@
 			   (ddp-model-r-likelihood this-model))
 		      (ro-impact-impact ro-impact)))))
 	(push at-risk-prop at-risk-props)))
-    (format t "There are ~A at-risk-props~%" (length at-risk-props))
-    (format t "AT-RISK-PROPS: ~A" (reverse at-risk-props))
     (setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
 
   ; Calculate attainments
