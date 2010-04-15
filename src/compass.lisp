@@ -14,4 +14,10 @@
 	"lisp/ddp/model24"
 	))
 
+(defun make-debug ()
+  (make "lisp/debug"
+	"lisp/lispfuns"
+	))
+
 (make-compass)
+(make-debug)
