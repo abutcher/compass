@@ -31,19 +31,31 @@
 	      (push likelihood likelihoods)))))
     (setf (ddp-model-r-likelihood this-model) (reverse likelihoods)))
   
-   ; Calculate at-risk-props
+  ; Calculate at-risk-props 
+  ; In the event that we have more than one o-weight, we should
+  ; multiply instead of add up our results
   (let (at-risk-props)
-    (dotimes (i (length (ddp-model-o-weight this-model)))
-      (let ((at-risk-prop 0))
-	(dolist (ro-impact (applicable-ro-impacts i this-model))
-	  (setf at-risk-prop
-		(+ at-risk-prop 
-		   (* (nth (ro-impact-r ro-impact) 
-			   (ddp-model-r-likelihood this-model))
-		      (ro-impact-impact ro-impact)))))
-	(push at-risk-prop at-risk-props)))
-    (setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
-
+    (if (> (length (ddp-model-o-weight this-model)) 1)
+	(dotimes (i (length (ddp-model-o-weight this-model)))
+	  (let ((at-risk-prop 1))
+	    (dolist (ro-impact (applicable-ro-impacts i this-model))
+	      (setf at-risk-prop
+		    (* at-risk-prop 
+		       (* (nth (ro-impact-r ro-impact) 
+			       (ddp-model-r-likelihood this-model))
+			  (ro-impact-impact ro-impact)))))
+	    (push at-risk-prop at-risk-props)))
+	(dotimes (i (length (ddp-model-o-weight this-model)))
+	  (let ((at-risk-prop 0))
+	    (dolist (ro-impact (applicable-ro-impacts i this-model))
+	      (setf at-risk-prop
+		    (+ at-risk-prop 
+		       (* (nth (ro-impact-r ro-impact) 
+			       (ddp-model-r-likelihood this-model))
+			  (ro-impact-impact ro-impact)))))
+	    (push at-risk-prop at-risk-props))))
+	(setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
+  
   ; Calculate attainments
   (let (o-attainments)
     (dotimes (i (length (ddp-model-o-weight this-model)))
