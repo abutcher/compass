@@ -9,14 +9,16 @@
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/distance"
+	"lisp/hash"
+	"lisp/list"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
 	"lisp/ddp/model24"
 	))
 
 (defun make-debug ()
-  (make "lisp/debug"
-	"lisp/lispfuns"
+  (make "lisp/lispfuns"
+	"lisp/debug"
 	))
 
 (make-compass)
