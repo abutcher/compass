@@ -29,7 +29,7 @@
 		  (setf p-denom (+ p-denom value))))
 	    (setf e (+ e (* (/ p-num p-denom) (log (/ p-num p-denom) 2))))))
 	(setf total-entropy (+ total-entropy (* -1 e)))))
-    total-entropy))
+    (/ total-entropy (length population))))
 
 ; If nothing changes between each member of our population then our
 ; level of uncertainty is zero.

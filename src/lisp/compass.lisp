@@ -50,6 +50,7 @@
 	     (if (node-rootp node)
 		 (format stream "LOOKING AT ROOT NODE~%"))
 	     (format stream "HEAD: ~A~%" (node-head node))
+	     (format stream "ENTROPY: ~A~%" (entropy (node-contents node)))
 	     (format stream "CONTENTS:~%")
 	     (dolist (element (node-contents node))
 	       (format stream "~A~%" element))
@@ -61,13 +62,13 @@
     (walk left)
     (walk right)))
 
-(defun test-compass (file)
+(defun test-compass (file n s)
   "Sample run"
   (with-open-file (stream file
                           :direction :output
                           :if-exists :supersede
                           :if-does-not-exist :create )
-    (let* ((mitigations (generator))
+    (let* ((mitigations (generator :n n :s s))
 	   (tree (compass mitigations)))
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
       (print-nodes (first tree) (second tree) stream))))
