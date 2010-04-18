@@ -22,12 +22,19 @@
 	    (dohash (key value 
 			 (nth (position element piece) 
 			      (reverse frequencies)))
-	      (if (= element key)
+	      (if (eql element key)
 		  (progn 
 		    (setf p-num (+ p-num value))
 		    (setf p-denom (+ p-denom value)))
 		  (setf p-denom (+ p-denom value))))
 	    (setf e (+ e (* (/ p-num p-denom) (log (/ p-num p-denom) 2))))))
-	(format t "Entropy for ~A: ~A~%" piece (* -1 e))
 	(setf total-entropy (+ total-entropy (* -1 e)))))
     total-entropy))
+
+; If nothing changes between each member of our population then our
+; level of uncertainty is zero.
+
+"CL-USER> (entropy (list (list 'a 'b 'c) (list 'a 'b 'c)))
+ Entropy for (A B C): -0.0
+ Entropy for (A B C): -0.0
+ 0.0"

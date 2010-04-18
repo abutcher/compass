@@ -9,6 +9,7 @@
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/distance"
+	"lisp/entropy"
 	"lisp/hash"
 	"lisp/list"
 	"lisp/ddp/model"
