@@ -113,4 +113,4 @@
 	(if (> d max-distance)
 	    (setf temporary that))))
     temporary))
-  
+

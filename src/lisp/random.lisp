@@ -35,4 +35,3 @@
             (inc  (my-random-int 5))) ; generate a num 0..4
       (maphash #'cache counts)        ; hash key/buckets ==> lists 
       (sort out #'sorter))))          ; sort and print  list
-;</pre>
