@@ -3,6 +3,7 @@
   o-attainment
   o-at-risk-prop
   r-apl
+  r-aggrevated-impact
   r-likelihood
   m-cost
   ro-impacts
@@ -20,10 +21,17 @@
   ; Calculate likelihoods
   (let (likelihoods)
     (dotimes (i (length (ddp-model-r-apl this-model)))
-      (let ((mr-effects (applicable-mr-effects i this-model)))
+      (push (nth i (ddp-model-r-apl this-model)) likelihoods))
+    
+    (setf (ddp-model-r-likelihood this-model) (reverse likelihoods)))
+  
+   ; Run a normal likelihood loop
+  (let (likelihoods)
+    (dotimes (i (length (ddp-model-r-apl this-model)))
+      (let ((mr-effects (applicable-mr-effects i (ddp-model-mr-effects this-model))))
 	(if (null mr-effects)
 	    (push (nth i (ddp-model-r-apl this-model)) likelihoods)
-	    (let ((likelihood (nth i (ddp-model-r-apl this-model))))
+	    (let ((likelihood (nth i (ddp-model-r-likelihood this-model))))
 	      (dolist (effect mr-effects)
 		(setf likelihood (* likelihood 
 				    (- 1 (* (nth (mr-effect-m effect) mitigation)
@@ -35,7 +43,7 @@
   (let (at-risk-props)
     (dotimes (i (length (ddp-model-o-weight this-model)))
       (let ((at-risk-prop 0))
-	(dolist (ro-impact (applicable-ro-impacts i this-model))
+	(dolist (ro-impact (applicable-ro-impacts i (ddp-model-ro-impacts this-model)))
 	  (setf at-risk-prop
 		(+ at-risk-prop 
 		   (* (nth (ro-impact-r ro-impact) 
@@ -68,20 +76,18 @@
 
 "(model (make-model-2) (car (generator :n 1 :s 31)))"
 
-(defun applicable-mr-effects (n this-model)
+(defun applicable-mr-effects (n these-effects)
   "Give me the mr-effects that match the risk at hand"
-  (let ((all-mr-effects (ddp-model-mr-effects this-model))
-	(applicable-list))
-    (dolist (this-mr-effect all-mr-effects)
+  (let (applicable-list)
+    (dolist (this-mr-effect these-effects)
       (if (= n (mr-effect-r this-mr-effect))
 	  (push this-mr-effect applicable-list)))
     (reverse applicable-list)))
 
-(defun applicable-ro-impacts (n this-model)
+(defun applicable-ro-impacts (n these-impacts)
   "Give me the ro-impacts that match the risk at hand"
-  (let ((all-ro-impacts (ddp-model-ro-impacts this-model))
-	(applicable-ro-impacts))
-    (dolist (this-impact all-ro-impacts)
+  (let (applicable-ro-impacts)
+    (dolist (this-impact these-impacts)
       (if (= n (ro-impact-o this-impact))
 	  (push this-impact applicable-ro-impacts)))
     applicable-ro-impacts))
