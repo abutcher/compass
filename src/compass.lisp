@@ -14,6 +14,8 @@
 	"lisp/list"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
+	"lisp/ddp/model3"
+	"lisp/ddp/model4"
 	"lisp/ddp/model24"
 	))
 
