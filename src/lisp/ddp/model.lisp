@@ -24,8 +24,48 @@
       (push (nth i (ddp-model-r-apl this-model)) likelihoods))
     
     (setf (ddp-model-r-likelihood this-model) (reverse likelihoods)))
+
+  (unless (null (ddp-model-r-aggrevated-impact this-model))
+    (let ((likelihoods (ddp-model-r-likelihood this-model))
+	  negative-mr-effects)
+
+      ; Collect any mr combinations with negative effects
+      (let ((mr-effects (ddp-model-mr-effects this-model))
+	    normal-mr-effects)
+	(dolist (effect mr-effects)
+	  (if (< (mr-effect-effect effect) 0)
+	      (push effect negative-mr-effects)
+	      (push effect normal-mr-effects)))
+	(setf (ddp-model-mr-effects this-model) (reverse normal-mr-effects)))
   
-   ; Run a normal likelihood loop
+      ; Initially mark any likelihoods with negative values
+      (dotimes (i (length likelihoods))
+	(let ((first-neg-mr-effect 
+	       (first (applicable-mr-effects i negative-mr-effects))))
+	  (unless (null first-neg-mr-effect)
+	    (setf (nth i likelihoods) 
+		  (min 1 (- (nth i likelihoods) 
+			    (* (nth (mr-effect-m first-neg-mr-effect) mitigation)
+			       (mr-effect-effect first-neg-mr-effect))))))))
+
+      ; Now go through and mark any aggrevated impacts that exist
+      (let ((aggrevated-impacts (ddp-model-r-aggrevated-impact this-model)))
+	(dotimes (i (length aggrevated-impacts))
+	  (let ((remaining-neg-mr-effects (cdr (applicable-mr-effects i negative-mr-effects))))
+	    (unless (null remaining-neg-mr-effects)
+	      (let ((aggrevated-impact (nth i aggrevated-impacts)))
+		(dolist (effect remaining-neg-mr-effects)
+		  (setf aggrevated-impact
+			(* aggrevated-impact
+			   (- 1 (* (nth (mr-effect-m effect) mitigation)
+				   (+ 1 (mr-effect-effect effect)))))))
+		(setf (nth i aggrevated-impacts) aggrevated-impact)))))
+	(setf (ddp-model-r-aggrevated-impact this-model) aggrevated-impacts))
+
+      ; Put the modified likelihoods back
+      (setf (ddp-model-r-likelihood this-model) (reverse likelihoods))))
+  
+  ; Run a normal likelihood loop
   (let (likelihoods)
     (dotimes (i (length (ddp-model-r-apl this-model)))
       (let ((mr-effects (applicable-mr-effects i (ddp-model-mr-effects this-model))))
@@ -44,11 +84,21 @@
     (dotimes (i (length (ddp-model-o-weight this-model)))
       (let ((at-risk-prop 0))
 	(dolist (ro-impact (applicable-ro-impacts i (ddp-model-ro-impacts this-model)))
-	  (setf at-risk-prop
-		(+ at-risk-prop 
-		   (* (nth (ro-impact-r ro-impact) 
-			   (ddp-model-r-likelihood this-model))
-		      (ro-impact-impact ro-impact)))))
+	  (if (null (ddp-model-r-aggrevated-impact this-model))
+	      (setf at-risk-prop
+		    (+ at-risk-prop 
+		       (* (nth (ro-impact-r ro-impact) 
+			       (ddp-model-r-likelihood this-model))
+			  (ro-impact-impact ro-impact))))
+	      ; If we have an aggrevated impact case, we'll enter that
+	      ; into the product
+	      (setf at-risk-prop
+		    (+ at-risk-prop
+		       (* (nth (ro-impact-r ro-impact)
+			       (ddp-model-r-likelihood this-model))
+			  (nth (ro-impact-r ro-impact)
+			       (ddp-model-r-aggrevated-impact this-model))
+			  (ro-impact-impact ro-impact))))))
 	(push at-risk-prop at-risk-props)))
     (setf (ddp-model-o-at-risk-prop this-model) (reverse at-risk-props)))
   
