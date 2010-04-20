@@ -6,6 +6,9 @@ N			s		t
 
 ------------------------------------------------------------------------------
 
+Model 2
+10000 samples of size 31
+
   seconds  |    consed   |  calls  |  sec/call  |  name
 -----------------------------------------------------------
      0.303 |  41,969,776 | 300,000 |   0.000001 | APPLICABLE-MR-EFFECTS
@@ -26,6 +29,9 @@ overhead estimation parameters:
 
 ------------------------------------------------------------------------------
 
+Model 2
+1000 samples of size 31
+
   seconds  |   consed   |  calls |  sec/call  |  name
 ---------------------------------------------------------
      0.036 |  4,199,040 | 30,000 |   0.000001 | APPLICABLE-MR-EFFECTS
@@ -45,6 +51,9 @@ overhead estimation parameters:
   8.000001e-9s/call, 3.6440001e-6s total profiling, 1.6e-6s internal profiling
 
 ------------------------------------------------------------------------------
+
+Model 2
+100 samples of size 31
 
   seconds  |   consed  | calls |  sec/call  |  name
 -------------------------------------------------------
