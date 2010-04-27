@@ -6,7 +6,7 @@
   left
   )
 
-(defun compass (mitigations &key (min-cluster-size 4))
+(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'distance))
   (let ((left (make-node :rootp T))
 	(right (make-node :rootp T)))
     
@@ -73,7 +73,7 @@
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
       (print-nodes (first tree) (second tree) stream))))
 
-(defun separate (these)
+(defun separate (these &key (distance-func 'distance))
   "Turn one list into two lists using euclidean distance and farthest
    neighbors"
   (let (this that this-group that-group)
@@ -96,8 +96,8 @@
 
     ; Determine which group the elements of these belong to
     (dolist (element these)
-      (let ((d-from-this (distance element this))
-	    (d-from-that (distance element that)))
+      (let ((d-from-this (funcall distance-func element this))
+	    (d-from-that (funcall distance-func element that)))
 	(if (> d-from-this d-from-that)
 	    (push element this-group)
 	    (push element that-group))))
@@ -105,11 +105,11 @@
     ; Give em back
     (list (reverse this-group) (reverse that-group))))
 
-(defun farthest-from (this those)
+(defun farthest-from (this those &key (distance-func 'distance))
   "Give me the farthest thing from this in those"
   (let ((max-distance 0)(temporary))
     (dolist (that those)
-      (let ((d (distance this that)))
+      (let ((d (funcall distance-func this that)))
 	(if (> d max-distance)
 	    (setf temporary that))))
     temporary))
