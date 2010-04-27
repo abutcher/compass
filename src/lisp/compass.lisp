@@ -2,6 +2,7 @@
   rootp
   head
   contents
+  variance
   right
   left
   )

@@ -43,3 +43,4 @@
 (make-compass)
 (make-table)
 (make-debug)
+(make-effort)
