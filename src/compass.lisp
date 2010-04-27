@@ -37,6 +37,9 @@
 	"lisp/debug"
 	))
 
+(defun make-effort ()
+  (make "lisp/effort/data/cocomo81"))
+
 (make-compass)
 (make-table)
 (make-debug)
