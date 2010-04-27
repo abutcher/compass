@@ -12,12 +12,24 @@
 	"lisp/hash"
 	"lisp/entropy"
 	"lisp/list"
+	"lisp/caution"
+	"lisp/normal"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
 	"lisp/ddp/model3"
 	"lisp/ddp/model4"
 	"lisp/ddp/model5"
 	"lisp/ddp/model24"
+	"lisp/variance"
+	))
+
+(defun make-table ()
+  (make "lisp/table/structs"
+	"lisp/table/data"
+	"lisp/table/header"
+	"lisp/table/nbins"
+	"lisp/table/table"
+	"lisp/table/xindex"
 	))
 
 (defun make-debug ()
@@ -26,4 +38,5 @@
 	))
 
 (make-compass)
+(make-table)
 (make-debug)

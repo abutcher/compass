@@ -6,3 +6,7 @@
 
 (defun transpose (x)
    (apply #'mapcar (cons #'list x)))
+
+(defmacro doitems ((one n list &optional out) &body body )
+  `(let ((,n -1))
+     (dolist (,one ,list ,out)  (incf ,n) ,@body)))
