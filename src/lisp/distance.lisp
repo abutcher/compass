@@ -5,3 +5,13 @@
       (if (eql one (nth (position one this) that))
 	  (incf d)))
     d))
+
+(defun ndistance (this that)
+  (let ((d 0))
+    (dolist (one this)
+      (dolist (two that)
+	(if (and (numberp one) (numberp two))
+	    (setf d (+ d (expt (- two one) 2)))
+	    (if (eql one two)
+		(incf d)))))
+    (sqrt d)))

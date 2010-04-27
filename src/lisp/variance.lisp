@@ -1,0 +1,20 @@
+(defun variance (these)
+  (stdev (mapcar #'first (mapcar #'last these))))
+
+(defun stdev (these)
+  (let ((m (mean these))
+	(sigma-squared 0))
+    (dolist (this these)
+      (setf sigma-squared (+ sigma-squared (expt (- this mean) 2))))
+    (setf sigma-squared (/ sigma-squared (1- (length these))))
+    sigma-squared))
+
+(defun mean (these)
+  (let ((s (sum these)))
+    (/ s (length these))))
+
+(defun sum (l)
+  (let ((s 0))
+    (dolist (n l)
+      (setf s (+ s n)))
+    s))

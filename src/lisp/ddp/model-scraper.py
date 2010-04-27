@@ -22,8 +22,8 @@ for line in infile:
         line = line.replace("="," ")
         split = line.split(" ")
         s = "(make-ro-impact"
-        s = s + " :r " + str(int(split[3]) - 1)
-        s = s + " :o " + str(int(split[5]) - 1)
+        s = s + " :r " + str(int(split[1]) - 1)
+        s = s + " :o " + str(int(split[3]) - 1)
         s = s + " :impact " + split[7]
         s = s + ")"
         roimpact.append(s)
@@ -31,8 +31,8 @@ for line in infile:
         line = line.replace("="," = ")
         split = line.split(" ")
         s = "(make-mr-effect "
-        s = s + " :m " + str(int(split[3]) - 1)
-        s = s + " :r " + str(int(split[5]) - 1)
+        s = s + " :m " + str(int(split[1]) - 1)
+        s = s + " :r " + str(int(split[3]) - 1)
         s = s + " :effect " + split[8]
         s = s + ")"
         mreffect.append(s)
