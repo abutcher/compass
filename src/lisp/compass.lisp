@@ -7,7 +7,7 @@
   left
   )
 
-(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'distance))
+(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'distance) (variance-func 'variance))
   (let ((left (make-node :rootp T))
 	(right (make-node :rootp T)))
     
@@ -15,9 +15,11 @@
     (let ((initial-split (separate mitigations)))
       ; Set up left node with a header and it's contents
       (setf (node-head left) (car (first initial-split)))
+      (setf (node-variance left) (funcall variance-func (cdr (first initial-split))))
       (setf (node-contents left) (cdr (first initial-split)))
       ; Set up right node with a header and it's contents
       (setf (node-head right) (car (second initial-split)))
+      (setf (node-variance right) (funcall variance-func (cdr (second initial-split))))
       (setf (node-contents right) (cdr (second initial-split))))
 
     ; Recursive node-walker
@@ -27,11 +29,17 @@
 		     (setf (node-left node)
 			   (make-node
 			    :head (car (first node-split))
+			    :variance (funcall variance-func 
+					       (mapcar #'first 
+						       (mapcar #'last (cdr (first node-split)))))
 			    :contents (cdr (first node-split)))))
 		 (if (>= (length (cdr (second node-split))) min-cluster-size)
 		     (setf (node-right node)
 			   (make-node
 			    :head (car (second node-split))
+			    :variance (funcall variance-func 
+					       (mapcar #'first 
+						       (mapcar #'last (cdr (second node-split)))))
 			    :contents (cdr (second node-split)))))
 		 (if (not (null (node-left node)))
 		     (walk (node-left node)))
