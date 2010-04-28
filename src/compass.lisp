@@ -21,6 +21,7 @@
 	"lisp/ddp/model5"
 	"lisp/ddp/model24"
 	"lisp/variance"
+	"lisp/cosine-similarity"
 	))
 
 (defun make-table ()
