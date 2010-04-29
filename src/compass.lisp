@@ -22,6 +22,7 @@
 	"lisp/ddp/model24"
 	"lisp/variance"
 	"lisp/cosine-similarity"
+	"lisp/prune"
 	))
 
 (defun make-table ()
