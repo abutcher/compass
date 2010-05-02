@@ -29,17 +29,13 @@
 		     (setf (node-left node)
 			   (make-node
 			    :head (car (first node-split))
-			    :variance (funcall variance-func 
-					       (mapcar #'first 
-						       (mapcar #'last (cdr (first node-split)))))
+			    :variance (funcall variance-func (cdr (first node-split)))
 			    :contents (cdr (first node-split)))))
 		 (if (>= (length (cdr (second node-split))) min-cluster-size)
 		     (setf (node-right node)
 			   (make-node
 			    :head (car (second node-split))
-			    :variance (funcall variance-func 
-					       (mapcar #'first 
-						       (mapcar #'last (cdr (second node-split)))))
+			    :variance (funcall variance-func (cdr (second node-split)))
 			    :contents (cdr (second node-split)))))
 		 (if (not (null (node-left node)))
 		     (walk (node-left node)))

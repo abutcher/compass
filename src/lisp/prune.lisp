@@ -1,4 +1,4 @@
-(defun variance-prune (c-tree &key (aplha 0) (beta 0))
+(defun variance-prune (c-tree &key (alpha 0) (beta 0))
   (let ((max (max-variance c-tree)))
     (labels ((walk (c-node)
 	       (unless (null (node-right c-node))
@@ -25,6 +25,18 @@
       
       (walk c-tree))
     c-tree))
-		   
 
+(defun max-variance (c-tree)
+  (let ((max 0))
+    (labels ((walk (c-node)
+	       (if (< max (node-variance c-node))
+		   (setf max (node-variance c-node)))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))))
+      (walk c-tree))
+    max))
+
+    
 			    
