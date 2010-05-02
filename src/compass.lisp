@@ -42,7 +42,21 @@
 	))
 
 (defun make-effort ()
-  (make "lisp/effort/data/cocomo81"))
+  (make "lisp/effort/data/cocomo81"
+	"lisp/effort/data/cocomo81e"
+	"lisp/effort/data/cocomo81s"
+	"lisp/effort/data/desharnais-all"
+	"lisp/effort/data/desharnais-l2"
+	"lisp/effort/data/nasa93-center-1"
+	"lisp/effort/data/nasa93-center-3"
+	"lisp/effort/data/nasa93.lisp"
+	"lisp/effort/data/cocomo81o"
+	"lisp/effort/data/desharnais-l1"
+	"lisp/effort/data/desharnais-l3"
+	"lisp/effort/data/nasa93-center-2"
+	"lisp/effort/data/nasa93-center-5"
+	"lisp/effort/data/sdr"))
+
 
 (make-compass)
 (make-table)
