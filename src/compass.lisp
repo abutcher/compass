@@ -23,6 +23,8 @@
 	"lisp/variance"
 	"lisp/cosine-similarity"
 	"lisp/prune"
+	"lisp/wilcoxon"
+	"lisp/wilcoxon2"
 	))
 
 (defun make-table ()
