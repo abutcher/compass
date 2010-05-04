@@ -38,6 +38,3 @@
 		 (walk (node-left c-node)))))
       (walk c-tree))
     max))
-
-    
-			    

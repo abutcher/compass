@@ -40,7 +40,7 @@
 	     (format stream "LEVEL: ~A~%" level)
 	     (if (node-rootp node)
 		 (format stream "LOOKING AT ROOT NODE~%"))
-	     (format stream "ENTROPY: ~A~%" (entropy (node-contents node)))
+	     (format stream "VARIANEC: ~A~%" (node-variance node))
 	     (format stream "CONTENTS:~%")
 	     (dolist (element (node-contents node))
 	       (format stream "~A~%" element))
@@ -51,16 +51,15 @@
 		 (walk (node-left node) (1+ level)))))
     (walk tree)))
 
-(defun test-compass (file n s)
+(defun test-compass (file mitigations)
   "Sample run"
   (with-open-file (stream file
                           :direction :output
                           :if-exists :supersede
                           :if-does-not-exist :create )
-    (let* ((mitigations (generator :n n :s s))
-	   (tree (compass mitigations)))
+    (let* ((compass-tree (compass mitigations :distance-func 'cosine-similarity)))
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
-      (print-nodes tree stream))))
+      (print-nodes compass-tree stream))))
 
 (defun separate (these &key (distance-func 'distance))
   "Turn one list into two lists using euclidean distance and farthest
@@ -116,7 +115,8 @@
 	    (length (node-contents (node-left c-node)))))))
       
 (defun compass-teak (projects)
-  (let* ((test (random-element projects))
+  (let* ((projects (shuffle-n projects 20))
+	 (test (random-element projects))
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :distance-func 'cosine-similarity))
 	 (actual (first (last test)))
