@@ -104,14 +104,18 @@
     temporary))
 
 (defun weighted-variance (c-node)
-  (/ (+ (* (node-variance (node-right c-node))
-	   (length (node-contents (node-right c-node))))
-	(* (node-variance (node-left c-node))
-	   (length (node-contents (node-left c-node)))))
-     (+ (length (node-contents (node-right c-node)))
-	(length (node-contents (node-left c-node))))))
-
-(defun experiment (projects)
+  (if (or (null (node-right c-node)) (null (node-left c-node)))
+      (if (null (node-right c-node))
+	  (node-variance (node-left c-node))
+	  (node-variance(node-right c-node)))
+      (/ (+ (* (node-variance (node-right c-node))
+	       (length (node-contents (node-right c-node))))
+	    (* (node-variance (node-left c-node))
+	       (length (node-contents (node-left c-node)))))
+	 (+ (length (node-contents (node-right c-node)))
+	    (length (node-contents (node-left c-node)))))))
+      
+(defun compass-teak (projects)
   (let* ((test (random-element projects))
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :distance-func 'cosine-similarity))
@@ -121,7 +125,7 @@
     (labels ((walk (c-node)
 	       (if (> (node-variance c-node)
 		      (weighted-variance c-node))
-		   (median (node-contents c-node))
+		   (median (mapcar #'first (mapcar #'last (node-contents c-node))))
 		   (if (or (null (node-right c-node))
 			   (null (node-left c-node)))
 		       (progn 
@@ -133,6 +137,7 @@
 			      (weighted-variance (node-left c-node)))
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
-
       (setf predicted (walk compass-tree)))
     (mre actual predicted)))
+
+; (compass-teak (mapcar #'eg-features (egs (cocomo81))))

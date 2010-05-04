@@ -26,6 +26,7 @@
 	"lisp/wilcoxon"
 	"lisp/wilcoxon2"
 	"lisp/median"
+	"lisp/mre"
 	))
 
 (defun make-table ()
