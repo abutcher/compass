@@ -9,7 +9,8 @@
 			 (node-variance (node-right c-node)))
 		      (< (* (my-random-int 1) max)
 			 (node-variance (node-right c-node))))
-		     (setf (node-right c-node) nil))
+		     (setf (node-right c-node) nil)))
+	       (unless (null (node-left c-node))
 		 (if (or 
 		      (< (* alpha (node-variance c-node))
 			 (node-variance (node-left c-node)))

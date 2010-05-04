@@ -1,6 +1,5 @@
 (defstruct node
   rootp
-  head
   contents
   variance
   right
@@ -8,19 +7,10 @@
   )
 
 (defun compass (mitigations &key (min-cluster-size 4) (distance-func 'distance) (variance-func 'variance))
-  (let ((left (make-node :rootp T))
-	(right (make-node :rootp T)))
-    
-    ; Make initial split
-    (let ((initial-split (separate mitigations)))
-      ; Set up left node with a header and it's contents
-      (setf (node-head left) (car (first initial-split)))
-      (setf (node-variance left) (funcall variance-func (cdr (first initial-split))))
-      (setf (node-contents left) (cdr (first initial-split)))
-      ; Set up right node with a header and it's contents
-      (setf (node-head right) (car (second initial-split)))
-      (setf (node-variance right) (funcall variance-func (cdr (second initial-split))))
-      (setf (node-contents right) (cdr (second initial-split))))
+  (let ((tree (make-node
+	       :rootp t
+	       :variance (funcall variance-func mitigations)
+	       :contents mitigations)))
 
     ; Recursive node-walker
     (labels ((walk (node)
@@ -28,33 +18,28 @@
 		 (if (>= (length (cdr (first node-split))) min-cluster-size)
 		     (setf (node-left node)
 			   (make-node
-			    :head (car (first node-split))
-			    :variance (funcall variance-func (cdr (first node-split)))
-			    :contents (cdr (first node-split)))))
+			    :variance (funcall variance-func (first node-split))
+			    :contents (first node-split))))
 		 (if (>= (length (cdr (second node-split))) min-cluster-size)
 		     (setf (node-right node)
 			   (make-node
-			    :head (car (second node-split))
-			    :variance (funcall variance-func (cdr (second node-split)))
-			    :contents (cdr (second node-split)))))
+			    :variance (funcall variance-func (second node-split))
+			    :contents (second node-split))))
 		 (if (not (null (node-left node)))
 		     (walk (node-left node)))
 		 (if (not (null (node-right node)))
 		     (walk (node-right node))))))
     
       ; Recursively build upon each node
-      (walk right)
-      (walk left))
-    
-    (list right left)))
+      (walk tree)
+      tree)))
 
-(defun print-nodes (left right &optional (stream *standard-output*))
+(defun print-nodes (tree &optional (stream *standard-output*))
   "Pretty print built nodes"
   (labels ((walk (node &optional (level 0))
 	     (format stream "LEVEL: ~A~%" level)
 	     (if (node-rootp node)
 		 (format stream "LOOKING AT ROOT NODE~%"))
-	     (format stream "HEAD: ~A~%" (node-head node))
 	     (format stream "ENTROPY: ~A~%" (entropy (node-contents node)))
 	     (format stream "CONTENTS:~%")
 	     (dolist (element (node-contents node))
@@ -64,8 +49,7 @@
 		 (walk (node-right node) (1+ level)))
 	     (if (not (null (node-left node)))
 		 (walk (node-left node) (1+ level)))))
-    (walk left)
-    (walk right)))
+    (walk tree)))
 
 (defun test-compass (file n s)
   "Sample run"
@@ -76,7 +60,7 @@
     (let* ((mitigations (generator :n n :s s))
 	   (tree (compass mitigations)))
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
-      (print-nodes (first tree) (second tree) stream))))
+      (print-nodes tree stream))))
 
 (defun separate (these &key (distance-func 'distance))
   "Turn one list into two lists using euclidean distance and farthest
@@ -119,3 +103,36 @@
 	    (setf temporary that))))
     temporary))
 
+(defun weighted-variance (c-node)
+  (/ (+ (* (node-variance (node-right c-node))
+	   (length (node-contents (node-right c-node))))
+	(* (node-variance (node-left c-node))
+	   (length (node-contents (node-left c-node)))))
+     (+ (length (node-contents (node-right c-node)))
+	(length (node-contents (node-left c-node))))))
+
+(defun experiment (projects)
+  (let* ((test (random-element projects))
+	 (projects (remove test projects))
+	 (compass-tree (compass projects :distance-func 'cosine-similarity))
+	 (actual (first (last test)))
+	 (predicted 0))
+
+    (labels ((walk (c-node)
+	       (if (> (node-variance c-node)
+		      (weighted-variance c-node))
+		   (median (node-contents c-node))
+		   (if (or (null (node-right c-node))
+			   (null (node-left c-node)))
+		       (progn 
+			 (unless (null (node-right c-node))
+			   (walk (node-right c-node)))
+			 (unless (null (node-left c-node))
+			   (walk (node-left c-node))))
+		       (if (> (weighted-variance (node-right c-node))
+			      (weighted-variance (node-left c-node)))
+			   (walk (node-left c-node))
+			   (walk (node-right c-node)))))))
+
+      (setf predicted (walk compass-tree)))
+    (mre actual predicted)))
