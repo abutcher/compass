@@ -114,11 +114,12 @@
 	 (+ (length (node-contents (node-right c-node)))
 	    (length (node-contents (node-left c-node)))))))
       
-(defun compass-teak (projects)
+(defun compass-teak (projects alpha beta)
   (let* ((projects (shuffle-n projects 20))
 	 (test (random-element projects))
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :distance-func 'cosine-similarity))
+	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
 
@@ -137,7 +138,7 @@
 			      (weighted-variance (node-left c-node)))
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
-      (setf predicted (walk compass-tree)))
+      (setf predicted (walk pruned-tree)))
     (mre actual predicted)))
 
 ; (compass-teak (mapcar #'eg-features (egs (cocomo81))))
