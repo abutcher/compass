@@ -27,6 +27,9 @@
 	"lisp/wilcoxon2"
 	"lisp/median"
 	"lisp/mre"
+	"lisp/while"
+	"lisp/kmeans"
+	"lisp/utilities"
 	))
 
 (defun make-table ()

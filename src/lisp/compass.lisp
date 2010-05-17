@@ -113,7 +113,7 @@
 	       (length (node-contents (node-left c-node)))))
 	 (+ (length (node-contents (node-right c-node)))
 	    (length (node-contents (node-left c-node)))))))
-      
+
 (defun compass-teak (projects alpha beta)
   (let* ((projects (shuffle-n projects 20))
 	 (test (random-element projects))
