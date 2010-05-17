@@ -81,6 +81,7 @@
 	   collect (array-to-list a more-dims j)))))
 
 (defun meat-processor (k k-means-output)
+  "Converts array k-means output into a list of clusters"
   (let* ((tbl-egs (array-to-list k-means-output))
 	 (clusters))
     (dotimes (n k)      
@@ -91,3 +92,25 @@
 	(push temporary-storage clusters)))
     clusters))
 
+(defun average-variance (clusters)
+  ;; Variance automagically uses the class value (stored in the last
+  ;; column of our effort datasets) 
+  (let ((clusters (remove nil clusters))
+	(sum 0))
+    (dolist (cluster clusters)
+      (setf sum (+ sum (variance cluster))))
+    (/ sum (length clusters))))
+
+(defun best-k (data)
+  (let* ((best-so-far '(0 0)))
+    ;; Give it 30 tries... if we ever get worse we stop clustering.
+    (dotimes (try 30)
+      (let ((current-avg (average-variance (meat-processor (1+ try) (k-means (1+ try) data))))
+	    (current-k (1+ try)))
+	(if (= (first best-so-far) 0)
+	    (setf best-so-far (list current-avg current-k)))
+	(if (< current-avg (first best-so-far))
+	    (setf best-so-far (list current-avg current-k)))
+	(if (> current-avg (first best-so-far))
+	    (return))))
+    (meat-processor (second best-so-far) (k-means (second best-so-far) data))))
