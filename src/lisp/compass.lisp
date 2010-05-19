@@ -6,7 +6,7 @@
   left
   )
 
-(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'distance) (variance-func 'variance))
+(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'cosine-similarity) (variance-func 'variance))
   (let ((tree (make-node
 	       :rootp t
 	       :variance (funcall variance-func mitigations)
@@ -61,7 +61,7 @@
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
       (print-nodes compass-tree stream))))
 
-(defun separate (these &key (distance-func 'distance))
+(defun separate (these &key (distance-func 'cosine-similarity))
   "Turn one list into two lists using euclidean distance and farthest
    neighbors"
   (let (this that this-group that-group)
@@ -93,12 +93,21 @@
     ; Give em back
     (list (reverse this-group) (reverse that-group))))
 
-(defun farthest-from (this those &key (distance-func 'distance))
+(defun farthest-from (this those &key (distance-func 'cosine-similarity))
   "Give me the farthest thing from this in those"
-  (let ((max-distance 0)(temporary))
+  (let ((max-distance 0) temporary)
     (dolist (that those)
       (let ((d (funcall distance-func this that)))
 	(if (> d max-distance)
+	    (setf temporary that))))
+    temporary))
+
+(defun closest-to (this those &key (distance-func 'cosine-similarity))
+  "Give me the farthest thing from this in those"
+  (let ((min-distance 999999) temporary)
+    (dolist (that those)
+      (let ((d (funcall distance-func this that)))
+	(if (< d min-distance)
 	    (setf temporary that))))
     temporary))
 

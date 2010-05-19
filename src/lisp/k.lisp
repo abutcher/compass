@@ -1,0 +1,11 @@
+(defun k-predict (data k &key (distance-func 'cosine-similarity))
+  (let* ((representative (random-element data))
+	 (data (remove representative data))
+	 closest-list)
+    (dotimes (n k)
+      (let ((closest (closest-to representative data)))
+	(push closest closest-list)
+	(setf data (remove closest data))))
+    (let ((predicted (median (mapcar #'first (mapcar #'last closest-list)))))
+      (mre (first (last representative)) predicted))))
+    

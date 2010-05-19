@@ -30,6 +30,7 @@
 	"lisp/while"
 	"lisp/kmeans"
 	"lisp/utilities"
+	"lisp/k"
 	))
 
 (defun make-table ()
