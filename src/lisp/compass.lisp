@@ -124,8 +124,7 @@
 	    (length (node-contents (node-left c-node)))))))
 
 (defun compass-teak (projects alpha beta)
-  (let* ((projects (shuffle-n projects 20))
-	 (test (random-element projects))
+  (let* ((test (random-element projects))
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :distance-func 'cosine-similarity))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
@@ -150,4 +149,111 @@
       (setf predicted (walk pruned-tree)))
     (mre actual predicted)))
 
-; (compass-teak (mapcar #'eg-features (egs (cocomo81))))
+(defun win-loss-tie (data pred-function)
+  (let* ((data (shuffle-n data 20))
+	 
+	 )))
+
+(defparameter *DATASETS*
+  (list 'cocomo81
+	'cocomo81e
+	'cocomo81o
+	'nasa93
+	'nasa93-center-2
+	'nasa93-center-5
+	'desharnais-all
+	'sdr))
+
+(defparameter *PREDICTORS*
+  (list 'compass
+	'best-k
+	'k=16
+	'k=8
+	'k=4
+	'k=2
+	'k=1))
+
+(defun sets+preds ()
+  (let ((sets (copy-list *DATASETS*))
+	(preds (copy-list *PREDICTORS*)))
+    (dolist (set sets)
+      (setf (nth (position set sets) sets) (cons preds set)))
+    sets))
+
+(defun run-tests ()
+  (let ((sets (copy-list *DATASETS*))
+	compass best-k k=16 k=8 k=4 k=2 k=1)
+    (dolist (set sets)
+      (let ((projects (table-egs (funcall set))))
+	
+	;; Compass
+	(format t "Compass vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (compass-teak projects 1.9 1.9) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp compass))
+
+	;; Best-k
+	(let (tmp big-tmp)
+	(format t "Best-k vs. ~A~%" set)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (best-k-predict projects) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp best-k))
+
+	;; k=16
+	(format t "k=16 vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k-predict projects 16) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp k=16))
+
+	;; k=8
+	(format t "k=8 vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k-predict projects 8) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp k=8))
+	
+	;; k=4
+	(format t "k=4 vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k-predict projects 4) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp k=4))
+
+	;; k=2
+	(format t "k=2 vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k-predict projects 2) tmp))
+	    (push tmp big-tmp)	
+	    (setf tmp nil))
+	  (push big-tmp k=2))
+
+	;; k=1
+	(format t "k=1 vs. ~A~%" set)
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k-predict projects 1) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp k=1))
+	))
+    ))
