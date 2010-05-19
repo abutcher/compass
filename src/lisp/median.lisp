@@ -1,3 +1,5 @@
 (defun median (l)
-  (let ((n (make-normal-from-list l)))
-    (/ (normal-sum n) (normal-n n))))
+  (if (= (length l) 1)
+      (first l)
+      (let ((n (make-normal-from-list l)))
+	(/ (normal-sum n) (normal-n n)))))
