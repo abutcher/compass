@@ -184,12 +184,12 @@
 
 (defun run-tests ()
   (let ((sets (copy-list *DATASETS*))
-	compass best-k k=16 k=8 k=4 k=2 k=1)
+	compass best-k k=16 k=8 k=4 k=2 k=1 variants)
+    (format t "Generating data... ")
     (dolist (set sets)
       (let ((projects (table-egs (funcall set))))
 	
 	;; Compass
-	(format t "Compass vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -200,7 +200,6 @@
 
 	;; Best-k
 	(let (tmp big-tmp)
-	(format t "Best-k vs. ~A~%" set)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
 	      (push (best-k-predict projects) tmp))
@@ -209,7 +208,6 @@
 	  (push big-tmp best-k))
 
 	;; k=16
-	(format t "k=16 vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -219,7 +217,6 @@
 	  (push big-tmp k=16))
 
 	;; k=8
-	(format t "k=8 vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -229,7 +226,6 @@
 	  (push big-tmp k=8))
 	
 	;; k=4
-	(format t "k=4 vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -239,7 +235,6 @@
 	  (push big-tmp k=4))
 
 	;; k=2
-	(format t "k=2 vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -249,7 +244,6 @@
 	  (push big-tmp k=2))
 
 	;; k=1
-	(format t "k=1 vs. ~A~%" set)
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
@@ -258,4 +252,41 @@
 	    (setf tmp nil))
 	  (push big-tmp k=1))
 	))
-    ))
+    
+    (format t "Done!~%")
+
+    (setf compass (reverse compass))
+    (setf best-k (reverse best-k))
+    (setf k=16 (reverse k=16))
+    (setf k=8 (reverse k=8))
+    (setf k=4 (reverse k=4))
+    (setf k=2 (reverse k=2))
+    (setf k=1 (reverse k=1))
+    (push k=1 variants)
+    (push k=2 variants)
+    (push k=4 variants)
+    (push k=8 variants)
+    (push k=16 variants)
+    (push best-k variants)
+    (push compass variants)
+
+
+    (dolist (set sets)
+      (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
+	
+	(format t "~A~%" set)
+	
+	(dotimes (n (length applicable-variants))
+	  (let* ((current-variant (nth n applicable-variants))
+		 (other-variants 
+		  (remove (nth n applicable-variants) (copy-list applicable-variants)))
+		 (win 0)(tie 0)(loss 0))
+	    (dolist (variant other-variants)
+	      (dotimes (k (length variant))
+		(if (= (wilcoxon (nth k current-variant) (nth k variant)) 1)
+		    (incf tie)
+		    (if (< (median (nth k current-variant)) (median (nth k variant)))
+			(incf win)
+			(incf loss)))))
+	    (format t "WIN: ~A TIE: ~A LOSS: ~A~%" win tie loss)
+	))))))

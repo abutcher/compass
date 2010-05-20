@@ -13,19 +13,26 @@
 (defun best-k-predict (data)
   "Loop until we have a best-k mre result"
   (let* ((representative (random-element data))
+	 (actual (first (last representative)))
 	 (data (remove representative data))
-	 closest-list
-	 (best-so-far 9999))
-    (loop while (not (null data)) do
-	 (let ((closest (closest-to representative data)))
-	   (push closest closest-list)
-	   (let ((current-mre (mre (first (last representative))
-				   (median 
-				    (mapcar #'first 
-					    (mapcar #'last closest-list))))))
-	     (setf data (remove closest data))	     
-	     (if (< current-mre
-		    best-so-far)
-		 (setf best-so-far current-mre)))))
-    best-so-far))
-  
+	 (preserve (copy-list data))
+	 (data (random-subset (copy-list data)))
+	 (best-mre 99999999)
+	 (best-k 0))
+    (dotimes (n (1- (length data)))
+      (let* ((this-data (subseq data 0 (1+ n)))
+	     (predicted (median (mapcar #'first (mapcar #'last this-data)))))
+	(let* ((current-mre (mre actual predicted)))
+	  (if (< current-mre best-mre)
+	      (progn (setf best-mre current-mre)
+		     (setf best-k (1+ n)))))))
+    (if (= 0 best-k)
+	(incf best-k))
+    (k-predict preserve best-k)))
+
+(defun random-subset (l)
+  (let* ((r (my-random-int (length l))))
+    (if (= r 0)
+	(incf r))
+    (subseq (shuffle-n l 20) 0 r)))
+      

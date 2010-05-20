@@ -1,3 +1,5 @@
 (defun mre (actual predicted)
-  (/ (abs (- actual predicted))
-     actual))
+  (if (= actual predicted)
+      0
+      (/ (abs (- actual predicted))
+	 actual)))
