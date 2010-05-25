@@ -157,23 +157,25 @@
 	 )))
 
 (defparameter *DATASETS*
-  (list 'cocomo81
-	'cocomo81e
-	'cocomo81o
-	'nasa93
-	'nasa93-center-2
-	'nasa93-center-5
-	'desharnais-all
-	'sdr))
-
-(defparameter *PREDICTORS*
-  (list 'compass
-	'best-k
-	'k=16
-	'k=8
-	'k=4
-	'k=2
-	'k=1))
+  '(albrecht
+    china
+    cocomo81
+    cocomo81e
+    cocomo81o
+    cocomo81s
+    desharnais-all
+    desharnais-l1
+    desharnais-l2
+    desharnais-l3
+    finnish
+    kemerer
+    maxwell
+    nasa93-center-1
+    nasa93-center-2
+    nasa93-center-5
+    nasa93
+    sdr
+    telecom))
 
 (defun sets+preds ()
   (let ((sets (copy-list *DATASETS*))
@@ -185,7 +187,6 @@
 (defun run-tests ()
   (let ((sets (copy-list *DATASETS*))
 	compass best-k k=16 k=8 k=4 k=2 k=1 variants)
-    (format t "Generating data... ")
     (dolist (set sets)
       (let ((projects (table-egs (funcall set))))
 	
@@ -193,7 +194,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (compass-teak projects 1.9 1.9) tmp))
+	      (push (compass-teak projects 1.1 1.1) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp compass))
@@ -253,22 +254,13 @@
 	  (push big-tmp k=1))
 	))
     
-    (format t "Done!~%")
-
-    (setf compass (reverse compass))
-    (setf best-k (reverse best-k))
-    (setf k=16 (reverse k=16))
-    (setf k=8 (reverse k=8))
-    (setf k=4 (reverse k=4))
-    (setf k=2 (reverse k=2))
-    (setf k=1 (reverse k=1))
-    (push k=1 variants)
-    (push k=2 variants)
-    (push k=4 variants)
-    (push k=8 variants)
-    (push k=16 variants)
-    (push best-k variants)
-    (push compass variants)
+    (push (reverse k=1) variants)
+    (push (reverse k=2) variants)
+    (push (reverse k=4) variants)
+    (push (reverse k=8) variants)
+    (push (reverse k=16) variants)
+    (push (reverse best-k) variants)
+    (push (reverse compass) variants)
 
 
     (dolist (set sets)
@@ -283,10 +275,13 @@
 		 (win 0)(tie 0)(loss 0))
 	    (dolist (variant other-variants)
 	      (dotimes (k (length variant))
-		(if (= (wilcoxon (nth k current-variant) (nth k variant)) 1)
-		    (incf tie)
-		    (if (< (median (nth k current-variant)) (median (nth k variant)))
-			(incf win)
-			(incf loss)))))
+		(let ((wilcox (wilcoxon (nth k current-variant) (nth k variant))))
+		  (if (= wilcox 1)
+		      (incf tie)
+		      (let ((cur-med (median (nth k current-variant)))
+			    (var-med (median (nth k variant))))
+			(if (< cur-med var-med)
+			    (incf win)
+			    (incf loss)))))))
 	    (format t "WIN: ~A TIE: ~A LOSS: ~A~%" win tie loss)
-	))))))
+	    ))))))

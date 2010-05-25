@@ -33,10 +33,10 @@
 	"lisp/k"
 	))
 
-(defun make-table ()
+(defun make-tables ()
   (make "lisp/table/structs"
+	"lisp/table/header"	
 	"lisp/table/data"
-	"lisp/table/header"
 	"lisp/table/nbins"
 	"lisp/table/table"
 	"lisp/table/xindex"
@@ -48,23 +48,29 @@
 	))
 
 (defun make-effort ()
-  (make "lisp/effort/data/cocomo81"
-	"lisp/effort/data/cocomo81e"
-	"lisp/effort/data/cocomo81s"
-	"lisp/effort/data/desharnais-all"
-	"lisp/effort/data/desharnais-l2"
-	"lisp/effort/data/nasa93-center-1"
-	"lisp/effort/data/nasa93-center-3"
+  (make "lisp/effort/data/albrecht.lisp"
+	"lisp/effort/data/china.lisp"
+	"lisp/effort/data/cocomo81.lisp"
+	"lisp/effort/data/cocomo81e.lisp"
+	"lisp/effort/data/cocomo81o.lisp"
+	"lisp/effort/data/cocomo81s.lisp"
+	"lisp/effort/data/desharnais-all.lisp"
+	"lisp/effort/data/desharnais-l1.lisp"
+	"lisp/effort/data/desharnais-l2.lisp"
+	"lisp/effort/data/desharnais-l3.lisp"
+	"lisp/effort/data/finnish.lisp"
+	"lisp/effort/data/kemerer.lisp"
+	"lisp/effort/data/maxwell.lisp"
+	"lisp/effort/data/nasa93-center-1.lisp"
+	"lisp/effort/data/nasa93-center-2.lisp"
+	"lisp/effort/data/nasa93-center-3.lisp"
+	"lisp/effort/data/nasa93-center-5.lisp"
 	"lisp/effort/data/nasa93.lisp"
-	"lisp/effort/data/cocomo81o"
-	"lisp/effort/data/desharnais-l1"
-	"lisp/effort/data/desharnais-l3"
-	"lisp/effort/data/nasa93-center-2"
-	"lisp/effort/data/nasa93-center-5"
-	"lisp/effort/data/sdr"))
-
+	"lisp/effort/data/sdr.lisp"
+	"lisp/effort/data/telecom.lisp"
+	))
 
 (make-compass)
-(make-table)
+(make-tables)
 (make-debug)
 (make-effort)

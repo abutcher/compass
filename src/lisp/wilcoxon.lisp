@@ -9,6 +9,15 @@
            (as-ranks (l r) (mapcar #'(lambda (x) (gethash x r)) l))
            (simple-quad (c) (/ (+ -1 (sqrt (- 1 (* -1 8 c)))) 2)))
     
+    (let (new-a new-b)
+      (dotimes (i (length x.a))
+	(unless (= (nth i x.a) (nth i x.b))
+	  (progn
+	    (push (nth i x.a) new-a)
+	    (push (nth i x.b) new-b))))
+      (setf x.a (reverse new-a))
+      (setf x.b (reverse new-b)))
+    
     (let* ((x.dif (mapcar #'- x.a x.b)) ;x.a-x.b
            (x.abs (mapcar #'abs x.dif)) ;absolute value of x.dif
            (x (sort (mapcar #'combine x.abs x.dif x.b x.a)
@@ -31,7 +40,7 @@
                           
            (z (/ (- w .5) (sqrt (/ (* n (+ n 1) (+ (* 2 n) 1)) 6)))))
                                         ;z-value
-      
+
       (test-significance signum n w z))))
 
 ;(deftest test-wilcoxon ()
