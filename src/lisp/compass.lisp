@@ -177,15 +177,8 @@
     sdr
     telecom))
 
-(defun sets+preds ()
-  (let ((sets (copy-list *DATASETS*))
-	(preds (copy-list *PREDICTORS*)))
-    (dolist (set sets)
-      (setf (nth (position set sets) sets) (cons preds set)))
-    sets))
-
-(defun run-tests ()
-  (let ((sets (copy-list *DATASETS*))
+(defun run-tests (&optional (datasets *DATASETS*))
+  (let ((sets (copy-list datasets))
 	compass best-k k=16 k=8 k=4 k=2 k=1 variants)
     (dolist (set sets)
       (let ((projects (table-egs (funcall set))))
