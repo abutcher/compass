@@ -1,7 +1,7 @@
 (defun albrecht ()
   (data
    :name 'albrecht
-   :columns '($Inputcount $Outputcount $Querycount $Functionpoints $Filecount $Functionpoints $SLOC $Effort)
+   :columns '($Inputcount $Outputcount $Querycount $Functionpoints $Filecount $SLOC $Effort)
    :egs '((25 28 22 4 15 500 3.6)
 	  (70 27 12 0 20 428 11.1)
 	  (69 112 39 21 110 1572 61.2)
