@@ -64,7 +64,7 @@
 (defun separate (these &key (distance-func 'cosine-similarity))
   "Turn one list into two lists using euclidean distance and farthest
    neighbors"
-  (let (this that this-group that-group)
+  (let (this that this-group that-group left-right)
     ; Pick one at random, this
     (setf this (random-element these))
     ; Remove this from these
@@ -77,18 +77,29 @@
     (push this these)
     ; Now this is the farthest thing from that
     (setf this (farthest-from that these))
+    ; Take the new this out
+    (setf these (remove this these))
 
     ; Put them in their group
     (push this this-group)
     (push that that-group)
 
-    ; Determine which group the elements of these belong to
+    (setf left-right (funcall distance-func this that))
+
+    ; Using lemma 1 from elkan03 determine which group each element
+    ; belongs to
+;    (dolist (element these)
+;      (let ((d-from-that (funcall distance-func element that)))
+;	(if (>= left-right (* 2 d-from-that))
+;	    (push element that-group)
+;	    (push element this-group))))
+
     (dolist (element these)
       (let ((d-from-this (funcall distance-func element this))
 	    (d-from-that (funcall distance-func element that)))
 	(if (> d-from-this d-from-that)
-	    (push element this-group)
-	    (push element that-group))))
+	    (push element that-group)
+	    (push element this-group))))
 
     ; Give em back
     (list (reverse this-group) (reverse that-group))))
@@ -276,5 +287,12 @@
 			(if (< cur-med var-med)
 			    (incf win)
 			    (incf loss)))))))
+	    (format t "~A " (if (= n 0) "COMPASS"
+				(if (= n 1) "BestK"
+				    (if (= n 2) "K=16"
+					(if (= n 3) "K=8"
+					    (if (= n 4) "K=4"
+						(if (= n 5) "K=2"
+						    (if (= n 6) "K=1"))))))))
 	    (format t "WIN: ~A TIE: ~A LOSS: ~A~%" win tie loss)
 	    ))))))
