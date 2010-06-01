@@ -1,4 +1,4 @@
-(defun distance (this that)
+(defun discrete-distance (this that)
   "Distance between two discrete lists"
   (let ((d 0))
     (dolist (one this)
@@ -6,12 +6,12 @@
 	  (incf d)))
     d))
 
-(defun ndistance (this that)
+(defun euclidean-distance (this that)
+  "Ignores the class variable -- effort in our case."
   (let ((d 0))
-    (dolist (one this)
-      (dolist (two that)
-	(if (and (numberp one) (numberp two))
-	    (setf d (+ d (expt (- two one) 2)))
-	    (if (eql one two)
-		(incf d)))))
+    (dotimes (n (1- (length this)))
+      (if (numberp (nth n this))
+	  (setf d (+ d (expt (- (nth n that) (nth n this)) 2)))
+	  (if (eql (nth n this) (nth n that))
+	      (incf d))))
     (sqrt d)))
