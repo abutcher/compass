@@ -3,6 +3,8 @@
   (let* ((representative (random-element data))
 	 (data (remove representative data))
 	 closest-list)
+    (if (< (length data) k)
+	(setf k (length data)))
     (dotimes (n k)
       (let ((closest (closest-to representative data)))
 	(push closest closest-list)

@@ -173,7 +173,7 @@
     cocomo81
     cocomo81e
     cocomo81o
-    cocomo81s
+;    cocomo81s
     desharnais-all
     desharnais-l1
     desharnais-l2
