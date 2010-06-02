@@ -136,10 +136,10 @@
 	     (+ (length (node-contents (node-right c-node)))
 		(length (node-contents (node-left c-node))))))))
   
-(defun compass-teak (projects alpha beta)
+(defun compass-teak (projects alpha beta &key (distance-func 'cosine-similarity))
   (let* ((test (random-element projects))
 	 (projects (remove test projects))
-	 (compass-tree (compass projects :distance-func 'cosine-similarity))
+	 (compass-tree (compass projects :distance-func distance-func))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
@@ -162,18 +162,13 @@
       (walk pruned-tree))
     (mre actual predicted)))
 
-(defun win-loss-tie (data pred-function)
-  (let* ((data (shuffle-n data 20))
-	 
-	 )))
-
 (defparameter *DATASETS*
   '(albrecht
     china
     cocomo81
     cocomo81e
     cocomo81o
-;    cocomo81s
+    cocomo81s
     desharnais-all
     desharnais-l1
     desharnais-l2
@@ -188,7 +183,7 @@
     sdr
     telecom))
 
-(defun run-tests (&optional (datasets *DATASETS*))
+(defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity))
   (let ((sets (copy-list datasets))
 	compass best-k k=16 k=8 k=4 k=2 k=1 variants)
     (dolist (set sets)
@@ -198,7 +193,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (compass-teak projects 1.1 1.1) tmp))
+	      (push (compass-teak projects 1.1 1.1 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp compass))
@@ -207,7 +202,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (best-k-predict projects) tmp))
+	      (push (best-k-predict projects :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp best-k))
@@ -216,7 +211,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (k-predict projects 16) tmp))
+	      (push (k-predict projects 16 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp k=16))
@@ -225,7 +220,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (k-predict projects 8) tmp))
+	      (push (k-predict projects 8 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp k=8))
@@ -234,7 +229,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (k-predict projects 4) tmp))
+	      (push (k-predict projects 4 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp k=4))
@@ -243,7 +238,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (k-predict projects 2) tmp))
+	      (push (k-predict projects 2 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)	
 	    (setf tmp nil))
 	  (push big-tmp k=2))
@@ -252,7 +247,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (k-predict projects 1) tmp))
+	      (push (k-predict projects 1 :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp k=1))
