@@ -16,30 +16,22 @@ for line in infile:
     line = line.replace("]"," ")
     line = line.replace(";","")
     line = line.replace("\n","")
+    line = line.replace("=", "")
     if re.match("^ *mCost", line):
-        mcost.append(line.split("=")[1])
+		temp = line.split(" ")
+		mcost.append(temp[2])
     if re.match("^ *roImpact", line):
-        line = line.replace("="," ")
-        split = line.split(" ")
-        s = "(make-ro-impact"
-        s = s + " :r " + str(int(split[1]) - 1)
-        s = s + " :o " + str(int(split[3]) - 1)
-        s = s + " :impact " + split[7]
-        s = s + ")"
-        roimpact.append(s)
+		temp = line.split(" ")
+		roimpact.append("(make-ro-impact :r " + str(int(temp[1])-1) + " :o " + str(int(temp[3])-1) + " :impact " + temp[4] + ")")
     if re.match("^ *mrEffect", line):
-        line = line.replace("="," = ")
-        split = line.split(" ")
-        s = "(make-mr-effect "
-        s = s + " :m " + str(int(split[1]) - 1)
-        s = s + " :r " + str(int(split[3]) - 1)
-        s = s + " :effect " + split[8]
-        s = s + ")"
-        mreffect.append(s)
+		temp = line.split(" ")
+		mreffect.append("(make-mr-effect :m " + str(int(temp[1])-1) + " :r " + str(int(temp[3])-1) + " :effect " + temp[4] + ")")
     if re.match("^ *rAPL", line):
-        rapl.append(line.split("=")[1])
+		temp = line.split(" ")
+		rapl.append(temp[2])
     if re.match("^ *oWeight", line):
-        oweight.append(line.split("=")[1])
+		temp = line.split(" ")
+		oweight.append(temp[2])
 
 
 print "(make-ddp-model"        

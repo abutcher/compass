@@ -5,11 +5,12 @@
 	(setf vec-one-mag 0.00001))
     (if (zerop vec-two-mag)
 	(setf vec-two-mag 0.00001))
-    (/ (dot vec-one vec-two) 
+    (/ (dot vec-one vec-two)
        (* vec-one-mag vec-two-mag))))
 
 (defun vector-mag (vec)
-  (let ((mag 0))
+  (let ((mag 0)
+	(vec (remove (first (last vec)) vec)))
     (dolist (val vec)
       (if (numberp val)
 	  (setf mag (+ mag (* val val)))
@@ -18,7 +19,7 @@
 
 (defun dot (vec-one vec-two)
   (let ((result 0))
-    (dotimes (i (length vec-one))
+    (dotimes (i (1- (length vec-one)))
       (if (numberp (nth i vec-one))
 	  (setf result (+ result 
 			  (* (nth i vec-one) 
