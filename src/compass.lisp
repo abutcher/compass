@@ -47,6 +47,12 @@
 	"lisp/debug"
 	))
 
+(defun make-models-large ()
+  (make "lisp/ddp/model44"
+	"lisp/ddp/model48"
+	"lisp/ddp/model416"
+	))
+
 (defun make-effort ()
   (make "lisp/effort/data/albrecht.lisp"
 	"lisp/effort/data/china.lisp"
