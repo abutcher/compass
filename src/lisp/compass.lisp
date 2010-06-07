@@ -139,7 +139,7 @@
 (defun compass-teak (projects alpha beta &key (distance-func 'cosine-similarity))
   (let* ((test (random-element projects))
 	 (projects (remove test projects))
-	 (compass-tree (compass projects :distance-func distance-func))
+	 (compass-tree (compass projects :min-cluster-size 2 :distance-func distance-func))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
