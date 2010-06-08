@@ -1,4 +1,4 @@
-Signed Rank Tests (Peter vs. Matlab ... FIGHT!)
+Signed Rank Tests (Lisp vs. Matlab ... FIGHT!)
 --------------------------------------------------------------------------------------------------------
 11111111111111
 
