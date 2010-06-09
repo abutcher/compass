@@ -1,9 +1,9 @@
 @relation telecom1
 
-@attribute Project
-@attribute CHANGES
-@attribute FILES
-@attribute ACT_EFF
+@attribute Project discrete
+@attribute CHANGES numeric
+@attribute FILES numeric
+@attribute ACT_EFF numeric
 
 @data
 Case_01,218,105,305.22

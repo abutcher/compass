@@ -14,6 +14,7 @@
 	"lisp/list"
 	"lisp/caution"
 	"lisp/normal"
+	"lisp/normalize"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
 	"lisp/ddp/model3"
