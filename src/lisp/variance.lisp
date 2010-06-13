@@ -1,6 +1,6 @@
 (defun variance (these)
   (if (= (length these) 1)
-      (first (last (first these)))
+      0
       (let* ((classes (mapcar #'first (mapcar #'last these)))
 	     (n (make-normal-from-list classes)))
 	(stdev n))))

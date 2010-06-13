@@ -185,7 +185,7 @@
 
 (defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity))
   (let ((sets (copy-list datasets))
-	compass best-k k=16 k=8 k=4 k=2 k=1 variants)
+	compass best-k k=16 k=8 k=4 k=2 k=1 bisectk=6 bisectk=8 variants)
     (dolist (set sets)
       (let ((projects (table-egs (funcall set))))
 	
@@ -197,7 +197,7 @@
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp compass))
-
+	
 	;; Best-k
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
@@ -206,7 +206,7 @@
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp best-k))
-
+	
 	;; k=16
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
@@ -251,8 +251,30 @@
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp k=1))
+
+	;; k=6 bisecting k-means
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k=?-bisecting-test 6 projects) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp bisectk=6))
+
+	
+	;; k=8 bisecting k-means
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (k=?-bisecting-test 6 projects) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp bisectk=8))
 	))
     
+
+    (push (reverse bisectk=8) variants)
+    (push (reverse bisectk=6) variants)
     (push (reverse k=1) variants)
     (push (reverse k=2) variants)
     (push (reverse k=4) variants)
@@ -260,7 +282,6 @@
     (push (reverse k=16) variants)
     (push (reverse best-k) variants)
     (push (reverse compass) variants)
-
 
     (dolist (set sets)
       (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
@@ -288,6 +309,8 @@
 					(if (= n 3) "K=8"
 					    (if (= n 4) "K=4"
 						(if (= n 5) "K=2"
-						    (if (= n 6) "K=1"))))))))
+						    (if (= n 6) "K=1"
+							(if (= n 7) "BISECT6"
+							    (if (= n 8) "BISECT8"))))))))))
 	    (format t "WIN: ~A TIE: ~A LOSS: ~A~%" win tie loss)
 	    ))))))

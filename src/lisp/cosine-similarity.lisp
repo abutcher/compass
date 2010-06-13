@@ -10,7 +10,7 @@
 
 (defun vector-mag (vec)
   (let ((mag 0)
-	(vec (remove (first (last vec)) vec)))
+	(vec (rmnth (length vec) vec)))
     (dolist (val vec)
       (if (numberp val)
 	  (setf mag (+ mag (* val val)))
