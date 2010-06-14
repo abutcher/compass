@@ -15,3 +15,20 @@
     (gas-pockets (node-left ctree)))
   ctree)
       
+(defun binary-chop (ctree)
+  (let ((highest-variance 0)
+	leaf-rep)
+    (labels ((walk (cnode)
+	       (if (and (null (node-right cnode)) (null (node-left cnode)))
+		   (if (> (node-variance cnode) highest-variance)
+		       (progn 
+			 (setf highest-variance (node-variance cnode))
+			 (setf leaf-rep cnode))))))
+      (walk ctree))
+    (let ((separated (separate (node-contents leaf-rep))))
+      (setf (node-right leaf-rep) (make-node :contents (first separated)
+					     :variance (variance (first separated))))
+      (setf (node-left leaf-rep) (make-node :contents (second separated)
+					    :variance (variance (second separated)))))
+    ctree))
+			
