@@ -1,7 +1,7 @@
-(defun k-predict (data k &key (distance-func 'cosine-similarity))
+(defun k-predict (this data k &key (distance-func 'cosine-similarity))
   "Use the k nearest neighbors to predict"
-  (let* ((representative (random-element data))
-	 (data (remove representative data))
+  (let* ((representative this)
+	 (data (remove representative (copy-list data)))
 	 closest-list)
     (if (< (length data) k)
 	(setf k (length data)))
@@ -12,11 +12,11 @@
     (let ((predicted (median (mapcar #'first (mapcar #'last closest-list)))))
       (mre (first (last representative)) predicted))))
 
-(defun best-k-predict (data &key (distance-func 'cosine-similarity))
+(defun best-k-predict (this data &key (distance-func 'cosine-similarity))
   "Loop until we have a best-k mre result"
-  (let* ((representative (random-element data))
+  (let* ((representative this)
 	 (actual (first (last representative)))
-	 (data (remove representative data))
+	 (data (remove representative (copy-list data)))
 	 (preserve (copy-list data))
 	 (data (random-subset (copy-list data)))
 	 (best-mre 99999999)
@@ -37,4 +37,3 @@
     (if (= r 0)
 	(incf r))
     (subseq (shuffle-n l 20) 0 r)))
-      

@@ -13,20 +13,40 @@ class Node:
     
     def __init__(self, data):
         self.data = data
-        self.variance = variance(data)
+        self.variance = variance(self.data)
 
-def compass(root):
-    if len(root.data) >= 4:
-        left, right = separate(root.data)
-        root.left = Node(left)
-        compass(root.left)
-        root.right = Node(right)
-        compass(root.right)
-    else:
-        return root
+def compass(data, minsize=3):
+    root = Node(data)
+    
+    def walk(node, level=0):
+        if len(node.data) >= minsize:
+            left, right = separate(node.data)
+            if len(left) >= minsize:
+                node.left = Node(left)
+            if len(right) >= minsize:
+                node.right = Node(right)
+            if node.left != None:
+                walk(node.left, level + 1)
+            if node.right != None:
+                walk(node.right, level + 1)
+
+    walk(root)
+    return root
+
+def treeprint(node, level=0):
+    print "Node: level=%d"% (level)
+    print "Variance: %6.4f"% (node.variance)
+    print "Contents: " + str(node.data)
+    if node.left != None:
+        treeprint(node.left, level + 1)
+    if node.right != None:
+        treeprint(node.right, level + 1)
 
 def variance(data):
-    return stats.std(transpose(data)[-1], None)
+    if len(data) == 1:
+        return 0
+    else:
+        return stats.std(transpose(data)[-1], None)
 
 def transpose(lists):
    if not lists: 
@@ -53,7 +73,7 @@ def separate(these):
     return thisgroup, thatgroup
 
 def randomelement(l):
-    return l[random.randint(0,len(l))]
+    return l[random.randint(0,len(l) - 1)]
 
 def closestto(this, these, d=0.0):
     for instance in these:
@@ -70,7 +90,7 @@ def farthestfrom(this, these, d=sys.maxint):
     return that
 
 def distance(vecone, vectwo, d=0.0):
-    for i in range(len(vecone)):
+    for i in range(len(vecone) - 1):
         if isnumeric(vecone[i]):
             d = d + (vectwo[i] - vecone[i])**2
         elif vecone[i] == vectwo[i]:
@@ -95,5 +115,4 @@ def isnumeric(s):
     except ValueError:
         return False
 
-#root = Node(extract("arff/telecom1.arff"))
-#print compass(root)
+treeprint(compass(extract("arff/telecom1.arff")))
