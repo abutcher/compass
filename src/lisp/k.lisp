@@ -30,7 +30,7 @@
 		     (setf best-k (1+ n)))))))
     (if (= 0 best-k)
 	(incf best-k))
-    (k-predict preserve best-k :distance-func distance-func)))
+    (k-predict representative preserve best-k :distance-func distance-func)))
 
 (defun random-subset (l)
   (let* ((r (my-random-int (length l))))
