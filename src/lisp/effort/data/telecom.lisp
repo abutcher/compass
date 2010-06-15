@@ -1,7 +1,7 @@
 (defun telecom ()
   (data
    :name 'telecom
-   :columns '(Project CHANGES FILES ACT_EFF)
+   :columns '(Project $CHANGES $FILES $ACT_EFF)
    :egs '((Case_01 218 105 305.22)
 	  (Case_02 357 237 330.29)
 	  (Case_03 136 98 333.96)

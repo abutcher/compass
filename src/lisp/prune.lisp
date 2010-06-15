@@ -1,7 +1,7 @@
 (defun variance-prune (c-tree &key (alpha 0) (beta 0))
   (let ((max (max-variance c-tree)))
     (labels ((walk (c-node &optional (level 0))
-	       (unless (> 2 level)
+	       (unless (< 3 level)
 		 (unless (null (node-right c-node))
 		   (if (or 
 			(< (* alpha (realpart (node-variance c-node)))

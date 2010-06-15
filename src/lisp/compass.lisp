@@ -139,7 +139,7 @@
 (defun compass-teak (projects alpha beta &key (distance-func 'cosine-similarity))
   (let* ((test (random-element projects))
 	 (projects (remove test projects))
-	 (compass-tree (compass projects :min-cluster-size 2 :distance-func distance-func))
+	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
@@ -185,7 +185,7 @@
 
 (defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity))
   (let ((sets (copy-list datasets))
-	compass best-k k=16 k=8 k=4 k=2 k=1 bisectk=6 bisectk=8 variants)
+	compass best-k k=16 k=8 k=4 k=2 k=1 bisectk=4 bisectk=6 bisectk=8 variants)
     (dolist (set sets)
       (let ((projects (table-egs (funcall set))))
 	
@@ -256,11 +256,19 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
+	      (push (k=?-bisecting-test 4 projects) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp bisectk=4))
+
+	;; k=6 bisecting k-means
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
 	      (push (k=?-bisecting-test 6 projects) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp bisectk=6))
-
 	
 	;; k=8 bisecting k-means
 	(let (tmp big-tmp)
@@ -273,15 +281,16 @@
 	))
     
 
-    (push (reverse bisectk=8) variants)
-    (push (reverse bisectk=6) variants)
+;    (push (reverse bisectk=8) variants)
+;    (push (reverse bisectk=6) variants)
+;    (push (reverse bisectk=4) variants)
     (push (reverse k=1) variants)
     (push (reverse k=2) variants)
     (push (reverse k=4) variants)
     (push (reverse k=8) variants)
     (push (reverse k=16) variants)
     (push (reverse best-k) variants)
-    (push (reverse compass) variants)
+;    (push (reverse compass) variants)
 
     (dolist (set sets)
       (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
@@ -303,14 +312,21 @@
 			(if (< cur-med var-med)
 			    (incf win)
 			    (incf loss)))))))
-	    (format t "~A " (if (= n 0) "COMPASS"
-				(if (= n 1) "BestK"
-				    (if (= n 2) "K=16"
-					(if (= n 3) "K=8"
-					    (if (= n 4) "K=4"
-						(if (= n 5) "K=2"
-						    (if (= n 6) "K=1"
-							(if (= n 7) "BISECT6"
-							    (if (= n 8) "BISECT8"))))))))))
+	    (format t "~A " (if (= n 0) "BestK"
+				(if (= n 1) "K=16"
+				    (if (= n 2) "K=8"
+					(if (= n 3) "K=4"
+					    (if (= n 4) "K=2"
+						(if (= n 5) "K=1")))))))						   
+;	    (format t "~A " (if (= n 0) "COMPASS"
+;				(if (= n 1) "BestK"
+;				    (if (= n 2) "K=16"
+;					(if (= n 3) "K=8"
+;					    (if (= n 4) "K=4"
+;						(if (= n 5) "K=2"
+;						    (if (= n 6) "K=1"
+;							(if (= n 7) "BISECT4"
+;							    (if (= n 8) "BISECT6"
+;								(if (= n 9) "BISECT8")))))))))))
 	    (format t "WIN: ~A TIE: ~A LOSS: ~A~%" win tie loss)
 	    ))))))
