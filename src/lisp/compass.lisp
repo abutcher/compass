@@ -136,8 +136,8 @@
 	     (+ (length (node-contents (node-right c-node)))
 		(length (node-contents (node-left c-node))))))))
   
-(defun compass-teak (projects alpha beta &key (distance-func 'cosine-similarity))
-  (let* ((test (random-element projects))
+(defun compass-teak (this projects alpha beta &key (distance-func 'cosine-similarity))
+  (let* ((test this)
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
@@ -190,13 +190,13 @@
       (let ((projects (normalize (table-egs (funcall set)))))
 	
 	;; Compass
-;	(let (tmp big-tmp)
-;	  (dotimes (n 20)
-;	    (dotimes (k (length projects))
-;	      (push (compass-teak projects 1.1 1.1 :distance-func distance-func) tmp))
-;	    (push tmp big-tmp)
-;	    (setf tmp nil))
-;	  (push big-tmp compass))
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (compass-teak (nth k projects) projects 1.1 1.1 :distance-func distance-func) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp compass))
 	
 	;; Best-k
 	(let (tmp big-tmp)
@@ -290,7 +290,7 @@
     (push (reverse k=8) variants)
     (push (reverse k=16) variants)
     (push (reverse best-k) variants)
-;    (push (reverse compass) variants)
+    (push (reverse compass) variants)
 
     (dolist (set sets)
       (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
@@ -312,12 +312,13 @@
 			(if (< cur-med var-med)
 			    (incf win)
 			    (incf loss)))))))
-	    (format t "~A " (if (= n 0) "BestK"
-				(if (= n 1) "K=16"
-				    (if (= n 2) "K=8"
-					(if (= n 3) "K=4"
-					    (if (= n 4) "K=2"
-						(if (= n 5) "K=1")))))))
+	    (format t "~A " (if (= n 0) "Compass"
+				(if (= n 1) "BestK"
+				    (if (= n 2) "K=16"
+					(if (= n 3) "K=8"
+					    (if (= n 4) "K=4"
+						(if (= n 5) "K=2"
+						    (if (= n 6) "K=1"))))))))
 ;	    (format t "~A " (if (= n 0) "COMPASS"
 ;				(if (= n 1) "BestK"
 ;				    (if (= n 2) "K=16"
@@ -328,6 +329,6 @@
 ;							(if (= n 7) "BISECT4"
 ;							    (if (= n 8) "BISECT6"
 ;								(if (= n 9) "BISECT8")))))))))))
-	    (format t "WIN: ~A TIE: ~A LOSS: ~A MEDIAN:~5,4f~%" win tie loss (median (condense-lists current-variant)))
+	    (format t "WIN: ~A TIE: ~A LOSS: ~A MDMRE: ~5,4f~%" win tie loss (median (condense-lists current-variant)))
 	    ))))))
 
