@@ -183,11 +183,14 @@
     sdr
     telecom))
 
-(defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity))
+(defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity) (normalize? NIL))
   (let ((sets (copy-list datasets))
 	compass best-k k=16 k=8 k=4 k=2 k=1 bisectk=4 bisectk=6 bisectk=8 variants)
     (dolist (set sets)
-      (let ((projects (normalize (table-egs (funcall set)))))
+      (let ((projects (table-egs (funcall set))))
+
+	(if normalize?
+	    (setf projects (normalize projects)))
 	
 	;; Compass
 	(let (tmp big-tmp)
