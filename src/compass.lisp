@@ -25,6 +25,7 @@
 	"lisp/ddp/model24"
 	"lisp/variance"
 	"lisp/cosine-similarity"
+	"lisp/math"
 	"lisp/prune"
 	"lisp/wilcoxon"
 	"lisp/wilcoxon2"
