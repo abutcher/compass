@@ -15,3 +15,21 @@
 	  (if (eql (nth n this) (nth n that))
 	      (incf d))))
     (sqrt d)))
+
+(defun farthest-from (this those &key (distance-func 'cosine-similarity))
+  "Give me the farthest thing from this in those"
+  (let ((max-distance 0) temporary)
+    (dolist (that those)
+      (let ((d (funcall distance-func this that)))
+	(if (> d max-distance)
+	    (setf temporary that))))
+    temporary))
+
+(defun closest-to (this those &key (distance-func 'cosine-similarity))
+  "Give me the farthest thing from this in those"
+  (let ((min-distance 999999) temporary)
+    (dolist (that those)
+      (let ((d (funcall distance-func this that)))
+	(if (< d min-distance)
+	    (setf temporary that))))
+    temporary))

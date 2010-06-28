@@ -16,6 +16,7 @@
   ctree)
       
 (defun binary-chop (ctree)
+  "Find the highest variance leaf node and cut it in two"
   (let ((highest-variance 0)
 	leaf-rep)
     (labels ((walk (cnode)
@@ -23,8 +24,14 @@
 		   (if (> (node-variance cnode) highest-variance)
 		       (progn 
 			 (setf highest-variance (node-variance cnode))
-			 (setf leaf-rep cnode))))))
+			 (setf leaf-rep cnode))))
+	       (unless (null (node-right cnode))
+		 (walk (node-right cnode)))
+	       (unless (null (node-left cnode))
+		 (walk (node-left cnode)))))
       (walk ctree))
+    (print leaf-rep)
+    (print highest-variance)
     (let ((separated (separate (node-contents leaf-rep))))
       (setf (node-right leaf-rep) (make-node :contents (first separated)
 					     :variance (variance (first separated))))
