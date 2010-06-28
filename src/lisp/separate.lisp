@@ -40,3 +40,21 @@
     
     ; Give em back
     (list (reverse this-group) (reverse that-group))))
+
+(defun split-the-tree (these &optional (distance-func 'cosine-similarity))
+  "Give me the instance closest to the center of these."
+  (let* ((this (random-element these))
+	 (these (remove this (copy-list these)))
+	 (that (farthest-from this these :distance-func distance-func))
+	 (these (push this these))
+	 (these (remove that (copy-list these)))
+	 (this (farthest-from that these :distance-func distance-func))
+	 (these (remove this (copy-list these)))
+	 (max-dist 9999999)
+	 split)
+    (dolist (instance these)
+      (if (< (abs (- (funcall distance-func instance this)
+		     (funcall distance-func instance this)))
+	     max-dist)
+	  (setf split instance)))
+    split))

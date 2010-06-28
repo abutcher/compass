@@ -9,7 +9,7 @@ Plan for experiment:
 
 """
 
-(defun random-vs-compass (ddp-model k)
+(defun random-sampling-score (ddp-model k)
   (let* ((mitigations (generator :n 100 :s (length (ddp-model-m-cost ddp-model))))
 	 (samples (subseq (shuffle mitigations) 0 k))
 	 costs)
@@ -17,3 +17,8 @@ Plan for experiment:
       (push (second (model ddp-model sample)) costs))
     (avg costs)))
 
+;(defun intelligent-sampling-score (ddp-model k)
+;  (let ((ctree (compass (generator :n 100 :s (length (ddp-model-m-cost ddp-model)))))
+;	samples
+;	costs)
+;    ))
