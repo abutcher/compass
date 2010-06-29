@@ -38,4 +38,9 @@
       (setf (node-left leaf-rep) (make-node :contents (second separated)
 					    :variance (variance (second separated)))))
     ctree))
-			
+
+(defun dismember (ctree k)
+  (let ((compass-tree ctree))
+    (dotimes (n k)
+      (setf compass-tree (binary-chop compass-tree))))
+  compass-tree)
