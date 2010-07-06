@@ -1,0 +1,32 @@
+DIGRAPH G {
+"Size: 39\nVariance: 1460.4658" -> "Size: 13\nVariance: 405.47473" L=0;
+"Size: 39\nVariance: 1460.4658" -> "Size: 26\nVariance: 1705.3651" L=0;
+"Size: 13\nVariance: 405.47473" -> "Size: 7\nVariance: 473.94574" L=1;
+"Size: 13\nVariance: 405.47473" -> "Size: 6\nVariance: 162.71991" L=1;
+"Size: 7\nVariance: 473.94574" -> "Size: 3\nVariance: 210.79848" L=2;
+"Size: 7\nVariance: 473.94574" -> "Size: 4\nVariance: 537.13684" L=2;
+"Size: 6\nVariance: 162.71991" -> "Size: 4\nVariance: 151.97697" L=2;
+"Size: 6\nVariance: 162.71991" -> "Size: 2\nVariance: 17.67767" L=2;
+"Size: 26\nVariance: 1705.3651" -> "Size: 20\nVariance: 1888.9482" L=1;
+"Size: 26\nVariance: 1705.3651" -> "Size: 6\nVariance: 822.41327" L=1;
+"Size: 20\nVariance: 1888.9482" -> "Size: 9\nVariance: 2590.1953" L=2;
+"Size: 20\nVariance: 1888.9482" -> "Size: 11\nVariance: 751.3046" L=2;
+"Size: 9\nVariance: 2590.1953" -> "Size: 7\nVariance: 2762.779" L=3;
+"Size: 9\nVariance: 2590.1953" -> "Size: 2\nVariance: 234.33524" L=3;
+"Size: 7\nVariance: 2762.779" -> "Size: 2\nVariance: 2844.8318" L=4;
+"Size: 7\nVariance: 2762.779" -> "Size: 5\nVariance: 3043.6853" L=4;
+"Size: 5\nVariance: 3043.6853" -> "Size: 3\nVariance: 139.49373" L=5;
+"Size: 5\nVariance: 3043.6853" -> "Size: 2\nVariance: 5347.8486" L=5;
+"Size: 11\nVariance: 751.3046" -> "Size: 2\nVariance: 1209.1526" L=3;
+"Size: 11\nVariance: 751.3046" -> "Size: 9\nVariance: 586.9044" L=3;
+"Size: 9\nVariance: 586.9044" -> "Size: 2\nVariance: 340.82547" L=4;
+"Size: 9\nVariance: 586.9044" -> "Size: 7\nVariance: 662.9665" L=4;
+"Size: 7\nVariance: 662.9665" -> "Size: 1\nVariance: 0" L=5;
+"Size: 7\nVariance: 662.9665" -> "Size: 6\nVariance: 726.1571" L=5;
+"Size: 6\nVariance: 726.1571" -> "Size: 1\nVariance: 0" L=6;
+"Size: 6\nVariance: 726.1571" -> "Size: 5\nVariance: 794.3837" L=6;
+"Size: 5\nVariance: 794.3837" -> "Size: 2\nVariance: 1175.2114" L=7;
+"Size: 5\nVariance: 794.3837" -> "Size: 3\nVariance: 252.95135" L=7;
+"Size: 6\nVariance: 822.41327" -> "Size: 2\nVariance: 509.82397" L=2;
+"Size: 6\nVariance: 822.41327" -> "Size: 4\nVariance: 991.11566" L=2;
+}

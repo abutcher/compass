@@ -15,21 +15,19 @@
     ; Recursive node-walker
     (labels ((walk (node)
 	       (let ((node-split (separate (node-contents node))))
-		 (if (>= (length (cdr (first node-split))) min-cluster-size)
-		     (setf (node-left node)
-			   (make-node
-			    :variance (funcall variance-func (first node-split))
-			    :contents (first node-split))))
-		 (if (>= (length (cdr (second node-split))) min-cluster-size)
-		     (setf (node-right node)
-			   (make-node
-			    :variance (funcall variance-func (second node-split))
-			    :contents (second node-split))))
-		 (if (not (null (node-left node)))
+		 (setf (node-left node)
+		       (make-node
+			:variance (funcall variance-func (first node-split))
+			:contents (first node-split)))
+		 (setf (node-right node)
+		       (make-node
+			:variance (funcall variance-func (second node-split))
+			:contents (second node-split)))
+		 (if (> (length (node-contents (node-left node))) min-cluster-size)
 		     (walk (node-left node)))
-		 (if (not (null (node-right node)))
+		 (if (> (length (node-contents (node-right node))) min-cluster-size)
 		     (walk (node-right node))))))
-    
+      
       ; Recursively build upon each node
       (walk tree)
       tree)))
