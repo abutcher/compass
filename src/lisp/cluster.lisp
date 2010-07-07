@@ -1,4 +1,5 @@
 (defun intra-cluster-distance (cluster &key (distance-func 'cosine-similarity))
+  "Used for within' cluster comparison."
   (let* ((sumSq 0)
 	 (centroid (split-the-tree cluster))
 	 (cluster (remove centroid (copy-list cluster))))
@@ -14,6 +15,7 @@
 
 (defun closest-between-clusters (first-cluster second-cluster 
 				 &key (distance-func 'cosine-similarity))
+  "Find me the two closest instances between clusters."
   (let ((best-dist 999999999)
 	closest-pair)
     (dotimes (i (length first-cluster))
