@@ -8,6 +8,7 @@
   (make "lisp/random"
 	"lisp/gen"
 	"lisp/compass"
+	"lisp/cluster"
 	"lisp/separate"
 	"lisp/testing"
 	"lisp/distance"

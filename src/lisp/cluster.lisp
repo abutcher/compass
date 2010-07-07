@@ -1,10 +1,10 @@
 (defun intra-cluster-distance (cluster &key (distance-func 'cosine-similarity))
   "Used for within' cluster comparison."
   (let* ((sumSq 0)
-	 (centroid (split-the-tree cluster))
-	 (cluster (remove centroid (copy-list cluster))))
+	 (center (centroid cluster))
+	 (cluster (remove center (copy-list cluster))))
     (dolist (instance cluster)
-      (setf sumSq (+ sumSq (square (funcall distance-func instance centroid)))))
+      (setf sumSq (+ sumSq (square (funcall distance-func instance center)))))
     sumSq))
 
 (defun intra-cluster-measure (clusters &key (distance-func 'cosine-similarity))
@@ -12,6 +12,35 @@
     (dolist (cluster clusters)
       (setf s (+ s (intra-cluster-distance cluster :distance-func distance-func))))
     (* (/ 1 (length (squash clusters))) s)))
+
+(defun inter-cluster-measure (clusters &key (distance-func 'cosine-similarity))
+  "We want to maximize the smallest distance between clusters to prove validity."
+  (let (distances)
+    (dolist (cluster clusters)
+      (dolist (other-cluster (remove cluster (copy-list clusters)))
+	(push (square (funcall distance-func
+			       (centroid cluster :distance-func distance-func)
+			       (centroid other-cluster :distance-func distance-func))) 
+	      distances)))
+    (normal-min (make-normal-from-list distances))))
+
+(defun validity (clusters &key (distance-func 'cosine-similarity))
+  "Clusters with the smallest validity score are ideal."
+  (/ (intra-cluster-measure clusters :distance-func distance-func)
+     (inter-cluster-measure clusters :distance-func distance-func)))
+
+(defun centroid (cluster &key (distance-func 'cosine-similarity))
+  (let ((best-dist 99999999)
+	centroid)
+    (dolist (instance cluster)
+      (let ((this-dist 0))
+	(dolist (other-instance (remove instance (copy-list cluster)))
+	  (setf this-dist (+ this-dist (funcall distance-func instance other-instance))))
+	(if (> best-dist this-dist)
+	    (progn
+	      (setf best-dist this-dist)
+	      (setf centroid instance)))))
+    centroid))
 
 (defun closest-between-clusters (first-cluster second-cluster 
 				 &key (distance-func 'cosine-similarity))
@@ -30,18 +59,3 @@
 	      (setf closest-pair (list (nth i first-cluster)
 				       (nth j second-cluster)))))))
     closest-pair))
-
-(defun inter-cluster-measure (clusters &key (distance-func 'cosine-similarity))
-  "We want to maximize the smallest distance between clusters to prove validity."
-  (let (distances)
-    (dolist (cluster clusters)
-      (dolist (other-cluster (remove cluster (copy-list clusters)))
-	(push (square (funcall distance-func
-			       (split-the-tree cluster)
-			       (split-the-tree other-cluster))) distances)))
-    (normal-min (make-normal-from-list distances))))
-
-(defun validity (clusters &key (distance-func 'cosine-similarity))
-  "Clusters with the smallest validity score are ideal."
-  (/ (intra-cluster-measure clusters :distance-func distance-func)
-     (inter-cluster-measure clusters :distance-func distance-func)))

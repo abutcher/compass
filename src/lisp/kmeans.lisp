@@ -90,7 +90,7 @@
 	  (if (= (first (last eg)) n)
 	      (push (rmnth (1- (length eg)) eg) temporary-storage)))
 	(push temporary-storage clusters)))
-    clusters))
+    (remove nil clusters)))
 
 (defun average-variance (clusters)
   ;; Variance automagically uses the class value (stored in the last
@@ -156,7 +156,7 @@
 	      (push (random-element (list (nth n this) (nth n that))) new-instance))))
     (reverse new-instance)))
 
-(defun centroid (cluster &key (distance-func 'cosine-similarity))
+(defun medoid (cluster &key (distance-func 'cosine-similarity))
   (if (= (length cluster) 1)
       (first cluster)
       (let* ((this (random-element cluster))
