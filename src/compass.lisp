@@ -9,6 +9,7 @@
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/cluster"
+	"lisp/dot"
 	"lisp/separate"
 	"lisp/testing"
 	"lisp/distance"
