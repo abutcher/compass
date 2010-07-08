@@ -81,7 +81,21 @@
 	"lisp/effort/data/telecom.lisp"
 	))
 
+(defun make-classification ()
+  (make "lisp/classification/data/anneal.lisp"
+	"lisp/classification/data/audiology.lisp"
+	"lisp/classification/data/credit-rating.lisp"
+	"lisp/classification/data/horse-colic.lisp"
+	"lisp/classification/data/hypothyroid.lisp"
+	"lisp/classification/data/pima_diabetes.lisp"
+	"lisp/classification/data/primary-tumor.lisp"
+	"lisp/classification/data/sonar.lisp"
+	"lisp/classification/data/soybean.lisp"
+	"lisp/classification/data/splice.lisp"
+	"lisp/classification/data/vote.lisp"))
+
 (make-compass)
 (make-tables)
 (make-debug)
 (make-effort)
+(make-classification)

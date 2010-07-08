@@ -20,7 +20,7 @@
       (dolist (other-cluster (remove cluster (copy-list clusters)))
 	(push (square (funcall distance-func
 			       (centroid cluster :distance-func distance-func)
-			       (centroid other-cluster :distance-func distance-func))) 
+			       (centroid other-cluster :distance-func distance-func)) )
 	      distances)))
     (normal-min (make-normal-from-list distances))))
 
