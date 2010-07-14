@@ -1,0 +1,34 @@
+DIGRAPH G {
+"Size: 25\nVariance: 3969.9473" -> "Size: 24\nVariance: 3986.3525" L=0;
+"Size: 25\nVariance: 3969.9473" -> "Size: 1\nVariance: 0\nG2154" L=0;
+"Size: 24\nVariance: 3986.3525" -> "Size: 1\nVariance: 0\nG2155" L=1;
+"Size: 24\nVariance: 3986.3525" -> "Size: 23\nVariance: 4056.508" L=1;
+"Size: 23\nVariance: 4056.508" -> "Size: 22\nVariance: 4064.7976" L=2;
+"Size: 23\nVariance: 4056.508" -> "Size: 1\nVariance: 0\nG2156" L=2;
+"Size: 22\nVariance: 4064.7976" -> "Size: 2\nVariance: 4578.5166" L=3;
+"Size: 22\nVariance: 4064.7976" -> "Size: 20\nVariance: 4140.4995" L=3;
+"Size: 20\nVariance: 4140.4995" -> "Size: 16\nVariance: 3850.0793" L=4;
+"Size: 20\nVariance: 4140.4995" -> "Size: 4\nVariance: 5557.0215" L=4;
+"Size: 16\nVariance: 3850.0793" -> "Size: 15\nVariance: 3950.0828" L=5;
+"Size: 16\nVariance: 3850.0793" -> "Size: 1\nVariance: 0\nG2157" L=5;
+"Size: 15\nVariance: 3950.0828" -> "Size: 1\nVariance: 0\nG2158" L=6;
+"Size: 15\nVariance: 3950.0828" -> "Size: 14\nVariance: 4002.0405" L=6;
+"Size: 14\nVariance: 4002.0405" -> "Size: 13\nVariance: 3986.4846" L=7;
+"Size: 14\nVariance: 4002.0405" -> "Size: 1\nVariance: 0\nG2159" L=7;
+"Size: 13\nVariance: 3986.4846" -> "Size: 1\nVariance: 0\nG2160" L=8;
+"Size: 13\nVariance: 3986.4846" -> "Size: 12\nVariance: 4039.0957" L=8;
+"Size: 12\nVariance: 4039.0957" -> "Size: 11\nVariance: 3967.1074" L=9;
+"Size: 12\nVariance: 4039.0957" -> "Size: 1\nVariance: 0\nG2161" L=9;
+"Size: 11\nVariance: 3967.1074" -> "Size: 1\nVariance: 0\nG2162" L=10;
+"Size: 11\nVariance: 3967.1074" -> "Size: 10\nVariance: 3987.1843" L=10;
+"Size: 10\nVariance: 3987.1843" -> "Size: 1\nVariance: 0\nG2163" L=11;
+"Size: 10\nVariance: 3987.1843" -> "Size: 9\nVariance: 3983.2637" L=11;
+"Size: 9\nVariance: 3983.2637" -> "Size: 2\nVariance: 2341.2305" L=12;
+"Size: 9\nVariance: 3983.2637" -> "Size: 7\nVariance: 4336.4014" L=12;
+"Size: 7\nVariance: 4336.4014" -> "Size: 1\nVariance: 0\nG2164" L=13;
+"Size: 7\nVariance: 4336.4014" -> "Size: 6\nVariance: 4685.5527" L=13;
+"Size: 6\nVariance: 4685.5527" -> "Size: 1\nVariance: 0\nG2165" L=14;
+"Size: 6\nVariance: 4685.5527" -> "Size: 5\nVariance: 4856.3843" L=14;
+"Size: 5\nVariance: 4856.3843" -> "Size: 1\nVariance: 0\nG2166" L=15;
+"Size: 5\nVariance: 4856.3843" -> "Size: 4\nVariance: 4402.115" L=15;
+}

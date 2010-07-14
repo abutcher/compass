@@ -1,0 +1,13 @@
+DIGRAPH G {
+"Size: 24\nVariance: 53.10\nMedian: 59.88" -> "Size: 23\nVariance: 53.97\nMedian: 61.04" L=0;
+"Size: 23\nVariance: 53.97\nMedian: 61.04" -> "Size: 22\nVariance: 53.96\nMedian: 63.45" L=1;
+"Size: 22\nVariance: 53.96\nMedian: 63.45" -> "Size: 21\nVariance: 54.72\nMedian: 61.81" L=2;
+"Size: 21\nVariance: 54.72\nMedian: 61.81" -> "Size: 13\nVariance: 33.04\nMedian: 42.23" L=3;
+"Size: 13\nVariance: 33.04\nMedian: 42.23" -> "Size: 12\nVariance: 32.58\nMedian: 45.25" L=4;
+"Size: 12\nVariance: 32.58\nMedian: 45.25" -> "Size: 11\nVariance: 34.04\nMedian: 46.09" L=5;
+"Size: 11\nVariance: 34.04\nMedian: 46.09" -> "Size: 10\nVariance: 34.51\nMedian: 48.90" L=6;
+"Size: 10\nVariance: 34.51\nMedian: 48.90" -> "Size: 9\nVariance: 35.75\nMedian: 46.56" L=7;
+"Size: 9\nVariance: 35.75\nMedian: 46.56" -> "Size: 8\nVariance: 34.95\nMedian: 51.38" L=8;
+"Size: 8\nVariance: 34.95\nMedian: 51.38" -> "Size: 4\nVariance: 21.72\nMedian: 45.75" L=9;
+"Size: 8\nVariance: 34.95\nMedian: 51.38" -> "Size: 4\nVariance: 47.90\nMedian: 57.00" L=9;
+}

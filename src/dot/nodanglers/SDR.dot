@@ -1,0 +1,19 @@
+DIGRAPH G {
+"Size: 24\nVariance: 69.4428" -> "Size: 23\nVariance: 70.9279" L=0;
+"Size: 23\nVariance: 70.9279" -> "Size: 22\nVariance: 72.53268" L=1;
+"Size: 22\nVariance: 72.53268" -> "Size: 21\nVariance: 74.0794" L=2;
+"Size: 21\nVariance: 74.0794" -> "Size: 20\nVariance: 75.94638" L=3;
+"Size: 20\nVariance: 75.94638" -> "Size: 10\nVariance: 25.359636" L=4;
+"Size: 20\nVariance: 75.94638" -> "Size: 10\nVariance: 107.37908" L=4;
+"Size: 10\nVariance: 25.359636" -> "Size: 9\nVariance: 26.458038" L=5;
+"Size: 9\nVariance: 26.458038" -> "Size: 8\nVariance: 28.024223" L=6;
+"Size: 8\nVariance: 28.024223" -> "Size: 5\nVariance: 24.712345" L=7;
+"Size: 8\nVariance: 28.024223" -> "Size: 3\nVariance: 38.27967" L=7;
+"Size: 5\nVariance: 24.712345" -> "Size: 4\nVariance: 28.253319" L=8;
+"Size: 10\nVariance: 107.37908" -> "Size: 8\nVariance: 120.00833" L=5;
+"Size: 10\nVariance: 107.37908" -> "Size: 2\nVariance: 0.0" L=5;
+"Size: 8\nVariance: 120.00833" -> "Size: 7\nVariance: 128.25812" L=6;
+"Size: 7\nVariance: 128.25812" -> "Size: 6\nVariance: 138.64198" L=7;
+"Size: 6\nVariance: 138.64198" -> "Size: 5\nVariance: 151.82983" L=8;
+"Size: 5\nVariance: 151.82983" -> "Size: 4\nVariance: 169.66733" L=9;
+}

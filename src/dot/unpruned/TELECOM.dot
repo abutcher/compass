@@ -1,0 +1,30 @@
+DIGRAPH G {
+"Size: 18\nVariance: 264.71494" -> "Size: 17\nVariance: 272.6057" L=0;
+"Size: 18\nVariance: 264.71494" -> "Size: 1\nVariance: 0\nG2407" L=0;
+"Size: 17\nVariance: 272.6057" -> "Size: 1\nVariance: 0\nG2408" L=1;
+"Size: 17\nVariance: 272.6057" -> "Size: 16\nVariance: 281.2013" L=1;
+"Size: 16\nVariance: 281.2013" -> "Size: 1\nVariance: 0\nG2409" L=2;
+"Size: 16\nVariance: 281.2013" -> "Size: 15\nVariance: 287.68002" L=2;
+"Size: 15\nVariance: 287.68002" -> "Size: 1\nVariance: 0\nG2410" L=3;
+"Size: 15\nVariance: 287.68002" -> "Size: 14\nVariance: 296.17938" L=3;
+"Size: 14\nVariance: 296.17938" -> "Size: 1\nVariance: 0\nG2411" L=4;
+"Size: 14\nVariance: 296.17938" -> "Size: 13\nVariance: 308.2064" L=4;
+"Size: 13\nVariance: 308.2064" -> "Size: 1\nVariance: 0\nG2412" L=5;
+"Size: 13\nVariance: 308.2064" -> "Size: 12\nVariance: 321.06546" L=5;
+"Size: 12\nVariance: 321.06546" -> "Size: 1\nVariance: 0\nG2413" L=6;
+"Size: 12\nVariance: 321.06546" -> "Size: 11\nVariance: 336.06116" L=6;
+"Size: 11\nVariance: 336.06116" -> "Size: 10\nVariance: 349.51843" L=7;
+"Size: 11\nVariance: 336.06116" -> "Size: 1\nVariance: 0\nG2414" L=7;
+"Size: 10\nVariance: 349.51843" -> "Size: 9\nVariance: 370.72018" L=8;
+"Size: 10\nVariance: 349.51843" -> "Size: 1\nVariance: 0\nG2415" L=8;
+"Size: 9\nVariance: 370.72018" -> "Size: 8\nVariance: 387.5371" L=9;
+"Size: 9\nVariance: 370.72018" -> "Size: 1\nVariance: 0\nG2416" L=9;
+"Size: 8\nVariance: 387.5371" -> "Size: 1\nVariance: 0\nG2417" L=10;
+"Size: 8\nVariance: 387.5371" -> "Size: 7\nVariance: 412.56415" L=10;
+"Size: 7\nVariance: 412.56415" -> "Size: 6\nVariance: 442.40332" L=11;
+"Size: 7\nVariance: 412.56415" -> "Size: 1\nVariance: 0\nG2418" L=11;
+"Size: 6\nVariance: 442.40332" -> "Size: 1\nVariance: 0\nG2419" L=12;
+"Size: 6\nVariance: 442.40332" -> "Size: 5\nVariance: 485.6585" L=12;
+"Size: 5\nVariance: 485.6585" -> "Size: 1\nVariance: 0\nG2420" L=13;
+"Size: 5\nVariance: 485.6585" -> "Size: 4\nVariance: 520.9733" L=13;
+}

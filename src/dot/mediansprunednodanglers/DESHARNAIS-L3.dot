@@ -1,0 +1,8 @@
+DIGRAPH G {
+"Size: 10\nVariance: 1631.21\nMedian: 1684.50" -> "Size: 9\nVariance: 1691.61\nMedian: 1792.78" L=0;
+"Size: 9\nVariance: 1691.61\nMedian: 1792.78" -> "Size: 8\nVariance: 1749.52\nMedian: 1935.50" L=1;
+"Size: 8\nVariance: 1749.52\nMedian: 1935.50" -> "Size: 7\nVariance: 1796.86\nMedian: 2127.00" L=2;
+"Size: 7\nVariance: 1796.86\nMedian: 2127.00" -> "Size: 6\nVariance: 1936.78\nMedian: 2248.17" L=3;
+"Size: 6\nVariance: 1936.78\nMedian: 2248.17" -> "Size: 5\nVariance: 2119.09\nMedian: 2410.80" L=4;
+"Size: 5\nVariance: 2119.09\nMedian: 2410.80" -> "Size: 4\nVariance: 2446.61\nMedian: 2425.50" L=5;
+}
