@@ -30,3 +30,23 @@
         (if (> new max)
             (setf max new
                   majority class))))))
+
+(defun numeric-cols (tbl)
+  "Gets all the numeric columns from a table."
+  (let ((cols))
+    (dolist (it (columns-header (table-columns tbl)))
+      (if (numericp it)
+          (progn
+            (setf cols (append cols (list it)))
+            (format t "~A is numeric~%" it))))
+    cols))
+
+(defun target-class (tbl &optional index?)
+  "Gets the target class from a table."
+  (let ((i 0)
+        (target))
+    (dolist (item (columns-header (table-columns tbl)))
+      (if (eql i (table-class tbl))
+	  (setf target (nth i (columns-header (table-columns tbl)))))
+      (incf i))
+    target))
