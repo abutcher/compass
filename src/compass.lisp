@@ -6,12 +6,14 @@
 
 (defun make-compass ()
   (make "lisp/random"
+	"lisp/randomizer"
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/counted"
 	"lisp/cluster"
 	"lisp/crossindex"
 	"lisp/dot"
+	"lisp/era"
 	"lisp/separate"
 	"lisp/testing"
 	"lisp/distance"
@@ -42,6 +44,7 @@
 	"lisp/while"
 	"lisp/kmeans"
 	"lisp/tableselectors"
+	"lisp/transform"
 	"lisp/utilities"
 	"lisp/k"
 	"lisp/xindex"

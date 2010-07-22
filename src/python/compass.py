@@ -1,8 +1,9 @@
 import csv
+import math
 import random
-from scipy import stats
 import sys
 import warnings
+
 warnings.simplefilter('ignore', DeprecationWarning)
 
 class Node:
@@ -19,23 +20,23 @@ def compass(data, minsize=3):
     root = Node(data)
     
     def walk(node, level=0):
-        if len(node.data) >= minsize:
-            left, right = separate(node.data)
-            if len(left) >= minsize:
-                node.left = Node(left)
-            if len(right) >= minsize:
-                node.right = Node(right)
-            if node.left != None:
-                walk(node.left, level + 1)
-            if node.right != None:
-                walk(node.right, level + 1)
+        left, right = separate(node.data)
+        if len(left) > 1:
+            node.left = Node(left)
+        if len(right) > 1:
+            node.right = Node(right)
+        if node.left != None and len(node.left.data) > minsize:
+            walk(node.left, level + 1)
+        if node.right != None and len(node.right.data) > minsize:
+            walk(node.right, level + 1)
 
     walk(root)
+    print "Penis!"
     return root
 
 def treeprint(node, level=0):
-    print "Node: level=%d"% (level)
-    print "Variance: %6.4f"% (node.variance)
+    print "Node Level: %d" % (level)
+    print "Variance: %6.4f" % (node.variance)
     print "Contents: " + str(node.data)
     if node.left != None:
         treeprint(node.left, level + 1)
@@ -46,7 +47,7 @@ def variance(data):
     if len(data) == 1:
         return 0
     else:
-        return stats.std(transpose(data)[-1], None)
+        return stddev(transpose(data)[-1], None)
 
 def transpose(lists):
    if not lists: 
@@ -114,5 +115,12 @@ def isnumeric(s):
         return True
     except ValueError:
         return False
+
+def stddev(values, meanval=None):
+    if meanval == None: meanval = mean(values)
+    return math.sqrt(sum([(x - meanval)**2 for x in values]) / (len(values)-1))
+
+def mean(values):
+    return sum(values) / float(len(values))
 
 treeprint(compass(extract("arff/telecom1.arff")))
