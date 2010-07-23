@@ -63,6 +63,23 @@
       
       compass-tree)))
 
+(defun re-compass (c-node)
+  (let ((maxv (max-variance c-node))
+	(maxs (max-leaf-size c-node)))
+    (labels ((walk (c-node)
+	       ;; Based on difference in children variance.
+;	       (if (> (abs (- (node-variance (node-left c-node))
+;			      (node-variance (node-right c-node))))
+;		      500) ;; Some value?
+	       ;; Based on max variance.
+;	       (if (= (node-variance c-node) maxv)
+	       ;; Based on max size.
+	       (if (= (length (node-contents c-node)) maxs)
+		   (setf c-node (compass (node-contents c-node)
+					 :distance-func 'euclidean-distance)))
+	       ))
+      (walk c-node))))
+
 ;(defun data-oracle (data n)
 ;  (let* ((data-copy (copy-list data))
 ;	 (interesting (an-interesting-instance-1 data-copy 8))
