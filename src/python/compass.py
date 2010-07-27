@@ -1,126 +1,132 @@
+#!/opt/local/bin/python
+import arff
 import csv
-import math
-import random
-import sys
-import warnings
+import networkx as nx
+import matplotlib.pylab as plt
+from optparse import OptionParser
+import pydot
+import uuid
+from util import *
+import wx
 
-warnings.simplefilter('ignore', DeprecationWarning)
+class CompassTree:
+    node_list=[]
+    node_sizes=[]
+    node_labels={}
 
-class Node:
-    right = None
-    left = None
-    data = None
-    variance = None
-    
-    def __init__(self, data):
-        self.data = data
-        self.variance = variance(self.data)
+    def __init__(self, data, minsize=4):
+        self.minsize = minsize
+        self.root = self.Node(data)
+        self.Walk(self.root)
+        self.ConstructNodeList(self.root)
 
-def compass(data, minsize=3):
-    root = Node(data)
-    
-    def walk(node, level=0):
+    def Walk(self, node, level=0):
         left, right = separate(node.data)
         if len(left) > 1:
-            node.left = Node(left)
+            node.left = self.Node(left)
         if len(right) > 1:
-            node.right = Node(right)
-        if node.left != None and len(node.left.data) > minsize:
-            walk(node.left, level + 1)
-        if node.right != None and len(node.right.data) > minsize:
-            walk(node.right, level + 1)
+            node.right = self.Node(right)
+        if node.left != None and node.left.size() >= self.minsize:
+            self.Walk(node.left, level + 1)
+        if node.right != None and node.right.size() >= self.minsize:
+            self.Walk(node.right, level + 1)
 
-    walk(root)
-    print "Penis!"
-    return root
+    def Print(self, node=None, level=0):
+        if node == None:
+            node = self.root
+        print "Node Level: %d" % (level)
+        print "Variance: %6.4f" % (node.variance)
+        print "Contents: " + str(node.data)
+        if node.left != None:
+            self.Print(node.left, level + 1)
+        if node.right != None:
+            self.Print(node.right, level + 1)
+        
+    def DrawNx(self, pngname, node):
+        G=nx.Graph()
+        self.ConstructNx(G, self.root)
+        self.ConstructNodeSizes(G)
+        self.ConstructNodeLabels(G)
+        # Cool blue #AOCBE2
+        nx.draw(G, node_color='#000000', node_size=self.node_sizes, width=3, with_labels=False)# labels=self.node_labels, font_size=10)
+        plt.title(pngname)
+        plt.savefig("%s.pdf" % pngname)
 
-def treeprint(node, level=0):
-    print "Node Level: %d" % (level)
-    print "Variance: %6.4f" % (node.variance)
-    print "Contents: " + str(node.data)
-    if node.left != None:
-        treeprint(node.left, level + 1)
-    if node.right != None:
-        treeprint(node.right, level + 1)
+    def ConstructNx(self, G, node, parentid=None):
+        G.add_node(node.nid)
+        if parentid != None:
+            G.add_edge(parentid, node.nid)
+        if node.right != None:
+            self.ConstructNx(G, node.right, node.nid)
+        if node.left != None:
+            self.ConstructNx(G, node.left, node.nid)
 
-def variance(data):
-    if len(data) == 1:
-        return 0
-    else:
-        return stddev(transpose(data)[-1], None)
+    def DrawPyDot(self, pngname, node):
+        G=pydot.Dot(graph_type='graph')
+        self.ConstructPyDot(G, self.root)
+        G.write_png("%s.png" % pngname)
 
-def transpose(lists):
-   if not lists: 
-       return []
-   return map(lambda *row: list(row), *lists)
+    def ConstructPyDot(self, G, node, parentid=None):
+        newid="Size %d, Variance %6.2f" % (node.size(), node.variance)
+        if parentid != None:
+            G.add_edge(pydot.Edge(parentid, newid))
+        self.node_sizes.append(node.size()*10)
+        if node.right != None:
+            self.ConstructPyDot(G, node.right, newid)
+        if node.left != None:
+            self.ConstructPyDot(G, node.left, newid)
+                          
+    def ConstructNodeList(self, node):
+        self.node_list.append(node)
+        if node.right != None:
+            self.ConstructNodeList(node.right)
+        if node.left != None:
+            self.ConstructNodeList(node.left)
 
-def separate(these):
-    thisgroup = []
-    thatgroup = []
-    this = randomelement(these)
-    these.remove(this)
-    that = farthestfrom(this, these)
-    these.remove(that)
-    these.append(this)
-    this = farthestfrom(that, these)
-    these.remove(this)
-    thisgroup.append(this)
-    thatgroup.append(that)
-    for instance in these:
-        if distance(instance, this) > distance(instance, that):
-            thatgroup.append(instance)
-        else:
-            thisgroup.append(instance)
-    return thisgroup, thatgroup
+    def ConstructNodeSizes(self, G):
+        for nid in G.nodes():
+            self.node_sizes.append(self.NidSize(nid, self.node_list)*25)
 
-def randomelement(l):
-    return l[random.randint(0,len(l) - 1)]
+    def NidSize(self, nid, node_list):
+        for n in node_list:
+            if n.nid == nid:
+                return n.size()
 
-def closestto(this, these, d=0.0):
-    for instance in these:
-        if distance(this, instance) > d:
-            that = instance
-            d = distance(this, instance)
-    return that
+    def NidVariance(self, nid, node_list):
+        for n in node_list:
+            if n.nid == nid:
+                return n.variance
 
-def farthestfrom(this, these, d=sys.maxint):
-    for instance in these:
-        if distance(this, instance) < d:
-            that = instance
-            d = distance(this, instance)
-    return that
+    def ConstructNodeLabels(self, G):  
+        for nid in G.nodes():
+            self.node_labels[nid]=r'$\sigma$ %6.4f' % self.NidVariance(nid, self.node_list)
 
-def distance(vecone, vectwo, d=0.0):
-    for i in range(len(vecone) - 1):
-        if isnumeric(vecone[i]):
-            d = d + (vectwo[i] - vecone[i])**2
-        elif vecone[i] == vectwo[i]:
-            d += 1
-    return d
+    class Node:
+        data = None
+        left = None
+        nid = None
+        right = None
+        variance = None
+        
+        def __init__(self, data):
+            self.data = data
+            self.nid = str(uuid.uuid4())
+            self.variance = variance(self.data)
 
-def extract(path):
-    data = []
-    reader = csv.reader(open(path, "r"))
-    for row in reader:
-        if len(row) > 1 and '@' not in row[0]:
-            for i in range(len(row)):
-                if isnumeric(row[i]):
-                    row[i] = float(row[i])
-            data.append(row)
-    return data
+        def size(self):
+            return len(self.data)
 
-def isnumeric(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+def main():
+    parser = OptionParser()
+    parser.add_option("--format", dest="format", default="png", metavar="FORMAT",
+                      help="The format you wish to use for output, networkx supports pdf, png, ps, and svg. Default value = png")
+    parser.add_option("--networkx", action="store_true", default=False,
+                      help="Output to networkx.")
+    parser.add_option("--pydot", action="store_true", default=False,
+                      help="Output to pydot, the only format available is png.")
 
-def stddev(values, meanval=None):
-    if meanval == None: meanval = mean(values)
-    return math.sqrt(sum([(x - meanval)**2 for x in values]) / (len(values)-1))
-
-def mean(values):
-    return sum(values) / float(len(values))
-
-treeprint(compass(extract("arff/telecom1.arff")))
+if __name__ == "__main__":
+    arff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
+    compasstree=CompassTree(arff.data)
+    compasstree.DrawNx("telecom1-nx", compasstree)
+#    compasstree.DrawPyDot("telecom1-dot", compasstree)
