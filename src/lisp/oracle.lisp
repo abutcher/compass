@@ -67,9 +67,12 @@
 	(preverse (copy-node ctree-node)))
     (labels ((walk (c-node)
 	       ;; Based on difference in children variance.
-;	       (if (> (abs (- (node-variance (node-left c-node))
-;			      (node-variance (node-right c-node))))
-;		      500) ;; Some value?
+;	       (if (and 
+;		    (and (not (null (node-right c-node)))
+;			 (not (null (node-left c-node))))
+;		    (> (abs (- (node-variance (node-left c-node))
+;			       (node-variance (node-right c-node))))
+;		      200)) ;; Some value?
 	       ;; Based on max variance.
 ;	       (if (= (node-variance c-node) maxv)
 	       ;; Based on max size.
@@ -122,3 +125,86 @@
 				 (centroid cluster) 
 				 (centroid other-cluster))))))))
     (centroid (condense-lists farthest-two))))
+
+(defun oracle-test (&optional (datasets *DATASETS*) 
+		    &key (distance-func 'euclidean-distance) (normalize? NIL))
+  (let ((sets (copy-list datasets))
+	compass oracle variants)
+    (dolist (set sets)
+      (let ((projects (table-egs (funcall set))))
+
+	(if normalize?
+	    (setf projects (normalize projects)))
+	
+	;; Compass
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (compass-teak (nth k projects) projects 1.1 1.1 :distance-func distance-func) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp compass))
+
+	;; Oracle
+	(let (tmp big-tmp)
+	  (dotimes (n 20)
+	    (dotimes (k (length projects))
+	      (push (oracle-teak (nth k projects) projects 1.1 1.1 :distance-func distance-func) tmp))
+	    (push tmp big-tmp)
+	    (setf tmp nil))
+	  (push big-tmp oracle))
+	))
+    
+    (push (reverse oracle) variants)
+    (push (reverse compass) variants)
+
+    (dolist (set sets)
+      (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
+	
+	(format t "~A~%" set)
+	
+	(dotimes (n (length applicable-variants))
+	  (let* ((current-variant (nth n applicable-variants))
+		 (other-variants 
+		  (remove (nth n applicable-variants) (copy-list applicable-variants)))
+		 (win 0)(tie 0)(loss 0))
+	    (dolist (variant other-variants)
+	      (dotimes (k (length variant))
+		(let ((wilcox (wilcoxon (nth k current-variant) (nth k variant))))
+		  (if (= wilcox 1)
+		      (incf tie)
+		      (let ((cur-med (median (nth k current-variant)))
+			    (var-med (median (nth k variant))))
+			(if (< cur-med var-med)
+			    (incf win)
+			    (incf loss)))))))
+	    (format t "~A " (if (= n 0) "ORACLE"
+				(if (= n 1) "COMPASS")))
+	    (format t "WIN: ~A TIE: ~A LOSS: ~A MDMRE: ~5,4f~%" win tie loss (median (condense-lists current-variant)))))))))
+
+(defun oracle-teak (this projects alpha beta &key (distance-func 'cosine-similarity))
+  (let* ((test this)
+	 (projects (remove test projects))
+	 (oracle-tree (data-oracle projects))
+	 (pruned-tree (variance-prune oracle-tree :alpha alpha :beta beta))
+	 (actual (first (last test)))
+	 (predicted 0))
+    
+    (labels ((walk (c-node)
+	       (if (< (node-variance c-node)
+		      (weighted-variance c-node))
+		   (setf predicted (median (mapcar #'first (mapcar #'last (node-contents c-node)))))
+		   (if (or (null (node-right c-node))
+			   (null (node-left c-node)))
+		       (progn 
+			 (unless (null (node-right c-node))
+			   (walk (node-right c-node)))
+			 (unless (null (node-left c-node))
+			   (walk (node-left c-node))))
+		       (if (> (weighted-variance (node-right c-node))
+			      (weighted-variance (node-left c-node)))
+			   (walk (node-left c-node))
+			   (walk (node-right c-node)))))))
+      (walk pruned-tree))
+    (mre actual predicted)))
+
