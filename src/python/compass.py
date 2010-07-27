@@ -50,7 +50,7 @@ class CompassTree:
         # Cool blue #AOCBE2
         nx.draw(G, node_color='#000000', node_size=self.node_sizes, width=3, with_labels=False)# labels=self.node_labels, font_size=10)
         plt.title(pngname)
-        plt.savefig("%s.pdf" % pngname)
+        plt.savefig("%s.png" % pngname)
 
     def ConstructNx(self, G, node, parentid=None):
         G.add_node(node.nid)

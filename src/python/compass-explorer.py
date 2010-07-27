@@ -78,19 +78,12 @@ class MainFrame(wx.Frame):
         ]
         self.SetMenuBar(self.BuildMenu(menu))
 
-    def BuildTextBox(self):
+    def BuildTextBox(self, node):
         self.textbox = wx.TextCtrl(
             self, -1, "", 
-            wx.Point(0,0), wx.DefaultSize, 
+            wx.Point(800,0), wx.Size(350,600), 
             wx.TE_MULTILINE
             )
-  
-        topsizer = wx.BoxSizer(wx.HORIZONTAL)
-#        menusizer = wx.BoxSizer(wx.VERTICAL)        
-        contentsizer = wx.BoxSizer(wx.VERTICAL)
-
-        contentsizer.Add(self.textbox, 1, wx.EXPAND)
-        topsizer.Add(contentsizer, 1, wx.EXPAND)
 
         def walk(node, level=0):
             newid = wx.NewId()
@@ -100,17 +93,27 @@ class MainFrame(wx.Frame):
                 walk(node.left, level + 1)
             if node.right != None:
                 walk(node.right, level + 1)
-                
-        myarff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
-        compasstree=compass.CompassTree(myarff.data)
-        walk(compasstree.root)
+        walk(node)
+
+    def BuildTreeImage(self, filepath):
+        try:
+            imageFile = filepath
+            treeImage = wx.Image(imageFile, wx.BITMAP_TYPE_ANY).ConvertToBitmap()
+            wx.StaticBitmap(self, -1, treeImage, (0,0))
+        except IOError:
+            print "Image file %s not found" % imageFile
+            raise SystemExit
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, 'Compass Explorer')
-        self.CreateStatusBar()
+        myarff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
+        compasstree=compass.CompassTree(myarff.data)
+        compasstree.DrawNx("telecom1-nx", compasstree.root)
         self.SetStatusText('West Virginia University')
+        self.BuildTreeImage("/Users/abutcher/compass/src/python/telecom1-nx.png")
+        self.BuildTextBox(compasstree.root)
+        self.CreateStatusBar()
         self.MyMenu()
-        self.BuildTextBox()
 
     def OpenFile(self, event):
         dlg = wx.FileDialog(self, "Choose a file", os.getcwd(), "", "*.*", wx.OPEN)
@@ -124,7 +127,7 @@ class MyApp(wx.App):
     def OnInit(self):
         frame = MainFrame(None, -1)
         frame.Show(True)
-        frame.SetSize(wx.Size(750,550))
+        frame.SetSize(wx.Size(1150,600))
         self.SetTopWindow(frame)
         return True
         
