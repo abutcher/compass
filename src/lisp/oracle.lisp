@@ -2,13 +2,13 @@
   (let* ((data (shuffle-n data 20)) ;; Randomize 20x 
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
-	 (compass-oracle (variance-prune
-			  (compass (first-half data) 
-				   :distance-func 'euclidean-distance)
-			  :alpha 1.1 :beta 1.1))
+;	 (compass-oracle (variance-prune
+;			  (compass (first-half data) 
+;				   :distance-func 'euclidean-distance)
+;			  :alpha 1.1 :beta 1.1))
 
 	 ;; Use the second half as the incoming data.
-	 (data (second-half data))
+;	 (data (second-half data))
 	 (eras (era data :n 5)) ;; Which era size is best?
 
 	 ;; The first X eras will be used to make an initial compass
@@ -41,10 +41,10 @@
 		       ;; which to give the new child.
 		       (if (> (euclidean-distance 
 			       instance
-			       (centroid (node-right c-node)))
+			       (centroid (node-contents (node-right c-node))))
 			      (euclidean-distance
 			       instance
-			       (centroid (node-left c-node))))
+			       (centroid (node-contents (node-left c-node)))))
 			   (insert (node-left c-node) instance)
 			   (insert (node-right c-node) instance))))))
 
@@ -55,17 +55,16 @@
       (dolist (this-era eras)
 	;; Push the whole era into the tree.
 	(dolist (instance this-era)
-	  (format t "Inserting ~A~%" instance)
 	  (insert compass-tree instance))
-	;; Which instance and where to reposition?
-	;; Reposition.
-	)
-      
+	;; Using some heuristic within, re-compass certain parts of
+	;; the tree internally.
+	(re-compass compass-tree))
       compass-tree)))
 
-(defun re-compass (c-node)
-  (let ((maxv (max-variance c-node))
-	(maxs (max-leaf-size c-node)))
+(defun re-compass (ctree-node)
+  (let ((maxv (max-leaf-variance ctree-node))
+	(maxs (max-leaf-size ctree-node))
+	(preverse (copy-node ctree-node)))
     (labels ((walk (c-node)
 	       ;; Based on difference in children variance.
 ;	       (if (> (abs (- (node-variance (node-left c-node))
@@ -75,10 +74,27 @@
 ;	       (if (= (node-variance c-node) maxv)
 	       ;; Based on max size.
 	       (if (= (length (node-contents c-node)) maxs)
-		   (setf c-node (compass (node-contents c-node)
-					 :distance-func 'euclidean-distance)))
-	       ))
-      (walk c-node))))
+		   (let ((new-node (compass (node-contents c-node)
+					    :distance-func 'euclidean-distance)))
+		     (setf c-node new-node))
+		   (progn
+		     (unless (null (node-right c-node))
+		       (walk (node-right c-node)))
+		     (unless (null (node-left c-node))
+		       (walk (node-left c-node)))))))
+      (walk ctree-node)))
+  ctree-node)
+
+;(defun convert-tree-to-list (c-node)
+;  (let (l)
+;    (labels ((walk (c-node)
+;	       (push c-node l)
+;	       (unless (null (node-right c-node))
+;		 (walk (node-right c-node)))
+;	       (unless (null (node-left c-node))
+;		 (walk (node-left c-node)))))
+;      (walk c-node))
+;    l))
 
 ;(defun data-oracle (data n)
 ;  (let* ((data-copy (copy-list data))

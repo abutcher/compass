@@ -1,5 +1,4 @@
 (defstruct node
-  rootp
   contents
   variance
   right
@@ -8,7 +7,6 @@
 
 (defun compass (mitigations &key (min-cluster-size 4) (distance-func 'cosine-similarity) (variance-func 'variance))
   (let ((tree (make-node
-	       :rootp t
 	       :variance (funcall variance-func mitigations)
 	       :contents mitigations)))
 
@@ -40,8 +38,6 @@
   "Pretty print built nodes"
   (labels ((walk (node &optional (level 0))
 	     (format stream "LEVEL: ~A~%" level)
-	     (if (node-rootp node)
-		 (format stream "LOOKING AT ROOT NODE~%"))
 	     (format stream "VARIANEC: ~A~%" (node-variance node))
 	     (format stream "CONTENTS:~%")
 	     (dolist (element (node-contents node))
@@ -117,3 +113,30 @@
 		       (walk (node-left c-node)))))))
       (walk c-node))
     maxs))
+
+(defun max-variance (c-tree)
+  (let ((max 0))
+    (labels ((walk (c-node)
+	       (if (< max (realpart (node-variance c-node)))
+		   (setf max (realpart (node-variance c-node))))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))))
+      (walk c-tree))
+    max))
+
+(defun max-leaf-variance (c-tree)
+  (let ((max 0))
+    (labels ((walk (c-node)
+	       (if (and 
+		    (and (null (node-right c-node))
+			 (null (node-left c-node)))
+		    (< max (realpart (node-variance c-node))))
+		   (setf max (realpart (node-variance c-node))))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))))
+      (walk c-tree))
+    max))

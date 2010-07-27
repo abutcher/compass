@@ -35,6 +35,7 @@
 	"lisp/variance"
 	"lisp/cosine-similarity"
 	"lisp/math"
+	"lisp/oracle"
 	"lisp/prune"
 	"lisp/wilcoxon"
 	"lisp/wilcoxon2"

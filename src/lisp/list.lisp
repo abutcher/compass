@@ -18,7 +18,7 @@
 ;    squashed))
 
 (defun first-half (l)
-  (subseq l 0 (/ (length l) 2)))
+  (subseq l 0 (round (/ (length l) 2))))
 
 (defun second-half (l)
-  (subseq l (/ (length l) 2)))
+  (subseq l (round (/ (length l) 2))))

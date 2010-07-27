@@ -23,15 +23,3 @@
       
       (walk c-tree))
     c-tree))
-
-(defun max-variance (c-tree)
-  (let ((max 0))
-    (labels ((walk (c-node)
-	       (if (< max (realpart (node-variance c-node)))
-		   (setf max (realpart (node-variance c-node))))
-	       (unless (null (node-right c-node))
-		 (walk (node-right c-node)))
-	       (unless (null (node-left c-node))
-		 (walk (node-left c-node)))))
-      (walk c-tree))
-    max))

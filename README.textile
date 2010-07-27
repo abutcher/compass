@@ -1,3 +1,5 @@
 h1. Compass
 
+<img src="http://afrolegs.com/compass.png" alt="Compass" />
+
 h2. What is Compass?
