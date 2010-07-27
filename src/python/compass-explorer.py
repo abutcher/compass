@@ -109,10 +109,10 @@ class MainFrame(wx.Frame):
         myarff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
         compasstree=compass.CompassTree(myarff.data)
         compasstree.DrawNx("telecom1-nx", compasstree.root)
-        self.SetStatusText('West Virginia University')
         self.BuildTreeImage("/Users/abutcher/compass/src/python/telecom1-nx.png")
         self.BuildTextBox(compasstree.root)
         self.CreateStatusBar()
+        self.SetStatusText('Displaying telecom1 data set, 18 instances')
         self.MyMenu()
 
     def OpenFile(self, event):

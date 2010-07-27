@@ -48,7 +48,7 @@ class CompassTree:
         self.ConstructNodeSizes(G)
         self.ConstructNodeLabels(G)
         # Cool blue #AOCBE2
-        nx.draw(G, node_color='#000000', node_size=self.node_sizes, width=3, with_labels=False)# labels=self.node_labels, font_size=10)
+        nx.draw(G, node_color='#000000', node_size=self.node_sizes, width=3, with_labels=False) #labels=self.node_labels, font_size=10)
         plt.title(pngname)
         plt.savefig("%s.png" % pngname)
 
