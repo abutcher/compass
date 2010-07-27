@@ -162,8 +162,6 @@ def stringtest():
 
 def vecTest():
     vectors=arff.Arff("arff/telecom1.arff").data
-    
-    print vectors
 
     dist=distmatrix(vectors, c=euclidean)
     p=fastmap(dist,2)
@@ -175,12 +173,12 @@ def vecTest():
     pylab.savefig("vectors.png")
 
 def euclidean(vecone, vectwo, d=0.0):
-    for i in range(len(vecone) - 1):
+    for i in range(len(vecone)):
         if isnumeric(vecone[i]):
             d = d + (vectwo[i] - vecone[i])**2
         elif vecone[i] == vectwo[i]:
             d += 1
-    return d
+    return math.sqrt(d)
     
 def isnumeric(s):
     try:

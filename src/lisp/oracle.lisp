@@ -74,9 +74,9 @@
 ;			       (node-variance (node-right c-node))))
 ;		      200)) ;; Some value?
 	       ;; Based on max variance.
-;	       (if (= (node-variance c-node) maxv)
+	       (if (= (node-variance c-node) maxv)
 	       ;; Based on max size.
-	       (if (= (length (node-contents c-node)) maxs)
+;	       (if (= (length (node-contents c-node)) maxs)
 		   (let ((new-node (compass (node-contents c-node)
 					    :distance-func 'euclidean-distance)))
 		     (setf c-node new-node))

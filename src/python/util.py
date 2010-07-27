@@ -58,7 +58,7 @@ def distance(vecone, vectwo, d=0.0):
             d = d + (vectwo[i] - vecone[i])**2
         elif vecone[i] == vectwo[i]:
             d += 1
-    return d
+    return math.sqrt(d)
 
 def isnumeric(s):
     try:
