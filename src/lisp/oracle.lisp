@@ -67,14 +67,14 @@
 	(preverse (copy-node ctree-node)))
     (labels ((walk (c-node)
 	       ;; Based on difference in children variance.
-;	       (if (and 
-;		    (and (not (null (node-right c-node)))
-;			 (not (null (node-left c-node))))
-;		    (> (abs (- (node-variance (node-left c-node))
-;			       (node-variance (node-right c-node))))
-;		      200)) ;; Some value?
+	       (if (and 
+		    (and (not (null (node-right c-node)))
+			 (not (null (node-left c-node))))
+		    (> (abs (- (node-variance (node-left c-node))
+			       (node-variance (node-right c-node))))
+		       500)) ;; Some value?
 	       ;; Based on max variance.
-	       (if (= (node-variance c-node) maxv)
+;	       (if (= (node-variance c-node) maxv)
 	       ;; Based on max size.
 ;	       (if (= (length (node-contents c-node)) maxs)
 		   (let ((new-node (compass (node-contents c-node)

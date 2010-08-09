@@ -108,8 +108,15 @@
 	"lisp/classification/data/splice.lisp"
 	"lisp/classification/data/vote.lisp"))
 
+(defun make-defect ()
+  (make "lisp/defect/jm1.lisp"
+	"lisp/defect/kc1.lisp"
+	"lisp/defect/mc1.lisp"
+	"lisp/defect/pc1.lisp"))
+
 (make-compass)
 (make-tables)
 (make-debug)
 (make-effort)
 (make-classification)
+(make-defect)
