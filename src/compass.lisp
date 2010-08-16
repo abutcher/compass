@@ -12,6 +12,7 @@
 	"lisp/counted"
 	"lisp/cluster"
 	"lisp/crossindex"
+	"lisp/discrete"
 	"lisp/dot"
 	"lisp/era"
 	"lisp/separate"
@@ -112,7 +113,8 @@
   (make "lisp/defect/jm1.lisp"
 	"lisp/defect/kc1.lisp"
 	"lisp/defect/mc1.lisp"
-	"lisp/defect/pc1.lisp"))
+	"lisp/defect/pc1.lisp"
+	"lisp/defect/small.lisp"))
 
 (make-compass)
 (make-tables)

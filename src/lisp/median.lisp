@@ -1,9 +1,13 @@
 (defun median (l)
-  (if (= (length l) 1)
-      (first l)
-      (let ((n (make-normal-from-list l)))
-	(/ (normal-sum n) (normal-n n)))))
-
+  (if (numberp (first l))
+      (if (= (length l) 1)
+	  (first l)
+	  (let ((n (make-normal-from-list l)))
+	    (/ (normal-sum n) (normal-n n))))
+      (if (= (length l) 1)
+	  (first l)
+	  (majority-class l))))
+		   
 (defun condense-lists (l)
   (let (big-list)
     (dolist (v l)
@@ -15,3 +19,4 @@
   "median calculated as cieling of ( (max - min) / 2 )"
   (let ((l (sort l #'<)))
     (ceiling (/ (- (nth (- (length l) 1) l) (nth 0 l)) 2))))
+

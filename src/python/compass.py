@@ -48,7 +48,7 @@ class CompassTree:
         self.ConstructNodeSizes(G)
         self.ConstructNodeLabels(G)
         # Cool blue #AOCBE2
-        nx.draw(G, node_color='#000000', node_size=self.node_sizes, width=3, with_labels=False) #labels=self.node_labels, font_size=10)
+        nx.draw(G, node_color='#A0CBE2', node_size=self.node_sizes, width=3, labels=self.node_labels, font_size=10, alpha=0.4) #with_labels=False)
         plt.title(pngname)
         plt.savefig("%s.png" % pngname)
 
@@ -70,7 +70,7 @@ class CompassTree:
         newid="Size %d, Variance %6.2f" % (node.size(), node.variance)
         if parentid != None:
             G.add_edge(pydot.Edge(parentid, newid))
-        self.node_sizes.append(node.size()*10)
+        self.node_sizes.append(node.size()*20)
         if node.right != None:
             self.ConstructPyDot(G, node.right, newid)
         if node.left != None:
@@ -99,7 +99,7 @@ class CompassTree:
 
     def ConstructNodeLabels(self, G):  
         for nid in G.nodes():
-            self.node_labels[nid]=r'$\sigma$ %6.4f' % self.NidVariance(nid, self.node_list)
+            self.node_labels[nid]=r'$\sigma$ %6.1f' % self.NidVariance(nid, self.node_list)
 
     class Node:
         data = None

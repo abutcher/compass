@@ -5,10 +5,12 @@
   left
   )
 
-(defun compass (mitigations &key (min-cluster-size 4) (distance-func 'cosine-similarity) (variance-func 'variance))
+(defun compass (mitigations &key (distance-func 'cosine-similarity) (variance-func 'variance))
   (let ((tree (make-node
 	       :variance (funcall variance-func mitigations)
-	       :contents mitigations)))
+	       :contents mitigations))
+	; Square root min cluster sizeor
+	(min-cluster-size (round (sqrt (length mitigations)))))
 
     ; Recursive node-walker
     (labels ((walk (node)
@@ -59,10 +61,12 @@
       (format stream "TEST SIZE: ~A~%~%" (length mitigations))
       (print-nodes compass-tree stream))))
 
-(defun compass-teak (this projects alpha beta &key (distance-func 'cosine-similarity))
+(defun compass-teak (this projects alpha beta &key (distance-func 'cosine-similarity) (variance-func 'variance))
   (let* ((test this)
 	 (projects (remove test projects))
-	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func))
+	 (compass-tree (compass projects 
+				:distance-func distance-func 
+				:variance-func variance-func))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
