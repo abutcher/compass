@@ -12,7 +12,6 @@
 	"lisp/counted"
 	"lisp/cluster"
 	"lisp/crossindex"
-	"lisp/discrete"
 	"lisp/dot"
 	"lisp/era"
 	"lisp/separate"
@@ -51,6 +50,7 @@
 	"lisp/k"
 	"lisp/xindex"
 	"lisp/xindexselectors"
+	"lisp/discrete"
 	))
 
 (defun make-tables ()

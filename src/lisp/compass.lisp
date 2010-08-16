@@ -5,34 +5,50 @@
   left
   )
 
-(defun compass (mitigations &key (distance-func 'cosine-similarity) (variance-func 'variance))
+(defun compass (mitigations &key 
+		(distance-func 'cosine-similarity) 
+		(variance-func 'variance)
+		(alpha 1.1)
+		(beta 1.1))
   (let ((tree (make-node
 	       :variance (funcall variance-func mitigations)
 	       :contents mitigations))
-	; Square root min cluster sizeor
+	; Square root min cluster size... Just trying this out.
 	(min-cluster-size (round (sqrt (length mitigations)))))
 
     ; Recursive node-walker
-    (labels ((walk (node)
-	       (let ((node-split (separate (node-contents node))))
-		 (if (> (length (first node-split)) 1)
-		   (setf (node-left node)
-			 (make-node
-			  :variance (funcall variance-func (first node-split))
-			  :contents (first node-split))))
-		 (if (> (length (second node-split)) 1)
-		   (setf (node-right node)
-			 (make-node
-			  :variance (funcall variance-func (second node-split))
-			  :contents (second node-split))))
+    ; Now with in-line pruning!
+    (labels ((walk (node &optional (level 0))
+	       (let ((node-split (separate (node-contents node)))
+		     (maxv (max-variance tree)))
+		 (if (and (> (length (first node-split)) 1)
+			  (not (and
+				(> 3 level)
+				(or (< (* alpha (funcall variance-func (node-contents node)))
+				       (funcall variance-func (first node-split)))
+				    (< (* beta maxv)
+				       (funcall variance-func (first node-split)))))))
+		     (setf (node-left node)
+			   (make-node
+			    :variance (funcall variance-func (first node-split))
+			    :contents (first node-split))))
+		 (if (and (> (length (second node-split)) 1)
+			  (not (and
+				(> 3 level)
+				(or (< (* alpha (funcall variance-func (node-contents node)))
+				       (funcall variance-func (second node-split)))
+				    (< (* beta maxv)
+				       (funcall variance-func (second node-split)))))))
+		     (setf (node-right node)
+			   (make-node
+			    :variance (funcall variance-func (second node-split))
+			    :contents (second node-split))))
 		 (unless (null (node-left node))
 		   (if (> (length (node-contents (node-left node))) min-cluster-size)
-		       (walk (node-left node))))
+		       (walk (node-left node) (1+ level))))
 		 (unless (null (node-right node))
 		   (if (> (length (node-contents (node-right node))) min-cluster-size)
-		       (walk (node-right node)))))))
-      
-      ; Recursively build upon each node
+		       (walk (node-right node) (1+ level)))))))
       (walk tree)
       tree)))
 
