@@ -9,7 +9,8 @@
 		(distance-func 'cosine-similarity) 
 		(variance-func 'variance)
 		(alpha 1.1)
-		(beta 1.1))
+		(beta 1.1)
+		(pruning? nil))
   (let ((tree (make-node
 	       :variance (funcall variance-func mitigations)
 	       :contents mitigations))
@@ -21,28 +22,41 @@
     (labels ((walk (node &optional (level 0))
 	       (let ((node-split (separate (node-contents node)))
 		     (maxv (max-variance tree)))
-		 (if (and (> (length (first node-split)) 1)
-			  (not (and
-				(> 3 level)
-				(or (< (* alpha (funcall variance-func (node-contents node)))
-				       (funcall variance-func (first node-split)))
-				    (< (* beta maxv)
-				       (funcall variance-func (first node-split)))))))
-		     (setf (node-left node)
-			   (make-node
-			    :variance (funcall variance-func (first node-split))
-			    :contents (first node-split))))
-		 (if (and (> (length (second node-split)) 1)
-			  (not (and
-				(> 3 level)
-				(or (< (* alpha (funcall variance-func (node-contents node)))
-				       (funcall variance-func (second node-split)))
-				    (< (* beta maxv)
-				       (funcall variance-func (second node-split)))))))
-		     (setf (node-right node)
-			   (make-node
-			    :variance (funcall variance-func (second node-split))
-			    :contents (second node-split))))
+		 (if pruning?
+		     (progn
+		       (if (and (> (length (first node-split)) 1)
+				(not (and
+				      (> 3 level)
+				      (or (< (* alpha (funcall variance-func (node-contents node)))
+					     (funcall variance-func (first node-split)))
+					  (< (* beta maxv)
+					     (funcall variance-func (first node-split)))))))
+			   (setf (node-left node)
+				 (make-node
+				  :variance (funcall variance-func (first node-split))
+				  :contents (first node-split))))
+		       (if (and (> (length (second node-split)) 1)
+				(not (and
+				      (> 3 level)
+				      (or (< (* alpha (funcall variance-func (node-contents node)))
+					     (funcall variance-func (second node-split)))
+					  (< (* beta maxv)
+					     (funcall variance-func (second node-split)))))))
+			   (setf (node-right node)
+				 (make-node
+				  :variance (funcall variance-func (second node-split))
+				  :contents (second node-split)))))
+		       (progn
+			 (if (> (length (first node-split)) 1)
+			     (setf (node-left node)
+				   (make-node
+				    :variance (funcall variance-func (first node-split))
+				    :contents (first node-split))))
+			 (if (> (length (second node-split)) 1)
+			     (setf (node-right node)
+				   (make-node
+				    :variance (funcall variance-func (second node-split))
+				    :contents (second node-split))))))
 		 (unless (null (node-left node))
 		   (if (> (length (node-contents (node-left node))) min-cluster-size)
 		       (walk (node-left node) (1+ level))))
