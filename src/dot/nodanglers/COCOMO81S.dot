@@ -1,5 +1,0 @@
-DIGRAPH G {
-"Size: 11\nVariance: 1882.1024" -> "Size: 10\nVariance: 1972.5409" L=0;
-"Size: 10\nVariance: 1972.5409" -> "Size: 9\nVariance: 2064.8667" L=1;
-"Size: 9\nVariance: 2064.8667" -> "Size: 2\nVariance: 894.2779" L=2;
-}

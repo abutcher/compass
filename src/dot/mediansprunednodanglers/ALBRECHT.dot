@@ -1,7 +1,0 @@
-DIGRAPH G {
-"Size: 24\nVariance: 28.42\nMedian: 21.87" -> "Size: 20\nVariance: 23.72\nMedian: 20.26" L=0;
-"Size: 20\nVariance: 23.72\nMedian: 20.26" -> "Size: 6\nVariance: 21.70\nMedian: 18.58" L=1;
-"Size: 20\nVariance: 23.72\nMedian: 20.26" -> "Size: 14\nVariance: 25.29\nMedian: 20.99" L=1;
-"Size: 6\nVariance: 21.70\nMedian: 18.58" -> "Size: 2\nVariance:  2.55\nMedian:  9.30" L=2;
-"Size: 14\nVariance: 25.29\nMedian: 20.99" -> "Size: 3\nVariance: 12.77\nMedian: 14.57" L=2;
-}

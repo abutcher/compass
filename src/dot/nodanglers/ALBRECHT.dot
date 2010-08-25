@@ -1,9 +1,0 @@
-DIGRAPH G {
-"Size: 24\nVariance: 28.417898" -> "Size: 19\nVariance: 30.04368" L=0;
-"Size: 24\nVariance: 28.417898" -> "Size: 5\nVariance: 23.905167" L=0;
-"Size: 19\nVariance: 30.04368" -> "Size: 13\nVariance: 26.386663" L=1;
-"Size: 13\nVariance: 26.386663" -> "Size: 8\nVariance: 6.698282" L=2;
-"Size: 8\nVariance: 6.698282" -> "Size: 5\nVariance: 6.015398" L=3;
-"Size: 5\nVariance: 6.015398" -> "Size: 4\nVariance: 4.0876875" L=4;
-"Size: 5\nVariance: 23.905167" -> "Size: 3\nVariance: 0.4725594" L=1;
-}
