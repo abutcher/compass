@@ -1,5 +1,19 @@
 h1. Compass
 
+Compass Explorer
 <img src="http://afrolegs.com/compass.png" alt="Compass" />
 
 h2. What is Compass?
+
+Compass is a clustering mechanism which respects the connection
+between independent variables in examples/instances. 
+
+Compass accepts n data points and uses an O(n) fastmap routine to find
+the two most separated points in the current selection.  With a
+distance metric, the remaining points are shifted to one pole or
+another and the algorithm recurses on itself until a stopping point is
+reached.  Compass stops when a minimum leaf size is reached, which is
+generally the sqrt(n).
+
+A Compass tree is then pruned back by removing areas of radically
+increasing variance.

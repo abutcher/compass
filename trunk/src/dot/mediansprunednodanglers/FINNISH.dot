@@ -1,0 +1,36 @@
+DIGRAPH G {
+"Size: 38\nVariance: 7135.28\nMedian: 7678.29" -> "Size: 37\nVariance: 7029.68\nMedian: 7405.32" L=0;
+"Size: 37\nVariance: 7029.68\nMedian: 7405.32" -> "Size: 36\nVariance: 7052.98\nMedian: 7574.08" L=1;
+"Size: 36\nVariance: 7052.98\nMedian: 7574.08" -> "Size: 35\nVariance: 7154.14\nMedian: 7547.69" L=2;
+"Size: 35\nVariance: 7154.14\nMedian: 7547.69" -> "Size: 34\nVariance: 7217.33\nMedian: 7681.21" L=3;
+"Size: 34\nVariance: 7217.33\nMedian: 7681.21" -> "Size: 33\nVariance: 7243.58\nMedian: 7869.88" L=4;
+"Size: 33\nVariance: 7243.58\nMedian: 7869.88" -> "Size: 32\nVariance: 7259.16\nMedian: 8077.38" L=5;
+"Size: 32\nVariance: 7259.16\nMedian: 8077.38" -> "Size: 31\nVariance: 7378.22\nMedian: 8056.97" L=6;
+"Size: 31\nVariance: 7378.22\nMedian: 8056.97" -> "Size: 30\nVariance: 7494.59\nMedian: 8124.53" L=7;
+"Size: 30\nVariance: 7494.59\nMedian: 8124.53" -> "Size: 29\nVariance: 7528.19\nMedian: 8344.34" L=8;
+"Size: 29\nVariance: 7528.19\nMedian: 8344.34" -> "Size: 28\nVariance: 7568.16\nMedian: 8567.36" L=9;
+"Size: 28\nVariance: 7568.16\nMedian: 8567.36" -> "Size: 27\nVariance: 7603.40\nMedian: 8806.89" L=10;
+"Size: 27\nVariance: 7603.40\nMedian: 8806.89" -> "Size: 26\nVariance: 7708.95\nMedian: 8964.35" L=11;
+"Size: 26\nVariance: 7708.95\nMedian: 8964.35" -> "Size: 25\nVariance: 7672.46\nMedian: 9299.24" L=12;
+"Size: 25\nVariance: 7672.46\nMedian: 9299.24" -> "Size: 24\nVariance: 7830.52\nMedian: 9234.63" L=13;
+"Size: 24\nVariance: 7830.52\nMedian: 9234.63" -> "Size: 23\nVariance: 7724.85\nMedian: 8814.39" L=14;
+"Size: 23\nVariance: 7724.85\nMedian: 8814.39" -> "Size: 22\nVariance: 7700.73\nMedian: 9179.59" L=15;
+"Size: 22\nVariance: 7700.73\nMedian: 9179.59" -> "Size: 21\nVariance: 7634.38\nMedian: 9594.81" L=16;
+"Size: 21\nVariance: 7634.38\nMedian: 9594.81" -> "Size: 20\nVariance: 7752.20\nMedian: 9833.05" L=17;
+"Size: 20\nVariance: 7752.20\nMedian: 9833.05" -> "Size: 19\nVariance: 7643.84\nMedian: 10320.05" L=18;
+"Size: 19\nVariance: 7643.84\nMedian: 10320.05" -> "Size: 18\nVariance: 7498.88\nMedian: 10849.17" L=19;
+"Size: 18\nVariance: 7498.88\nMedian: 10849.17" -> "Size: 17\nVariance: 7709.87\nMedian: 10975.59" L=20;
+"Size: 17\nVariance: 7709.87\nMedian: 10975.59" -> "Size: 16\nVariance: 7859.85\nMedian: 11275.19" L=21;
+"Size: 16\nVariance: 7859.85\nMedian: 11275.19" -> "Size: 15\nVariance: 7801.58\nMedian: 11832.53" L=22;
+"Size: 15\nVariance: 7801.58\nMedian: 11832.53" -> "Size: 14\nVariance: 7817.63\nMedian: 12356.29" L=23;
+"Size: 14\nVariance: 7817.63\nMedian: 12356.29" -> "Size: 13\nVariance: 8066.80\nMedian: 12629.85" L=24;
+"Size: 13\nVariance: 8066.80\nMedian: 12629.85" -> "Size: 12\nVariance: 7769.02\nMedian: 13495.67" L=25;
+"Size: 12\nVariance: 7769.02\nMedian: 13495.67" -> "Size: 11\nVariance: 8140.52\nMedian: 13398.18" L=26;
+"Size: 11\nVariance: 8140.52\nMedian: 13398.18" -> "Size: 10\nVariance: 7897.02\nMedian: 12438.00" L=27;
+"Size: 10\nVariance: 7897.02\nMedian: 12438.00" -> "Size: 9\nVariance: 8199.29\nMedian: 11927.67" L=28;
+"Size: 9\nVariance: 8199.29\nMedian: 11927.67" -> "Size: 8\nVariance: 7616.29\nMedian: 13280.50" L=29;
+"Size: 8\nVariance: 7616.29\nMedian: 13280.50" -> "Size: 7\nVariance: 8046.72\nMedian: 12720.57" L=30;
+"Size: 7\nVariance: 8046.72\nMedian: 12720.57" -> "Size: 6\nVariance: 8772.54\nMedian: 12423.33" L=31;
+"Size: 6\nVariance: 8772.54\nMedian: 12423.33" -> "Size: 5\nVariance: 9187.79\nMedian: 11170.00" L=32;
+"Size: 5\nVariance: 9187.79\nMedian: 11170.00" -> "Size: 4\nVariance: 10421.81\nMedian: 11938.75" L=33;
+}
