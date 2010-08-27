@@ -1,0 +1,75 @@
+Model 24
+10000 samples of size 124
+
+  seconds  |    consed   |   calls   |  sec/call  |  name  
+-------------------------------------------------------------
+     0.717 | 112,749,376 |    10,000 |   0.000072 | MODEL
+     0.351 | 118,649,240 | 1,240,000 |  0.0000003 | PARK-MILLER-RANDOMIZER
+     0.077 |  71,044,808 | 1,240,000 |  0.0000001 | MY-RANDOM
+     0.057 |   9,938,792 |    10,000 |   0.000006 | HASH-RO-IMPACTS
+     0.037 |           0 | 1,200,000 |  0.0000000 | APPLICABLE-MR-EFFECTS
+     0.011 |           0 |    40,000 |  0.0000003 | APPLICABLE-RO-IMPACTS
+     0.000 |  36,366,448 | 1,240,000 |   0.000000 | RANDOM-ELEMENT
+     0.000 |           0 |        64 |   0.000000 | MAKE-RO-IMPACT
+     0.000 |           0 |         1 |   0.000000 | MAKE-DDP-MODEL
+     0.000 | 124,234,304 | 1,240,000 |   0.000000 | MY-RANDOM-INT
+     0.000 |       8,184 |       512 |   0.000000 | MAKE-MR-EFFECT
+     0.000 |      28,728 |         1 |   0.000000 | MAKE-MODEL-24
+-------------------------------------------------------------
+     1.249 | 473,019,880 | 6,220,578 |            | Total
+
+estimated total profiling overhead: 5.77 seconds
+overhead estimation parameters:
+  8.000001e-9s/call, 9.2799996e-7s total profiling, 3.36e-7s internal profiling
+
+------------------------------------------------------------------------------
+
+Model 24
+1000 samples of size 124
+
+  seconds  |   consed   |  calls  |  sec/call  |  name  
+----------------------------------------------------------
+     0.062 |  9,282,480 |   1,000 |   0.000062 | MODEL
+     0.061 |  7,100,336 | 124,000 |  0.0000005 | MY-RANDOM
+     0.034 | 11,461,472 | 124,000 |  0.0000003 | PARK-MILLER-RANDOMIZER
+     0.012 |          0 | 120,000 |  0.0000001 | APPLICABLE-MR-EFFECTS
+     0.008 |  2,989,912 |   1,000 |   0.000008 | HASH-RO-IMPACTS
+     0.000 |          0 |   4,000 |   0.000000 | APPLICABLE-RO-IMPACTS
+     0.000 |  3,657,728 | 124,000 |   0.000000 | RANDOM-ELEMENT
+     0.000 |          0 |      64 |   0.000000 | MAKE-RO-IMPACT
+     0.000 |          0 |       1 |   0.000000 | MAKE-DDP-MODEL
+     0.000 | 12,543,536 | 124,000 |   0.000000 | MY-RANDOM-INT
+     0.000 |      8,184 |     512 |   0.000000 | MAKE-MR-EFFECT
+     0.000 |     24,696 |       1 |   0.000000 | MAKE-MODEL-24
+----------------------------------------------------------
+     0.176 | 47,068,344 | 622,578 |            | Total
+
+estimated total profiling overhead: 0.58 seconds
+overhead estimation parameters:
+  8.000001e-9s/call, 9.2799996e-7s total profiling, 3.36e-7s internal profiling
+
+------------------------------------------------------------------------------
+
+Model 24
+100 samples of size 124
+
+  seconds  |   consed  |  calls |  sec/call  |  name  
+--------------------------------------------------------
+     0.013 |   799,280 |    100 |   0.000126 | MODEL
+     0.004 |   424,024 |    100 |   0.000040 | HASH-RO-IMPACTS
+    0.0005 |   716,528 | 12,400 |  0.0000000 | MY-RANDOM
+     0.000 |         0 |    400 |   0.000000 | APPLICABLE-RO-IMPACTS
+     0.000 |         0 | 12,000 |   0.000000 | APPLICABLE-MR-EFFECTS
+     0.000 |   417,792 | 12,400 |   0.000000 | RANDOM-ELEMENT
+     0.000 |         0 |     64 |   0.000000 | MAKE-RO-IMPACT
+     0.000 |         0 |      1 |   0.000000 | MAKE-DDP-MODEL
+     0.000 | 1,096,864 | 12,400 |   0.000000 | PARK-MILLER-RANDOMIZER
+     0.000 | 1,281,336 | 12,400 |   0.000000 | MY-RANDOM-INT
+     0.000 |     8,184 |    512 |   0.000000 | MAKE-MR-EFFECT
+     0.000 |    25,032 |      1 |   0.000000 | MAKE-MODEL-24
+--------------------------------------------------------
+     0.017 | 4,769,040 | 62,778 |            | Total
+
+estimated total profiling overhead: 0.06 seconds
+overhead estimation parameters:
+  8.000001e-9s/call, 9.2799996e-7s total profiling, 3.36e-7s internal profiling
