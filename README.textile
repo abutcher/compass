@@ -29,29 +29,29 @@ in that library make file.
 To start, fire up emacs and M-x slime while inside src/. To load the
 library files, run:
 
-*(load "compass")*
+(load "compass")
 
 From there, you can access any of the support functions and datasets.
 
 Other operations:
 
-Calling a table: *(albrecht)*
+*Calling a table:* (albrecht)
 
-Returning the instances from a table: *(table-egs (albrecht))*
+*Returning the instances from a table:* (table-egs (albrecht))
 
-Normalizing: *(normalize (table-egs (albrecht)))*
+*Normalizing:* (normalize (table-egs (albrecht)))
 
-Shuffling data from a table: *(shuffle (table-egs (albrecht)))*
+*Shuffling data from a table:* (shuffle (table-egs (albrecht)))
 
-Creating K-means clusters: *(meat-processor 8 (k-means 8 (table-egs (nasa93))))*
+*Creating K-means clusters:* (meat-processor 8 (k-means 8 (table-egs (nasa93))))
 
-Generating a compass tree: *(compass (table-egs (cocomo81)) :distance-func 'euclidean-distance)*
+*Generating a compass tree:* (compass (table-egs (cocomo81)) :distance-func 'euclidean-distance)
 
-Generating a compass tree on data with a discrete class value:
-*(compass (table-egs (sonar)) :distance-func 'euclidean-distance :variance-func 'entropy)*
+*Generating a compass tree on data with a discrete class value:*
+(compass (table-egs (sonar)) :distance-func 'euclidean-distance :variance-func 'entropy)
 
-Outputting a dot file for Graphviz of a Compass tree:
-*(dot-compass (compass (table-egs (cocomo81)) :distance-func 'euclidean-distance) "cocomo81.dot")*
+*Outputting a dot file for Graphviz of a Compass tree:*
+(dot-compass (compass (table-egs (cocomo81)) :distance-func 'euclidean-distance) "cocomo81.dot")
 
 
 
