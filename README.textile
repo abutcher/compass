@@ -56,3 +56,29 @@ Other operations:
 
 
 h3. Python
+
+h4. Prerequisites
+
+Compass python implementation requires the following libraries:
+
+*networkx*
+*numpy*
+*pydot*
+*scipy*
+
+and for the graphical explorer:
+
+*wxpython*
+
+h4. How to run?
+
+compass.py relies on your environment being setup correctly.
+
+To generate visualizations like the one above for the telecom1
+dataset, simply enter compass/trunk/src/python/ and run something like
+the following:
+
+./compass.py --arff arff/telecom1.arff --pydot --nx
+
+This command will generate a networkx graph as well as a graphviz dot,
+both in png format.
