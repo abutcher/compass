@@ -6,7 +6,7 @@ __author__="""Andrew Butcher (abutcher@csee.wvu.edu)"""
 
 import arff
 import csv
-import compass
+#import compass
 import warnings
 from util import *
 import wx
@@ -80,8 +80,8 @@ class MainFrame(wx.Frame):
 
     def BuildTextBox(self, node):
         self.textbox = wx.TextCtrl(
-            self, -1, "", 
-            wx.Point(800,0), wx.Size(350,600), 
+            self, -1, "",
+            wx.Point(800,0), wx.Size(350,600),
             wx.TE_MULTILINE
             )
 
@@ -106,10 +106,11 @@ class MainFrame(wx.Frame):
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, 'Compass Explorer')
-        myarff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
-        compasstree=compass.CompassTree(myarff.data)
-        compasstree.DrawNx("telecom1-nx", compasstree.root)
-        self.BuildTreeImage("/Users/abutcher/compass/src/python/telecom1-nx.png")
+#        myarff=arff.Arff("/Users/abutcher/compass/src/python/arff/telecom1.arff")
+#        compasstree=compass.CompassTree(myarff.data)
+#        compasstree.DrawNx("telecom1-nx", compasstree.root)
+        os.system("./compass.py --arff arff/telecom1.arff")
+        self.BuildTreeImage("arff/telecom1.arff.png")
         self.BuildTextBox(compasstree.root)
         self.CreateStatusBar()
         self.SetStatusText('Displaying telecom1 data set, 18 instances')
@@ -130,7 +131,7 @@ class MyApp(wx.App):
         frame.SetSize(wx.Size(1150,600))
         self.SetTopWindow(frame)
         return True
-        
+
 if __name__ == '__main__':
     app = MyApp(0)
     app.MainLoop()
