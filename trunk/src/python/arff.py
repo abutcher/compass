@@ -8,7 +8,11 @@ class Arff:
         self.Extract(filename)
 
     def Extract(self, path):
-        reader = csv.reader(open(path, "r"))
+        try:
+            reader = csv.reader(open(path, "r"))
+        except IOError:
+            print "Cannot open: " + path
+
         for row in reader:
             if len(row) > 1 and '@' not in row[0]:
                 for i in range(len(row)):

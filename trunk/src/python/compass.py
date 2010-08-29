@@ -121,12 +121,27 @@ def main():
     parser.add_option("--arff", dest="arff", default=None, metavar="FILE",
                       help="An arff file to draw for you.")
 
+    parser.add_option("--pydot", dest="pydot", default=False, metavar="NONE",
+                      help="Supply this argument to output a pydot png named after the dataset.")
+    parser.add_option("--nx", dest="nx", default=False, metavar="NONE",
+                      help="Supply this argument to output an nx png named after the dataset.")
     (options, args) = parser.parse_args()
+
+    if options.arff == None:
+        print "Didn't supply an arff. BAILING!"
+        sys.exit(0)
+
+    if options.pydot == None or options.nx == None:
+        print "You didn't ask me to output anything. BAILING!"
+        sys.exit(0)
 
     arff=Arff(options.arff)
     compasstree=CompassTree(arff.data)
-    compasstree.DrawNx(options.arff, compasstree)
-#    compasstree.DrawPyDot("telecom1-dot", compasstree)
+
+    if options.nx:
+        compasstree.DrawNx(options.arff, compasstree)
+    if options.pydot:
+        compasstree.DrawPyDot(options.arff, compasstree)
 
 if __name__ == "__main__":
     main()
