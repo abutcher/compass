@@ -85,6 +85,35 @@
       (walk pruned-tree))
     (mre actual predicted)))
 
+(defun compass-teak-prebuilt (this compass-tree)
+  "The oracle requires having a tree already built.  Should we be
+   pruning it?  Not entirely sure... but the argument could be pruned
+   or not..."
+
+  "I'm also just returning the predicted value, not the mre."
+
+  (let* ((test this)
+	 (actual (first (last test)))
+	 (predicted 0))
+
+    (labels ((walk (c-node)
+	       (if (< (node-variance c-node)
+		      (weighted-variance c-node))
+		   (setf predicted (median (mapcar #'first (mapcar #'last (node-contents c-node)))))
+		   (if (or (null (node-right c-node))
+			   (null (node-left c-node)))
+		       (progn
+			 (unless (null (node-right c-node))
+			   (walk (node-right c-node)))
+			 (unless (null (node-left c-node))
+			   (walk (node-left c-node))))
+		       (if (> (weighted-variance (node-right c-node))
+			      (weighted-variance (node-left c-node)))
+			   (walk (node-left c-node))
+			   (walk (node-right c-node)))))))
+      (walk compass-tree))
+    predicted))
+
 (defun tree-leaves (c-tree)
   (let (leaves)
     (labels ((walk (c-node)

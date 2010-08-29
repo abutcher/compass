@@ -89,12 +89,13 @@
 	;; instances to classify (magic number) and then place them
 	;; once we have the class information.
 
-	""" MAGIC HERE PLX """
-	
-	)
+	(let ((instances (oracle-identify-interesting-instances))
+	      classes)
+	  (dolist (instance instances)
+	    (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-tree))))
 	compass-tree)))
 
-(defun oracle-identify-interesting-instances (c-tree-node)
+(defun oracle-identify-interesting-instances (ctree-node)
   "Find some interesting instances from the current compass tree,
    remove them and then insert them again one by one using the new
    class information."
@@ -102,7 +103,6 @@
   """ MAGIC HERE PLX """
 
   )
-
 
 (defun re-compass (ctree-node)
   (let ((maxv (max-leaf-variance ctree-node))
