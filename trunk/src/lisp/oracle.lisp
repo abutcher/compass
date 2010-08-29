@@ -1,9 +1,9 @@
 (defun data-oracle (data)
-  (let* ((data (shuffle-n data 20)) ;; Randomize 20x 
+  (let* ((data (shuffle-n data 20)) ;; Randomize 20x
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
 ;	 (compass-oracle (variance-prune
-;			  (compass (first-half data) 
+;			  (compass (first-half data)
 ;				   :distance-func 'euclidean-distance)
 ;			  :alpha 1.1 :beta 1.1))
 
@@ -15,15 +15,15 @@
 	 ;; tree.
 	 (compass-tree (compass (condense-lists (subseq eras 0 2))
 				:distance-func 'euclidean-distance))
-	 
+
 	 ;; Remove the starter eras from the list of eras.
 	 (eras (subseq eras 2)))
-    
+
     ;; Incremental insertion procedure which puts each new instance
     ;; where it belongs in the scheme of things.
     (labels ((insert (c-node instance)
 	       ;; Put the new instance into c-node's contents.
-	       (setf (node-contents c-node) 
+	       (setf (node-contents c-node)
 		     (push instance (node-contents c-node)))
 	       ;; Update variance.
 	       (setf (node-variance c-node)
@@ -37,29 +37,72 @@
 		       (if (null (node-right c-node))
 			   (insert (node-left c-node) instance)
 			   (insert (node-right c-node) instance))
-		       ;; Parents node has two children, so decide
+		       ;; Node has two children, so decide
 		       ;; which to give the new child.
-		       (if (> (euclidean-distance 
+		       (if (> (euclidean-distance
 			       instance
 			       (centroid (node-contents (node-right c-node))))
 			      (euclidean-distance
 			       instance
 			       (centroid (node-contents (node-left c-node)))))
 			   (insert (node-left c-node) instance)
-			   (insert (node-right c-node) instance))))))
+			   (insert (node-right c-node) instance)))))
+	     (insert-via-class (c-node instance class)
+	       ;; Put the new instance into c-node's contents.
+	       (setf (node-contents c-node)
+		     (push instance (node-contents c-node)))
+	       ;; Update variance.
+	       (setf (node-variance c-node)
+		     (variance (node-contents c-node)))
+	       ;; Determine which child the new instance belongs to
+	       ;; using class information, if c-node has children at
+	       ;; all.
+	       (if (and (null (node-right c-node)) (null (node-left c-node)))
+		   (return-from insert-via-class)
+		   (if (or (null (node-right c-node)) (null (node-left c-node)))
+		       (if (null (node-right c-node))
+			   (insert-via-class (node-left c-node) instance class)
+			   (insert-via-class (node-right c-node) instance class))
+		       ;; Node has two children, so decide which to
+		       ;; give the new child.
+		       (if (> (abs (- class (median
+					     (mapcar #'first
+						     (mapcar #'last
+							     (node-contents (node-right c-node)))))))
+			      (abs (- class (median
+					     (mapcar #'first
+						     (mapcar #'last
+							     (node-contents (node-left c-node))))))))
+			   (insert-via-class (node-left c-node) instance class)
+			   (insert-via-class (node-right c-node) instance class)))))
+	     ) ;; End labels definitions.
 
       ;; Walk through each era, while slowly building a second compass
       ;; tree. Once per era, greedily pick the most interesting one,
-      ;; label it using the first compass tree and reposition it.      
-      
+      ;; label it using the first compass tree and reposition it.
+
       (dolist (this-era eras)
 	;; Push the whole era into the tree.
 	(dolist (instance this-era)
 	  (insert compass-tree instance))
-	;; Using some heuristic within, re-compass certain parts of
-	;; the tree internally.
-	(re-compass compass-tree))
-      compass-tree)))
+	;; Using some heuristic within, find some interesting
+	;; instances to classify (magic number) and then place them
+	;; once we have the class information.
+
+	""" MAGIC HERE PLX """
+	
+	)
+	compass-tree)))
+
+(defun oracle-identify-interesting-instances (c-tree-node)
+  "Find some interesting instances from the current compass tree,
+   remove them and then insert them again one by one using the new
+   class information."
+
+  """ MAGIC HERE PLX """
+
+  )
+
 
 (defun re-compass (ctree-node)
   (let ((maxv (max-leaf-variance ctree-node))
@@ -67,7 +110,7 @@
 	(preverse (copy-node ctree-node)))
     (labels ((walk (c-node)
 	       ;; Based on difference in children variance.
-	       (if (and 
+	       (if (and
 		    (and (not (null (node-right c-node)))
 			 (not (null (node-left c-node))))
 		    (> (abs (- (node-variance (node-left c-node))
@@ -88,26 +131,6 @@
       (walk ctree-node)))
   ctree-node)
 
-;(defun convert-tree-to-list (c-node)
-;  (let (l)
-;    (labels ((walk (c-node)
-;	       (push c-node l)
-;	       (unless (null (node-right c-node))
-;		 (walk (node-right c-node)))
-;	       (unless (null (node-left c-node))
-;		 (walk (node-left c-node)))))
-;      (walk c-node))
-;    l))
-
-;(defun data-oracle (data n)
-;  (let* ((data-copy (copy-list data))
-;	 (interesting (an-interesting-instance-1 data-copy 8))
-;	 closest-list)
-;    (dotimes (i  n)
-;      (push (closest-to interesting data-copy) closest-list)
-;      (setf data-copy (remove (first closest-list) (copy-list data-copy))))
-;    closest-list))
-
 (defun an-interesting-instance-1 (data k)
   ;; Find the two clusters with the most distant centroids.
   (let ((clusters (meat-processor k (k-means k data)))
@@ -117,16 +140,16 @@
       (let ((other-clusters (remove cluster (copy-list clusters))))
 	(dolist (other-cluster other-clusters)
 	  (if (< best-dist (euclidean-distance
-			    (centroid cluster) 
+			    (centroid cluster)
 			    (centroid other-cluster)))
 	      (progn
 		(setf farthest-two (list cluster other-cluster))
-		(setf best-dist (euclidean-distance 
-				 (centroid cluster) 
+		(setf best-dist (euclidean-distance
+				 (centroid cluster)
 				 (centroid other-cluster))))))))
     (centroid (condense-lists farthest-two))))
 
-(defun oracle-test (&optional (datasets *DATASETS*) 
+(defun oracle-test (&optional (datasets *DATASETS*)
 		    &key (distance-func 'euclidean-distance) (normalize? NIL))
   (let ((sets (copy-list datasets))
 	compass oracle variants)
@@ -135,7 +158,7 @@
 
 	(if normalize?
 	    (setf projects (normalize projects)))
-	
+
 	;; Compass
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
@@ -154,18 +177,18 @@
 	    (setf tmp nil))
 	  (push big-tmp oracle))
 	))
-    
+
     (push (reverse oracle) variants)
     (push (reverse compass) variants)
 
     (dolist (set sets)
       (let* ((applicable-variants (mapcar #'(lambda (x) (nth (position set sets) x)) variants)))
-	
+
 	(format t "~A~%" set)
-	
+
 	(dotimes (n (length applicable-variants))
 	  (let* ((current-variant (nth n applicable-variants))
-		 (other-variants 
+		 (other-variants
 		  (remove (nth n applicable-variants) (copy-list applicable-variants)))
 		 (win 0)(tie 0)(loss 0))
 	    (dolist (variant other-variants)
@@ -189,14 +212,14 @@
 	 (pruned-tree (variance-prune oracle-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
-    
+
     (labels ((walk (c-node)
 	       (if (< (node-variance c-node)
 		      (weighted-variance c-node))
 		   (setf predicted (median (mapcar #'first (mapcar #'last (node-contents c-node)))))
 		   (if (or (null (node-right c-node))
 			   (null (node-left c-node)))
-		       (progn 
+		       (progn
 			 (unless (null (node-right c-node))
 			   (walk (node-right c-node)))
 			 (unless (null (node-left c-node))
