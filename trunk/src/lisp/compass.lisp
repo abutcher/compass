@@ -165,3 +165,17 @@
 		 (walk (node-left c-node)))))
       (walk c-tree))
     max))
+
+(defun sorted-leaf-variance (c-tree)
+  (let (v)
+    (labels ((walk (c-node)
+	       (if (and
+		    (null (node-right c-node))
+		    (null (node-left c-node)))
+		   (push (node-variance c-node) v))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))))
+      (walk c-tree))
+    (sort v #'>)))

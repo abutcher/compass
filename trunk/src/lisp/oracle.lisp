@@ -89,7 +89,13 @@
 	;; instances to classify (magic number) and then place them
 	;; once we have the class information.
 	(dolist (instance (devious-instances compass-tree))
-	  (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-oracle))))
+	  (remove-from-tree instance compass-tree)
+	  (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-oracle)))
+	;; Seems like we should attack high variance leaves as well...
+	;; What I'm doing here is re-compassing the highest 50% of
+	;; leaves with high variance.
+	(re-compass compass-tree)
+	)
       compass-tree)))
 
 (defun devious-instances (ctree-node)
@@ -97,19 +103,18 @@
    put them in the naughty-list."
   (let ((magic-number (sqrt (max-variance ctree-node)))
 	naughty-list)
-
     (labels ((walk (c-node)
 	       (if (and (not (null (node-right c-node)))
 			(not (null (node-left c-node))))
 		   (if (> (abs (- (node-variance (node-right c-node))
 				  (node-variance (node-left c-node))))
 			  magic-number)
-		       (progn (format t "RV ~5,2f LV ~5,2f :: RM ~5,2f vs LM ~5,2f~%"
-				      (node-variance (node-right c-node))
-				      (node-variance (node-left c-node))
-				      (median (mapcar #'first (mapcar #'last (node-contents (node-right c-node)))))
-				      (median (mapcar #'first (mapcar #'last (node-contents (node-left c-node))))))
-			      (format t "~A~%" (centroid (condense-lists (list (node-contents (node-right c-node)) (node-contents (node-left c-node))))))
+		       (progn; (format t "RV ~5,2f LV ~5,2f :: RM ~5,2f vs LM ~5,2f~%"
+				;      (node-variance (node-right c-node))
+				 ;     (node-variance (node-left c-node))
+				  ;    (median (mapcar #'first (mapcar #'last (node-contents (node-right c-node)))))
+				   ;   (median (mapcar #'first (mapcar #'last (node-contents (node-left c-node))))))
+			     ; (format t "~A~%" (centroid (condense-lists (list (node-contents (node-right c-node)) (node-contents (node-left c-node))))))
 			      (push (centroid (condense-lists (list (node-contents (node-right c-node)) (node-contents (node-left c-node))))) naughty-list))))
 	       (unless (null (node-right c-node))
 		 (walk (node-right c-node)))
@@ -135,19 +140,23 @@
 (defun re-compass (ctree-node)
   (let ((maxv (max-leaf-variance ctree-node))
 	(maxs (max-leaf-size ctree-node))
+	(sv (first-half (sorted-leaf-variance ctree-node)))
 	(preverse (copy-node ctree-node)))
     (labels ((walk (c-node)
 	       ;; Based on difference in children variance.
-	       (if (and
-		    (and (not (null (node-right c-node)))
-			 (not (null (node-left c-node))))
-		    (> (abs (- (node-variance (node-left c-node))
-			       (node-variance (node-right c-node))))
-		       500)) ;; Some value?
-	       ;; Based on max variance.
+;	       (if (and
+;		    (and (not (null (node-right c-node)))
+;			 (not (null (node-left c-node))))
+;		    (> (abs (- (node-variance (node-left c-node))
+;			       (node-variance (node-right c-node))))
+;		       500)) ;; Some value?
+		   ;; Based on max variance.
 ;	       (if (= (node-variance c-node) maxv)
 	       ;; Based on max size.
 ;	       (if (= (length (node-contents c-node)) maxs)
+	       ;; Based on the highest 50% of variance.
+	       (if (and (member (node-variance c-node) sv)
+			(> (length (node-contents c-node)) 4))
 		   (let ((new-node (compass (node-contents c-node)
 					    :distance-func 'euclidean-distance)))
 		     (setf c-node new-node))
@@ -258,4 +267,3 @@
 			   (walk (node-right c-node)))))))
       (walk pruned-tree))
     (mre actual predicted)))
-
