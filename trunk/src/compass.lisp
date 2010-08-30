@@ -136,4 +136,4 @@
 (make-effort)
 ;(make-classification)
 (make-demo)
-;(make-defect)
+(make-defect)

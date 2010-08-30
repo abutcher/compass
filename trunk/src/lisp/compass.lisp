@@ -85,6 +85,37 @@
       (walk pruned-tree))
     (mre actual predicted)))
 
+(defun compass-defect (this projects alpha beta &key (distance-func 'cosine-similarity))
+  (let* ((test this)
+	 (projects (remove test projects))
+	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func :variance-func 'entropy-variance))
+	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
+	 (actual (first (last test)))
+	 (true-votes 0)
+	 (false-votes 0))
+
+    (labels ((walk (c-node)
+	       (if (< (node-variance c-node)
+		      (weighted-variance c-node))
+		   (dolist (instance (node-contents c-node))
+		     (let* ((result (first (last instance))))
+		       (if (equal result 'TRUE)
+			   (1+ true-votes)
+			   (1+ false-votes))))
+		   (if (or (null (node-right c-node))
+			   (null (node-left c-node)))
+		       (progn
+			 (unless (null (node-right c-node))
+			   (walk (node-right c-node)))
+			 (unless (null (node-left c-node))
+			   (walk (node-left))))
+		       (if (> (weighted-variance (node-right c-node))
+			      (weighted-variance (node-left c-node)))
+			   (walk (node-left c-node))
+			   (walk (node-right c-node)))))))
+      (walk compass-tree))
+(if (> true-votes false-votes) 'TRUE 'FALSE)))
+
 (defun compass-teak-prebuilt (this compass-tree)
   "The oracle requires having a tree already built and returns the
    predicted value, not the mre."
