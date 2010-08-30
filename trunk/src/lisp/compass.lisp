@@ -86,12 +86,8 @@
     (mre actual predicted)))
 
 (defun compass-teak-prebuilt (this compass-tree)
-  "The oracle requires having a tree already built.  Should we be
-   pruning it?  Not entirely sure... but the argument could be pruned
-   or not..."
-
-  "I'm also just returning the predicted value, not the mre."
-
+  "The oracle requires having a tree already built and returns the
+   predicted value, not the mre."
   (let* ((test this)
 	 (actual (first (last test)))
 	 (predicted 0))

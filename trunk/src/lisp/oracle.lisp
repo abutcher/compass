@@ -2,13 +2,13 @@
   (let* ((data (shuffle-n data 20)) ;; Randomize 20x
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
-;	 (compass-oracle (variance-prune
-;			  (compass (first-half data)
-;				   :distance-func 'euclidean-distance)
-;			  :alpha 1.1 :beta 1.1))
+	 (compass-oracle (variance-prune
+			  (compass (first-half data)
+				   :distance-func 'euclidean-distance)
+			  :alpha 1.1 :beta 1.1))
 
 	 ;; Use the second half as the incoming data.
-;	 (data (second-half data))
+	 (data (second-half data))
 	 (eras (era data :n 5)) ;; Which era size is best?
 
 	 ;; The first X eras will be used to make an initial compass
@@ -88,21 +88,49 @@
 	;; Using some heuristic within, find some interesting
 	;; instances to classify (magic number) and then place them
 	;; once we have the class information.
+	(dolist (instance (devious-instances compass-tree))
+	  (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-oracle))))
+      compass-tree)))
 
-	(let ((instances (oracle-identify-interesting-instances))
-	      classes)
-	  (dolist (instance instances)
-	    (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-tree))))
-	compass-tree)))
+(defun devious-instances (ctree-node)
+  "Find some interesting instances from the current compass tree and
+   put them in the naughty-list."
+  (let ((magic-number (sqrt (max-variance ctree-node)))
+	naughty-list)
 
-(defun oracle-identify-interesting-instances (ctree-node)
-  "Find some interesting instances from the current compass tree,
-   remove them and then insert them again one by one using the new
-   class information."
+    (labels ((walk (c-node)
+	       (if (and (not (null (node-right c-node)))
+			(not (null (node-left c-node))))
+		   (if (> (abs (- (node-variance (node-right c-node))
+				  (node-variance (node-left c-node))))
+			  magic-number)
+		       (progn (format t "RV ~5,2f LV ~5,2f :: RM ~5,2f vs LM ~5,2f~%"
+				      (node-variance (node-right c-node))
+				      (node-variance (node-left c-node))
+				      (median (mapcar #'first (mapcar #'last (node-contents (node-right c-node)))))
+				      (median (mapcar #'first (mapcar #'last (node-contents (node-left c-node))))))
+			      (format t "~A~%" (centroid (condense-lists (list (node-contents (node-right c-node)) (node-contents (node-left c-node))))))
+			      (push (centroid (condense-lists (list (node-contents (node-right c-node)) (node-contents (node-left c-node))))) naughty-list))))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))))
+      (walk ctree-node))
+    naughty-list))
 
-  """ MAGIC HERE PLX """
-
-  )
+(defun remove-from-tree (instance ctree-node)
+  "Walk the path from root to leaf in which this instance resides and
+   delete it at each step."
+  (labels ((walk (c-node)
+	     (remove instance (node-contents c-node))
+	     (unless (null (node-right c-node))
+	       (if (member instance (node-contents (node-right c-node)))
+		   (walk (node-right c-node))))
+	     (unless (null (node-left c-node))
+	       (if (member instance (node-contents (node-left c-node)))
+		   (walk (node-right c-node))))))
+    (walk ctree-node))
+  ctree-node)
 
 (defun re-compass (ctree-node)
   (let ((maxv (max-leaf-variance ctree-node))

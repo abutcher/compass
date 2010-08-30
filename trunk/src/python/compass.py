@@ -120,10 +120,11 @@ def main():
     parser = OptionParser()
     parser.add_option("--arff", dest="arff", default=None, metavar="FILE",
                       help="An arff file to draw for you.")
-
     parser.add_option("--pydot", dest="pydot", default=False, metavar="NONE",
+                      action="store_true",
                       help="Supply this argument to output a pydot png named after the dataset.")
     parser.add_option("--nx", dest="nx", default=False, metavar="NONE",
+                      action="store_true",
                       help="Supply this argument to output an nx png named after the dataset.")
     (options, args) = parser.parse_args()
 
