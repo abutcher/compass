@@ -96,7 +96,7 @@
 	;; leaves with high variance.
 	(re-compass compass-tree)
 	)
-      compass-tree)))
+      (strip-danglers compass-tree))))
 
 (defun devious-instances (ctree-node)
   "Find some interesting instances from the current compass tree and
@@ -127,13 +127,18 @@
   "Walk the path from root to leaf in which this instance resides and
    delete it at each step."
   (labels ((walk (c-node)
-	     (remove instance (node-contents c-node))
-	     (unless (null (node-right c-node))
-	       (if (member instance (node-contents (node-right c-node)))
-		   (walk (node-right c-node))))
-	     (unless (null (node-left c-node))
-	       (if (member instance (node-contents (node-left c-node)))
-		   (walk (node-right c-node))))))
+	     (if (= (length (node-contents c-node)) 1)
+		 (setf c-node nil)
+		 (progn
+		   (setf (node-contents c-node) (remove instance (node-contents c-node)))
+		   (setf (node-variance c-node) (variance (node-contents c-node)))))
+	     (unless (null c-node)
+	       (unless (null (node-right c-node))
+		 (if (member instance (node-contents (node-right c-node)))
+		     (walk (node-right c-node))))
+	       (unless (null (node-left c-node))
+		 (if (member instance (node-contents (node-left c-node)))
+		     (walk (node-left c-node)))))))
     (walk ctree-node))
   ctree-node)
 
