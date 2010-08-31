@@ -99,7 +99,6 @@
 		      (weighted-variance c-node))
 		   (dolist (instance (node-contents c-node))
 		     (let* ((result (first (last instance))))
-		       (print result)
 		       (if (equal result 'TRUE)
 			   (incf true-votes)
 			   (incf false-votes))))

@@ -1,4 +1,4 @@
-#!/opt/local/bin/python
+#!/usr/bin/python
 """
 Yeah, this is a comment.
 """
