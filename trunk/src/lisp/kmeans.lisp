@@ -122,6 +122,16 @@
 	 (predicted (matching-cluster-median representative clusters)))
     (mre (first (last representative)) predicted)))
 
+(defun k=?-defect-test (k data)
+  (let* ((representative (random-element data))
+	 (data (remove representative (copy-list data)))
+	 (clusters (meat-processor k (k-means k data)))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
 (defun k=?-bisecting-test (k data)
   (let* ((representative (random-element data))
 	 (new-data (remove representative (copy-list data)))
@@ -129,12 +139,51 @@
     (mre (first (last representative))
 	 (matching-cluster-median representative clusters))))
 
+(defun k-?-bisecting-defect-test (k data)
+  (let* ((representative (random-element data))
+	 (new-data (remove representative (copy-list data)))
+	 (clusters (bisecting-k-means k new-data))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
 (defun best-k-test (data)
   (let* ((representative (random-element data))
 	 (data (remove representative data))
 	 (clusters (best-k data))
 	 (predicted (matching-cluster-median representative clusters)))
     (mre (first (last representative)) predicted)))
+
+(defun best-k-defect-test (data)
+  (let* ((representative (random-element data))
+	 (data (remove representative data))
+	 (clusters (best-k data))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
+(defun matching-cluster-majority-vote(this clusters &key (distance-func 'cosine-similarity))
+  (let ((best-distance 999999)
+	(best-cluster nil)
+	(true-votes 0)
+	(false-votes 0))
+    (dolist (cluster clusters)
+      (let ((current-distance (funcall distance-func this (centroid cluster))))
+	(if (> best-distance current-distance)
+	    (progn (setf best-distance current-distance)
+		   (setf best-cluster cluster)))))
+    (let ((votes (mapcar #'first (mapcar #'last best-cluster))))
+      (dolist (vote votes)
+	(if (equal vote 'TRUE)
+	    (1+ true-votes)
+	    (1+ false-votes))))
+    (if (> true-votes false-votes)
+	'TRUE
+	'FALSE)))
 
 (defun matching-cluster-median (this clusters &key (distance-func 'cosine-similarity))
   (let ((best-distance 99999)
