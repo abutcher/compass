@@ -1,7 +1,3 @@
-(defun entropy-variance(population &optional (p NIL))
-  (let* ((InputPopulation (mapcar #'last population)))
-    (entropy InputPopulation p)))
-
 (defun entropy (population &optional (p NIL))
   "Return the uncertainty value assigned to a given population of
    binary inputs"
