@@ -85,7 +85,7 @@
       (walk pruned-tree))
     (mre actual predicted)))
 
-(defun compass-defect-1up (this projects alpha beta &key (distance-func 'cosine-similarity) (lives 3))
+(defun compass-defect-1up (this projects alpha beta &key (distance-func 'cosine-similarity) (lives 5))
   (let* ((test this)
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func :variance-func 'entropy))
@@ -95,11 +95,12 @@
 	 (false-votes 0)
 	 (lives-left lives))
     (labels ((walk (c-node)
+	       (print lives-left)
 	       (if (< (node-variance c-node)
 		      (weighted-variance c-node))
 		   (if (or (> lives-left 0)
-			   (not (and (null (node-right c-node))
-				     (null (node-left c-node)))))
+			   (and (null (node-right c-node))
+				(null (node-left c-node))))
 		       (progn
 			 (decf lives-left)
 			 (if (or (null (node-right c-node))
@@ -130,13 +131,11 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk pruned-tree))
+    (print true-votes)
+    (print false-votes)
       (if (> true-votes false-votes) 'TRUE 'FALSE)))
-	    
-      
-    
-	 
 
-(defun compass-defect (this projects alpha beta &key (distance-func 'cosine-similarity))
+(defun compass-defect-plain (this projects alpha beta &key (distance-func 'cosine-similarity))
   (let* ((test this)
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func :variance-func 'entropy))
