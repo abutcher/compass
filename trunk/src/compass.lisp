@@ -111,7 +111,8 @@
 	"lisp/classification/data/vote.lisp"))
 
 (defun make-defect ()
-  (make "lisp/defect/jm1.lisp"
+  (make "lisp/defect-testing.lisp"
+        "lisp/defect/jm1.lisp"
 	"lisp/defect/kc1.lisp"
 	"lisp/defect/mc1.lisp"
 	"lisp/defect/pc1.lisp"
