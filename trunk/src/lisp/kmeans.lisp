@@ -150,6 +150,16 @@
 	'SUCCESS
 	'FAIL)))
 
+(defun k=?-defect(k instance data)
+  (let* ((representative data)
+	 (data (remove representative data))
+	 (clusters (meat-processor k (k-means k data)))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
 (defun k=?-bisecting-test (k data)
   (let* ((representative (random-element data))
 	 (new-data (remove representative (copy-list data)))
@@ -167,6 +177,16 @@
 	'SUCCESS
 	'FAIL)))
 
+(defun k=?-bisecting-defect (k instance data)
+  (let* ((representative instance)
+	 (data (remove representative data))
+	 (clusters (bisecting-k-means-defect k data))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
 (defun best-k-test (data)
   (let* ((representative (random-element data))
 	 (data (remove representative data))
@@ -176,6 +196,16 @@
 
 (defun best-k-defect-test (data)
   (let* ((representative (random-element data))
+	 (data (remove representative data))
+	 (clusters (best-k-defect data))
+	 (want (first (last representative)))
+	 (got (matching-cluster-majority-vote representative clusters)))
+    (if (equal got want)
+	'SUCCESS
+	'FAIL)))
+
+(defun best-k-defect (instance data)
+  (let* ((representative instance)
 	 (data (remove representative data))
 	 (clusters (best-k-defect data))
 	 (want (first (last representative)))
