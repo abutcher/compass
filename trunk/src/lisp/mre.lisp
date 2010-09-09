@@ -1,2 +1,2 @@
 (defun mre (actual predicted)
-  (/ (abs (- actual predicted)) actual))
+  (/ (abs (- predicted actual)) actual))
