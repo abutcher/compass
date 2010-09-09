@@ -106,7 +106,7 @@
     (labels ((walk (c-node)
 	       (if (and (not (null (node-right c-node)))
 			(not (null (node-left c-node))))
-		   (if (> (abs (- (node-variance (node-right c-node))
+		   (if (< (abs (- (node-variance (node-right c-node))
 				  (node-variance (node-left c-node))))
 			  magic-number)
 		       (progn; (format t "RV ~5,2f LV ~5,2f :: RM ~5,2f vs LM ~5,2f~%"
