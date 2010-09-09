@@ -95,7 +95,6 @@
 	 (false-votes 0)
 	 (lives-left lives))
     (labels ((walk (c-node)
-	       (print lives-left)
 	       (if (< (node-variance c-node)
 		      (weighted-variance c-node))
 		   (if (or (> lives-left 0)
@@ -131,8 +130,6 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk pruned-tree))
-    (print true-votes)
-    (print false-votes)
       (if (> true-votes false-votes) 'TRUE 'FALSE)))
 
 (defun compass-defect-plain (this projects alpha beta &key (distance-func 'cosine-similarity))
@@ -140,7 +137,8 @@
 	 (projects (remove test projects))
 	 (compass-tree (compass projects :min-cluster-size 4 :distance-func distance-func :variance-func 'entropy))
 	 (pruned-tree (variance-prune compass-tree :alpha alpha :beta beta))
-	 (actual (first (last test)))
+	 (want (first (last test)))
+	 got
 	 (true-votes 0)
 	 (false-votes 0))
 
@@ -164,8 +162,6 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk pruned-tree)
-(print true-votes)
-(print false-votes)
 (if (> true-votes false-votes) 'TRUE 'FALSE))))
 
 (defun compass-teak-prebuilt (this compass-tree)
