@@ -6,8 +6,10 @@
 
 (defun leave-one-out-defect-tests (&key (datasets *DEFECT-DATASETS*) (distance-func 'cosine-similarity) (repeat 20))
   (let ((sets (copy-list datasets))
+	;Lists keeping pd's, pf's and harmonic means for each execution.
 	best-k k=16 k=8 k=4 k=2 k=1 bisectk=4 bisectk=6 bisectk=8
 	vanilla-compass compass-1up)
+
     (dolist (set sets)
       (let ((data (table-egs (funcall set))))
 
@@ -35,7 +37,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) vanilla-compass)))
+	    (push (list 
+		   (list 
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+			 vanilla-compass)))
 
 	(print "Running Compass-1up")
 
@@ -61,7 +72,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) compass-1up)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid)))) 
+		  compass-1up)))
 
 	(print "running k-means 1")
 	
@@ -86,7 +106,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) k=1)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		  k=1)))
 
 	(print "Running k-means 2")
 
@@ -111,7 +140,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) k=2)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		  k=2)))
 
 	(print "running k-means 4")
 
@@ -136,7 +174,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) k=4)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid)))) 
+		  k=4)))
 
 	(print "running k-means 8")
 
@@ -161,7 +208,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) k=8)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		  k=8)))
 
 	(print "running k-means 16")
 	
@@ -186,7 +242,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) k=16)))
+	    (push (list 
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third  true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid)))) 
+		  k=16)))
 
 	(print "running bisect k-means 4")
 
@@ -211,7 +276,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) bisectk=4)))
+	    (push (list 
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		   bisectk=4)))
 
 	(print "running bisect k-means 6")
 	
@@ -236,7 +310,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) bisectk=6)))
+	    (push (list
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		   bisectk=6)))
 
 	(print "running bisect k-means 8")
 
@@ -261,7 +344,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) bisectk=8)))
+	    (push (list
+		   (list 
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		  bisectk=8)))
 
 	(print "running best-k")
 	
@@ -286,7 +378,16 @@
 			(progn
 			  (incf (nth 2 true-grid))
 			  (incf (nth 3 false-grid)))))))
-	    (push (list true-grid false-grid) best-k)))
+	    (push (list 
+		   (list
+		    (pd (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (pf (first true-grid) (second true-grid) (third true-grid) (fourth true-grid))
+		    (harmonic-mean (first true-grid) (second true-grid) (third true-grid) (fourth true-grid)))
+		   (list
+		    (pd (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
+		    (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
+		  best-k)))
 
 	
 
@@ -361,7 +462,7 @@
               d)))
   (/ (* 2 (prec a b c d) (acc a b c d)) (+ (prec a b c d) (acc a b c d)))))
 
-(defun g (a b c d)
+(defun harmonic-mean (a b c d)
 (let* ((a (if (eql a 0)
               1
               a))
