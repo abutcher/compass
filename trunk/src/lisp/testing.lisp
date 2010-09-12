@@ -17,7 +17,8 @@
     nasa93-center-5
     nasa93
     sdr
-    telecom))
+    telecom
+))
 
 (defun run-tests (&optional (datasets *DATASETS*) &key (distance-func 'cosine-similarity) (normalize? NIL))
   (let ((sets (copy-list datasets))
