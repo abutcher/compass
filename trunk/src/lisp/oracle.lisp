@@ -123,6 +123,24 @@
       (walk ctree-node))
     naughty-list))
 
+(defun devious-instances-2 (ctree-node &optional (s 1)) ;; How many do we take?
+  (let* ((sibling-pairs (all-sibling-pairs ctree-node))
+	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs :a 1 :b 1 :c 1)))
+	 naughty-list)
+    (dotimes (n s)
+      (let ((pair (extract-min ranked)))
+	(push (centroid (condense-list pair)) naughty-list)))
+    (remove nil naughty-list)))
+
+(defun extract-min-pair (ranked)
+  (let ((min-rank 9999999999999) min-pair)
+    (dohash (key value ranked)
+      (if (> ranked value)
+	  (progn (setf min-rank value)
+		 (setf min-pair key))))
+    (remhash min-pair ranked)
+    min-pair))
+
 (defun all-sibling-pairs (ctree-node)
   (let (pairs)
     (labels ((walk (c-node)
