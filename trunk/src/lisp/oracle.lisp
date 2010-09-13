@@ -98,6 +98,13 @@
 	)
       (strip-danglers compass-tree))))
 
+(defun test-this-era-on-this-tree (era ctree)
+  "Return the MDMRE for testing this era against this compass-tree."
+  (let (mres)
+    (dolist (instance era)
+      (push (compass-teak-prebuilt instance ctree) mres))
+    (median mres)))
+
 (defun devious-instances (ctree-node)
   "Find some interesting instances from the current compass tree and
    put them in the naughty-list."
@@ -135,7 +142,7 @@
 (defun extract-min-pair (ranked)
   (let ((min-rank 9999999999999) min-pair)
     (dohash (key value ranked)
-      (if (> ranked value)
+      (if (> min-rank value)
 	  (progn (setf min-rank value)
 		 (setf min-pair key))))
     (remhash min-pair ranked)
