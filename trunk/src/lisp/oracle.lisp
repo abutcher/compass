@@ -123,6 +123,49 @@
       (walk ctree-node))
     naughty-list))
 
+(defun all-sibling-pairs (ctree-node)
+  (let (pairs)
+    (labels ((walk (c-node)
+	       (if (has-both-children c-node)
+		   (push (list (node-contents (node-right c-node))
+			       (node-contents (node-left c-node))) pairs))
+	       (unless (null (node-left c-node))
+		 (walk (node-left c-node)))
+	       (unless (null (node-right c-node))
+		 (walk (node-right c-node)))))
+      (walk ctree-node))
+    pairs))
+
+(defun rank-pairs (pairs &optional (a 1) (b 1) (c 1)) ;; Magical tuning constants
+  (let ((ranked (make-hash-table)))
+    (dolist (pair pairs)
+      (if (null (gethash pair ranked))
+	  (setf (gethash pair ranked)
+		(sqrt (+ (* a (expt (- (median (map-last (first pair)))
+				       (median (map-last (second pair)))) 2))
+			 (* b (expt (1- (/ (+ (variance (first pair))
+					      (variance (second pair))) 2)) 2))
+			 (* c (expt (/ (+ (length (first pair))
+					  (length (second pair))) 2) 2)))))))
+    ranked))
+
+(defun sort-ranked-pairs (ranked)
+  (let ((sum-of-all-r 0))
+    (dohash (key value ranked)
+      (setf sum-of-all-r (+ sum-of-all-r value)))
+    (dohash (key value ranked)
+      (setf (gethash key ranked) (/ value sum-of-all-r))))
+  ranked)
+
+(defun map-last (l)
+  (mapcar #'first (mapcar #'last l)))
+
+(defun has-both-children (c-node)
+  (if (and (not (null (node-right c-node)))
+	   (not (null (node-left c-node))))
+      T
+      nil))
+
 (defun remove-from-tree (instance ctree-node)
   "Walk the path from root to leaf in which this instance resides and
    delete it at each step."
