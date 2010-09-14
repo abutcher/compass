@@ -1,5 +1,8 @@
 (defparameter *DEFECT-DATASETS*
-  '(small))
+  '(jm1
+    pc
+    mc
+    kc1))
 
 (defun leave-one-out-defect-tests (&key (datasets *DEFECT-DATASETS*) (distance-func 'cosine-similarity) (repeat 20))
   (let ((sets (copy-list datasets))
@@ -9,6 +12,7 @@
       (let ((data (table-egs (funcall set))))
 
 	(print "Running Compass-vanilla")
+	(print set)
 
 	;;Compass with plain stopping rule
 	(let* ((tmp))
@@ -46,7 +50,7 @@
 			 tmp)))
 	  (push tmp FinalList))
 
-	(print "Running Compass-1up")
+;	(print "Running Compass-1up")
 
 	;;Compass with 1up stopping rule
 	(let* ((tmp))
@@ -84,7 +88,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "running k-means 1")
+;	(print "running k-means 1")
 	
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -121,7 +125,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "Running k-means 2")
+;	(print "Running k-means 2")
 
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -158,7 +162,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "running k-means 4")
+;	(print "running k-means 4")
 
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -195,7 +199,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "running k-means 8")
+;	(print "running k-means 8")
 
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -232,7 +236,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "running k-means 16")
+;	(print "running k-means 16")
 	
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -269,7 +273,7 @@
 		  tmp)))
 	  (push tmp FinalList))
 
-	(print "running bisect k-means 4")
+;	(print "running bisect k-means 4")
 
 	(let* ((tmp))
 	  (dotimes (n repeat)
@@ -424,7 +428,6 @@
 	(let* ((WinLossTie (make-list (length FinalList))))
 	  (dotimes (Item (length WinLossTie))
 					;(nth i WinLossTie) for Cluster
-	    (print "dolist")
 	    (setf (nth Item WinLossTie) (list
 			0
 			;;Win-Loss-Tie-(win-loss)%
@@ -447,7 +450,7 @@
 			      (list 0 0 0 0)))))
 	  ;Set the names of each clusterer
 	  (dotimes (num (length FinalList))
-	    (setf (first (nth num WinLossTie)) (first (nth num FinalList))))
+	    (setf (first (nth num WinLossTie)) (first (first (first (nth num FinalList))))))
 
 	  ;Each time we loop, we remove the first so we don't double count stats.
 	  (dotimes (i (- (length FinalList) 1))
@@ -458,103 +461,115 @@
 		  (dotimes (k (length FirstItem))
 		    ;count true pd
 		    (print "true pd")
-		    (if (equal 1 (wilcoxon (nth k (second (first FirstItem)))
-					   (nth k (second (first SecondItem)))))
+		    (print (nth 1 (nth i WinLossTie)))
+		    (if (or (equal (first (second (nth k FirstItem)))
+				   (first (second (nth k SecondItem))))
+			 (equal 1 (wilcoxon (list (first (second (nth k FirstItem))))
+					   (list (first (second (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 1 (nth 0 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 1 (nth 0 (nth 2 WinLossTie)))))
-			(if (> (nth k (second (first FirstItem)))
-			       (nth k (second (first SecondItem))))
+			  (incf (nth 2 (nth 1 (nth 1 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))))
+			(if (> (first (second (nth k FirstItem)))
+			       (first (second (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 0 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 0 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 1 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 0 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 0 (nth 0 WinLossTie)))))))))
+			      (incf (nth 1 (nth 1 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))))))
 		  
 		
 		    ;count true pf's
 		    (print "true pf")
-		    (if (equal 1 (wilcoxon (nth k (second (second FirstItem)))
-					   (nth k (second (second SecondItem)))))
+		    (if (or (equal (second (second (nth k FirstItem)))
+				   (second (second (nth k SecondItem))))
+			 (equal 1 (wilcoxon (list (second (second (nth k FirstItem))))
+					    (list (second (second (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 1 (nth 1 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 1 (nth 1 (nth 2 WinLossTie)))))
-			(if (> (nth k (second (second FirstItem)))
-			       (nth k (second (second SecondItem))))
+			  (incf (nth 2 (nth 2 (nth 1 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))))
+			(if (> (second (second (nth k FirstItem)))
+			       (second (second (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 1 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 1 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 2 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 1 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 1 (nth 0 WinLossTie)))))))))
+			      (incf (nth 1 (nth 2 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))))))
 
 		    ;true harmonic mean
 		    (print "true harmonic mean")
-		    (if (equal 1 (wilcoxon (nth k (second (third FirstItem)))
-					   (nth k (second (third SecondItem)))))
+		    (if (or (equal (third (second (nth k FirstItem)))
+				   (third (second (nth k SecondItem))))
+			 (equal 1 (wilcoxon (list (third (second (nth k FirstItem))))
+					   (list (third (second (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 1 (nth 2 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 1 (nth 2 (nth 2 WinLossTie)))))
-			(if (> (nth k (second (third FirstItem)))
-			       (nth k (second (third SecondItem))))
+			  (incf (nth 2 (nth 3 (nth 1 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))))
+			(if (> (third (second (nth k FirstItem)))
+			       (third (second (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 2 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 2 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 3 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 1 (nth 2 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 1 (nth 2 (nth 0 WinLossTie)))))))))
+			      (incf (nth 1 (nth 3 (nth 1 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))))))
 
 
 
 	    ;count false pd's
-		    (if (equal 1 (wilcoxon (nth k (third (first FirstItem)))
-					   (nth k (third (first SecondItem)))))
+		    (if (or (equal (first (third (nth k FirstItem)))
+				   (first (third (nth k SecondItem))))
+			    (equal 1 (wilcoxon (list (first (third (nth k FirstItem))))
+					       (list (first (third (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 2 (nth 0 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 2 (nth 0 (nth 2 WinLossTie)))))
-			(if (> (nth k (third (first FirstItem)))
-			       (nth k (third (first SecondItem))))
+			  (incf (nth 2 (nth 1 (nth 2 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))))
+			(if (> (first (third (nth k FirstItem)))
+			       (first (third (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 0 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 0 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 1 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 0 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 0 (nth 0 WinLossTie)))))))))
+			      (incf (nth 1 (nth 1 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))))))
 
 	    ;count false pf's
-		    (if (equal 1 (wilcoxon (nth k (third (second FirstItem)))
-					   (nth k (third (second SecondItem)))))
+		    (if (or (equal (second (third (nth k FirstItem)))
+				   (second (third (nth k SecondItem))))
+			    (equal 1 (wilcoxon (list (second (third (nth k FirstItem))))
+					       (list (second (third (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 2 (nth 1 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 2 (nth 1 (nth 2 WinLossTie)))))
-			(if (> (nth k (third (second FirstItem)))
-			       (nth k (third (second SecondItem))))
+			  (incf (nth 2 (nth 2 (nth 2 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))))
+			(if (> (second (third (nth k FirstItem)))
+			       (second (third (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 1 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 1 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 2 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 1 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 1 (nth 0 WinLossTie)))))))))	
+			      (incf (nth 1 (nth 2 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))))))
 
 	    ;count false harmonic mean
-		    (if (equal 1 (wilcoxon (nth k (third (third FirstItem)))
-					   (nth k (third (third SecondItem)))))
+		    (if (or (equal (third (third (nth k FirstItem)))
+				   (third (third (nth k SecondItem))))
+			    (equal 1 (wilcoxon (list (third (third (nth k FirstItem))))
+					       (list (third (third (nth k SecondItem)))))))
 			(progn
-			  (incf (nth i (nth 2 (nth 2 (nth 2 WinLossTie)))))
-			  (incf (nth (+ i j 1) (nth 2 (nth 2 (nth 2 WinLossTie)))))
-			(if (> (nth k (third (third FirstItem)))
-			       (nth k (third (third SecondItem))))
+			  (incf (nth 2 (nth 3 (nth 2 (nth i WinLossTie)))))
+			  (incf (nth 2 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))))
+			(if (> (third (third (nth k FirstItem)))
+			       (third (third (nth k SecondItem))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 2 (nth 0 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 2 (nth 1 WinLossTie))))))
+			      (incf (nth 0 (nth 3 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 1 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))))
 			    (progn
-			      (incf (nth i (nth 2 (nth 2 (nth 1 WinLossTie)))))
-			      (incf (nth (+ i j 1) (nth 2 (nth 2 (nth 0 WinLossTie))))))))))))))
-
-	  WinLossTie
-
-)))
+			      (incf (nth 1 (nth 3 (nth 2 (nth i WinLossTie)))))
+			      (incf (nth 0 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))))))
+))))
+(print WinLossTie)
+))))
 
 
 (defun balance(pd pf)

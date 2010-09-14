@@ -25,6 +25,7 @@
            (ranks (as-ranks (mapcar #'first x)
                             (wilcoxon-rank (mapcar #'first x))))
                                         ;gets the ranks
+	   (print "ranks")
            (x (mapcar #'cons ranks x)) ;adds absolute ranks to x
            (x (mapcar #'cons
                       (mapcar #'*
@@ -32,12 +33,13 @@
                               (mapcar #'signum
                                       (mapcar #'third x))) x))
                                         ;adds signed ranks
+	   (print "simple-quad")
            (n (simple-quad
                (loop for item in ranks
                      summing item))) ;number of ranks used
            (w (loop for item in (mapcar #'first x)
                     summing item)) ;total weight of all signed ranks
-                          
+           (print "z")               
            (z (/ (- w .5) (sqrt (/ (* n (+ n 1) (+ (* 2 n) 1)) 6)))))
                                         ;z-value
 

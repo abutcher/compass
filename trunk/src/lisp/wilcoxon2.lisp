@@ -35,6 +35,7 @@
             (if (= total.ranks (first (nth (+ j 1) (nth i table))))
                 (return-from get-wcrit
                   (second (nth (+ j 1) (nth i table))))))))))
+
 (defun wilcoxon-rank (l &optional (ranks (make-hash-table)) (n 0))
   "Returns a hash of the ranks in a sorted list. All numbers in a
    run of repeated entries get the average rank of that run."
