@@ -1,27 +1,25 @@
 (defparameter *DEFECT-DATASETS*
-  '(jm1
-    pc
-    mc
-    kc1))
+  '(small
+    small))
 
 (defun leave-one-out-defect-tests (&key (datasets *DEFECT-DATASETS*) (distance-func 'cosine-similarity) (repeat 20))
-  (let ((sets (copy-list datasets))
-	FinalList)
+  (let ((sets (copy-list datasets)))
 
     (dolist (set sets)
-      (let ((data (table-egs (funcall set))))
+      (let ((data (table-egs (funcall set)))
+	    FinalList)
 
-	(print "Running Compass-vanilla")
 	(print set)
 
 	;;Compass with plain stopping rule
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
-	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (compass-defect-plain (nth i data) data 1.1 1.1 :distance-func distance-func)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
+	      (dotimes (i (length MixedData))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (compass-defect-plain (nth i MixedData) MixedData 1.1 1.1 :distance-func distance-func)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -56,10 +54,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (compass-defect-1up (nth i data) data 1.1 1.1 :distance-func distance-func)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (compass-defect-1up (nth i MixedData) MixedData 1.1 1.1 :distance-func distance-func)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -93,10 +92,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-defect 1 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-defect 1 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -130,10 +130,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-defect 2 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-defect 2 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -167,10 +168,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-defect 4 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-defect 4 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			(progn
@@ -204,10 +206,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-defect 8 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-defect 8 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -241,10 +244,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-defect 16 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-defect 16 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -278,10 +282,11 @@
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-bisecting-defect 4 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-bisecting-defect 4 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -311,15 +316,16 @@
 
 	  (push tmp FinalList))
 
-	(print "running bisect k-means 6")
+;	(print "running bisect k-means 6")
 	
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-bisecting-defect 6 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-bisecting-defect 6 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -348,15 +354,16 @@
 		    tmp)))
 	  (push tmp FinalList))
 
-	(print "running bisect k-means 8")
+;	(print "running bisect k-means 8")
 
 	(let* ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (k=?-bisecting-defect 8 (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (k=?-bisecting-defect 8 (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -385,15 +392,16 @@
 		    tmp)))
 	  (push tmp FinalList))
 
-	(print "running best-k")
+;	(print "running best-k")
 	
 	(let ((tmp))
 	  (dotimes (n repeat)
 	    (let* ((true-grid (list 0 0 0 0))
-		   (false-grid (list 0 0 0 0)))
+		   (false-grid (list 0 0 0 0))
+		   (MixedData (shuffle data)))
 	      (dotimes (i (length data))
-		(let* ((want (first (last (nth i data))))
-		       (got (best-k-defect (nth i data) data)))
+		(let* ((want (first (last (nth i MixedData))))
+		       (got (best-k-defect (nth i MixedData) MixedData)))
 		  (if (equal want got)
 		      (if (equal want 'TRUE)
 			  (progn
@@ -420,10 +428,9 @@
 		      (pf (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))
 		      (harmonic-mean (first false-grid) (second false-grid) (third false-grid) (fourth false-grid))))
 		    tmp)))
-	  (push tmp FinalList))))
+	  (push tmp FinalList))
 
 	(setf FinalList (reverse FinalList))
-	(print "create winlosstie table")
 
 	(let* ((WinLossTie (make-list (length FinalList))))
 	  (dotimes (Item (length WinLossTie))
@@ -450,7 +457,7 @@
 			      (list 0 0 0 0)))))
 	  ;Set the names of each clusterer
 	  (dotimes (num (length FinalList))
-	    (setf (first (nth num WinLossTie)) (first (first (first (nth num FinalList))))))
+	    (setf (first (nth num WinLossTie)) (first (first (nth num FinalList)))))
 
 	  ;Each time we loop, we remove the first so we don't double count stats.
 	  (dotimes (i (- (length FinalList) 1))
@@ -460,8 +467,7 @@
 		(let* ((SecondItem (nth j RestList)))
 		  (dotimes (k (length FirstItem))
 		    ;count true pd
-		    (print "true pd")
-		    (print (nth 1 (nth i WinLossTie)))
+		   
 		    (if (or (equal (first (second (nth k FirstItem)))
 				   (first (second (nth k SecondItem))))
 			 (equal 1 (wilcoxon (list (first (second (nth k FirstItem))))
@@ -480,7 +486,7 @@
 		  
 		
 		    ;count true pf's
-		    (print "true pf")
+		    
 		    (if (or (equal (second (second (nth k FirstItem)))
 				   (second (second (nth k SecondItem))))
 			 (equal 1 (wilcoxon (list (second (second (nth k FirstItem))))
@@ -498,7 +504,7 @@
 			      (incf (nth 0 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))))))
 
 		    ;true harmonic mean
-		    (print "true harmonic mean")
+		    
 		    (if (or (equal (third (second (nth k FirstItem)))
 				   (third (second (nth k SecondItem))))
 			 (equal 1 (wilcoxon (list (third (second (nth k FirstItem))))
@@ -566,11 +572,106 @@
 			      (incf (nth 1 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))))
 			    (progn
 			      (incf (nth 1 (nth 3 (nth 2 (nth i WinLossTie)))))
-			      (incf (nth 0 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))))))
-))))
-(print WinLossTie)
-))))
+			      (incf (nth 0 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie)))))))) )
 
+		  (setf (nth 3 (nth 1 (nth 1 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 1 (nth 1 (nth i WinLossTie))))
+								    (nth 1 (nth 1 (nth 1 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 1 (nth 1 (nth i WinLossTie))))
+								     (nth 1 (nth 1 (nth 1 (nth i WinLossTie))))
+								     (nth 2 (nth 1 (nth 1 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 1 (nth 1 (nth (+ i j 1) WinLossTie)))))))
+		  (setf (nth 3 (nth 2 (nth 1 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 2 (nth 1 (nth i WinLossTie))))
+								    (nth 1 (nth 2 (nth 1 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 2 (nth 1 (nth i WinLossTie))))
+								     (nth 1 (nth 2 (nth 1 (nth i WinLossTie))))
+								     (nth 2 (nth 2 (nth 1 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 2 (nth 1 (nth (+ i j 1) WinLossTie)))))))
+
+		  (setf (nth 3 (nth 3 (nth 1 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 3 (nth 1 (nth i WinLossTie))))
+								    (nth 1 (nth 3 (nth 1 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 3 (nth 1 (nth i WinLossTie))))
+								     (nth 1 (nth 3 (nth 1 (nth i WinLossTie))))
+								     (nth 2 (nth 3 (nth 1 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 3 (nth 1 (nth (+ i j 1) WinLossTie)))))))
+
+		  (setf (nth 3 (nth 1 (nth 2 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 1 (nth 2 (nth i WinLossTie))))
+								    (nth 1 (nth 1 (nth 2 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 1 (nth 2 (nth i WinLossTie))))
+								     (nth 1 (nth 1 (nth 2 (nth i WinLossTie))))
+								     (nth 2 (nth 1 (nth 2 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 1 (nth 2 (nth (+ i j 1) WinLossTie)))))))
+
+		  (setf (nth 3 (nth 2 (nth 2 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 2 (nth 2 (nth i WinLossTie))))
+								    (nth 1 (nth 2 (nth 2 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 2 (nth 2 (nth i WinLossTie))))
+								     (nth 1 (nth 2 (nth 2 (nth i WinLossTie))))
+								     (nth 2 (nth 2 (nth 2 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 2 (nth 2 (nth (+ i j 1) WinLossTie)))))))
+
+		  (setf (nth 3 (nth 3 (nth 2 (nth i WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 3 (nth 2 (nth i WinLossTie))))
+								    (nth 1 (nth 3 (nth 2 (nth i WinLossTie))))
+								    (+
+								     (nth 0 (nth 3 (nth 2 (nth i WinLossTie))))
+								     (nth 1 (nth 3 (nth 2 (nth i WinLossTie))))
+								     (nth 2 (nth 3 (nth 2 (nth i WinLossTie)))))))
+		  (setf (nth 3 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie)))) (win-loss-percent
+								    (nth 0 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (nth 1 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))
+								    (+
+								     (nth 0 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 1 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie))))
+								     (nth 2 (nth 3 (nth 2 (nth (+ i j 1) WinLossTie)))))))
+
+))))
+	    (print WinLossTie))
+	))))
+
+(defun win-loss-percent(win loss total)
+  (*
+   100
+   (/ (- win loss)
+      total)))
 
 (defun balance(pd pf)
   (- 1 (/
