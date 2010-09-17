@@ -27,6 +27,7 @@
 	"lisp/normal"
 	"lisp/normalize"
 	"lisp/nway"
+	"lisp/split"
 	"lisp/ddp/model"
 	"lisp/ddp/model2"
 	"lisp/ddp/model3"
