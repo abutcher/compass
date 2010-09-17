@@ -17,7 +17,8 @@
 				:distance-func 'euclidean-distance))
 
 	 ;; Remove the starter eras from the list of eras.
-	 (eras (subseq eras 2)))
+	 (eras (subseq eras 2))
+	 mdmres)
 
     ;; Incremental insertion procedure which puts each new instance
     ;; where it belongs in the scheme of things.
@@ -88,17 +89,26 @@
 	;; Using some heuristic within, find some interesting
 	;; instances to classify (magic number) and then place them
 	;; once we have the class information.
-	(dolist (instance (devious-instances compass-tree))
+	(dolist (instance (devious-instances-2 compass-tree))
 	  (remove-from-tree instance compass-tree)
 	  (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-oracle)))
 	;; Seems like we should attack high variance leaves as well...
 	;; What I'm doing here is re-compassing the highest 50% of
 	;; leaves with high variance.
 	(re-compass compass-tree)
+	(if (> (position this-era eras) 0)
+	    (let ((test-era (nth (1- (position this-era eras)) eras)))
+	      (push (test-era-on-tree test-era compass-tree) mdmres)))
 	)
+      (setf mdmres (reverse (copy-list mdmres)))
+      (let ((counter 0))
+	(dolist (mdmre mdmres)
+	  (format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
+		  counter (1+ counter) mdmre)
+	  (setf counter (1+ counter))))
       (strip-danglers compass-tree))))
 
-(defun test-this-era-on-this-tree (era ctree)
+(defun test-era-on-tree (era ctree)
   "Return the MDMRE for testing this era against this compass-tree."
   (let (mres)
     (dolist (instance era)
@@ -130,13 +140,13 @@
       (walk ctree-node))
     naughty-list))
 
-(defun devious-instances-2 (ctree-node &optional (s 1)) ;; How many do we take?
+(defun devious-instances-2 (ctree-node &optional (s 3)) ;; How many do we take?
   (let* ((sibling-pairs (all-sibling-pairs ctree-node))
-	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs :a 1 :b 1 :c 1)))
+	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs 1 1 1)))
 	 naughty-list)
     (dotimes (n s)
-      (let ((pair (extract-min ranked)))
-	(push (centroid (condense-list pair)) naughty-list)))
+      (let ((pair (extract-min-pair ranked)))
+	(push (centroid (condense-lists pair)) naughty-list)))
     (remove nil naughty-list)))
 
 (defun extract-min-pair (ranked)

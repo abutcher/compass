@@ -174,7 +174,8 @@
     (labels ((walk (c-node)
 	       (if (< (node-variance c-node)
 		      (weighted-variance c-node))
-		   (setf predicted (median (mapcar #'first (mapcar #'last (node-contents c-node)))))
+		   (progn 
+		     (setf predicted (median (mapcar #'first (mapcar #'last (node-contents c-node))))))
 		   (if (or (null (node-right c-node))
 			   (null (node-left c-node)))
 		       (progn
@@ -187,7 +188,7 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk compass-tree))
-    predicted))
+    (mre actual predicted)))
 
 (defun tree-leaves (c-tree)
   (let (leaves)
