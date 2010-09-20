@@ -1,6 +1,5 @@
 (defparameter *DEFECT-DATASETS*
-  '(pc1
-    jm1
+  '(jm1
     kc1
     mc1
    ;small
@@ -201,7 +200,7 @@
 		(let* ((clusters (meat-processor 4 (k-means 4 train-set))))
 		  (dotimes (i (length test-set))
 		    (let* ((want (first (last (nth i test-set))))
-			   (got (k=?-defect 4 (nth i test-set) train-set)))
+			   (got (matching-cluster-majority-vote (nth i test-set) train-set)))
 		      (if (equal want got)
 			  (if (equal want 'TRUE)
 			      (progn
