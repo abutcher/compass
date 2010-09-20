@@ -843,7 +843,7 @@
 			 tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "Running Compass-1up")
 
@@ -886,7 +886,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running k-means 1")
 	
@@ -928,7 +928,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "Running k-means 2")
 
@@ -970,7 +970,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running k-means 4")
 
@@ -1012,7 +1012,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running k-means 8")
 
@@ -1054,7 +1054,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running k-means 16")
 	
@@ -1096,12 +1096,12 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running bisect k-means 4")
 
 	(let* (tmp
-	       tmpTime (list (time-in-seconds)))
+	      (tmpTime (list (time-in-seconds))))
 	  (dotimes (n repeat)
 	    (print n)
 	    (let* ((true-grid (list 0 0 0 0))
@@ -1139,7 +1139,7 @@
 	    (push (time-in-seconds) tmpTime))
 
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running bisect k-means 6")
 	
@@ -1181,7 +1181,7 @@
 		    tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running bisect k-means 8")
 
@@ -1223,7 +1223,7 @@
 		    tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running best-k")
 	
@@ -1265,9 +1265,10 @@
 		    tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(setf FinalList (reverse FinalList)) 
+	(setf TimeList (reverse TimeList))
 
 	(let* ((WinLossTie (make-list (length FinalList))))
 	  (dotimes (Item (length WinLossTie))
@@ -1511,8 +1512,9 @@
 		  )))
 	    (setf WinLossTieResult WinLossTie)
 	    ))
-      (writeResults "Leave1Out.txt" WinLossTieResult)
+      (writeResults (concatenate 'string (symbol-name set) "Leave1Out.txt") WinLossTieResult)
       (print "")
+      (print FinalList)
       (print TimeList)
 ))))
 
