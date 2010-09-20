@@ -735,7 +735,7 @@
 		  )))
 	    (setf WinLossTieResult WinLossTie)
 	    ))
-      (writeResults "RepeatResults.txt" WinLossTieResult)
+      (writeResults (concatenate 'string (symbol-name set) "RepeatResults.txt") WinLossTieResult)
       (print "FinalList")
       (print FinalList)
       (print "")
