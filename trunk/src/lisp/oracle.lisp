@@ -76,6 +76,20 @@
 							     (node-contents (node-left c-node))))))))
 			   (insert-via-class (node-left c-node) instance class)
 			   (insert-via-class (node-right c-node) instance class)))))
+	     (re-compass (ctree)
+	       (labels ((walk (c-node)
+			  (if (and (> (length (node-contents c-node)) 4)
+				   (and (null (node-left c-node))
+					(null (node-right c-node))))
+			      (let ((new-node (compass (node-contents c-node)
+						       :distance-func 'euclidean-distance)))
+				(setf c-node new-node)))
+			  (unless (null (node-right c-node))
+			    (walk (node-right c-node)))
+			  (unless (null (node-left c-node))
+			    (walk (node-left c-node)))))
+		 (walk ctree))
+	       ctree)
 	     ) ;; End labels definitions.
 
       ;; Walk through each era, while slowly building a second compass
@@ -95,7 +109,7 @@
 	;; Seems like we should attack high variance leaves as well...
 	;; What I'm doing here is re-compassing the highest 50% of
 	;; leaves with high variance.
-	(re-compass compass-tree)
+	(setf compass-tree (re-compass compass-tree))
 	(if (> (position this-era eras) 0)
 	    (let ((test-era (nth (1- (position this-era eras)) eras)))
 	      (push (test-era-on-tree test-era compass-tree) mdmres)))
@@ -220,36 +234,36 @@
     (walk ctree-node))
   ctree-node)
 
-(defun re-compass (ctree-node)
-  (let ((maxv (max-leaf-variance ctree-node))
-	(maxs (max-leaf-size ctree-node))
-	(sv (first-half (sorted-leaf-variance ctree-node)))
-	(preverse (copy-node ctree-node)))
-    (labels ((walk (c-node)
-	       ;; Based on difference in children variance.
+;(defun re-compass (ctree-node)
+;  (let ((maxv (max-leaf-variance ctree-node))
+;	(maxs (max-leaf-size ctree-node))
+;	(sv (first-half (sorted-leaf-variance ctree-node)))
+;	(preverse (copy-node ctree-node)))
+;    (labels ((walk (c-node)
+;	       ;; Based on difference in children variance.
 ;	       (if (and
 ;		    (and (not (null (node-right c-node)))
 ;			 (not (null (node-left c-node))))
 ;		    (> (abs (- (node-variance (node-left c-node))
 ;			       (node-variance (node-right c-node))))
 ;		       500)) ;; Some value?
-		   ;; Based on max variance.
+;		   ;; Based on max variance.
 ;	       (if (= (node-variance c-node) maxv)
-	       ;; Based on max size.
+;	       ;; Based on max size.
 ;	       (if (= (length (node-contents c-node)) maxs)
-	       ;; Based on the highest 50% of variance.
-	       (if (and (member (node-variance c-node) sv)
-			(> (length (node-contents c-node)) 4))
-		   (let ((new-node (compass (node-contents c-node)
-					    :distance-func 'euclidean-distance)))
-		     (setf c-node new-node))
-		   (progn
-		     (unless (null (node-right c-node))
-		       (walk (node-right c-node)))
-		     (unless (null (node-left c-node))
-		       (walk (node-left c-node)))))))
-      (walk ctree-node)))
-  ctree-node)
+;	       ;; Based on the highest 50% of variance.
+;	       (if (and (member (node-variance c-node) sv)
+;			(> (length (node-contents c-node)) 4))
+;		   (let ((new-node (compass (node-contents c-node)
+;					    :distance-func 'euclidean-distance)))
+;		     (setf c-node new-node))
+;		   (progn
+;		     (unless (null (node-right c-node))
+;		       (walk (node-right c-node)))
+;		     (unless (null (node-left c-node))
+;		       (walk (node-left c-node)))))))
+;      (walk ctree-node)))
+;  ctree-node)
 
 (defun an-interesting-instance-1 (data k)
   ;; Find the two clusters with the most distant centroids.
