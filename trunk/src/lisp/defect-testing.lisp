@@ -25,24 +25,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 		   (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		     (dotimes (i (length test-set)) 
-		       (let* ((want (first (last (nth i test-set))))
-			      (got (compass-defect-plain (nth i test-set) train-set 1.1 1.1 :distance-func distance-func)))
-			 (if (equal want got)
-			     (if (equal want 'TRUE)
-				 (progn
-				   (incf (nth 3 true-grid))
-				   (incf (nth 0 false-grid))) 
-				 (progn
-				   (incf (nth 0 true-grid))
-				   (incf (nth 3 false-grid))))
-			     (if (equal want 'TRUE)
-				 (progn
-				   (incf (nth 2 true-grid))
-				   (incf (nth 1 false-grid)))
-				 (progn
-				   (incf (nth 1 true-grid))
-				   (incf (nth 2 false-grid))))))))
+		     (let* ((tree (compass train-set :variance-func 'entropy)))
+		       (dotimes (i (length test-set)) 
+			 (let* ((want (first (last (nth i test-set))))
+				(got (compass-defect-plain-tree (nth i test-set) tree 1.1 1.1 :distance-func distance-func)))
+			   (if (equal want got)
+			       (if (equal want 'TRUE)
+				   (progn
+				     (incf (nth 3 true-grid))
+				     (incf (nth 0 false-grid))) 
+				   (progn
+				     (incf (nth 0 true-grid))
+				     (incf (nth 3 false-grid))))
+			       (if (equal want 'TRUE)
+				   (progn
+				     (incf (nth 2 true-grid))
+				     (incf (nth 1 false-grid)))
+				   (progn
+				     (incf (nth 1 true-grid))
+				     (incf (nth 2 false-grid)))))))))
 	      (push (list 
 		     "vanilla-compass"
 		     (list 
@@ -68,24 +69,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (compass-defect-1up (nth i test-set) train-set 1.1 1.1 :distance-func distance-func)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((tree (compass train-set :variance-func 'entropy)))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (compass-defect-1up-tree (nth i test-set) tree 1.1 1.1 :distance-func distance-func)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "Compass-1up"
 		     (list
@@ -110,24 +112,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-defect 1 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (meat-processor 1 (k-means 1 train-set))))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "K=1"
 		     (list
@@ -148,29 +151,29 @@
 	(let* (tmp
 	       (tmpTime (list (time-in-seconds))))
 	  (dotimes (n repeat)
-	    (print tmpTime)
 	    (print n)
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-defect 2 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (meat-processor 2 (k-means 2 train-set))))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i train-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "K=2"
 		     (list
@@ -195,24 +198,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-defect 4 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (meat-processor 4 (k-means 4 train-set))))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (k=?-defect 4 (nth i test-set) train-set)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "K=4"
 		     (list
@@ -237,24 +241,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-defect 8 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (meat-processor 8 (k-means 8 train-set))))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "K=8"
 		     (list
@@ -268,7 +273,7 @@
 		  tmp))
 	    (push (time-in-seconds) tmpTime))
 	  (push tmp FinalList)
-	  (push tmpTime TimeList))
+	  (push (reverse tmpTime) TimeList))
 
 	(print "running k-means 16")
 	
@@ -279,24 +284,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-defect 16 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (meat-processor 16 (k-means 16 train-set))))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list 
 		     "K=16"
 		     (list
@@ -321,24 +327,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 		   (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		     (dotimes (i (length test-set))
-		       (let* ((want (first (last (nth i test-set))))
-			      (got (k=?-bisecting-defect 4 (nth i test-set) train-set)))
-			 (if (equal want got)
-			     (if (equal want 'TRUE)
-				 (progn
-				   (incf (nth 3 true-grid))
-				   (incf (nth 0 false-grid))) 
-				 (progn
-				   (incf (nth 0 true-grid))
-				   (incf (nth 3 false-grid))))
-			     (if (equal want 'TRUE)
-				 (progn
-				   (incf (nth 2 true-grid))
-				   (incf (nth 1 false-grid)))
-				 (progn
-				   (incf (nth 1 true-grid))
-				   (incf (nth 2 false-grid))))))))
+		     (let* ((clusters  (bisecting-k-means-defect 4 train-set)))
+		       (dotimes (i (length test-set))
+			 (let* ((want (first (last (nth i test-set))))
+				(got (matching-cluster-majority-vote (nth i test-set) clusters)))
+			   (if (equal want got)
+			       (if (equal want 'TRUE)
+				   (progn
+				     (incf (nth 3 true-grid))
+				     (incf (nth 0 false-grid))) 
+				   (progn
+				     (incf (nth 0 true-grid))
+				     (incf (nth 3 false-grid))))
+			       (if (equal want 'TRUE)
+				   (progn
+				     (incf (nth 2 true-grid))
+				     (incf (nth 1 false-grid)))
+				   (progn
+				     (incf (nth 1 true-grid))
+				     (incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "BisectK=4"
 		     (list
@@ -363,24 +370,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-bisecting-defect 6 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters  (bisecting-k-means-defect 6 train-set)))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters))) 
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "BisectK=6"
 		     (list
@@ -405,24 +413,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (k=?-bisecting-defect 8 (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters  (bisecting-k-means-defect 8 train-set)))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list
 		     "BisectK=8"
 		     (list 
@@ -447,24 +456,25 @@
 	    (let* ((true-grid (list 0 0 0 0))
 		   (false-grid (list 0 0 0 0)))
 	      (multiple-value-bind (train-set test-set) (split (funcall set) trainpercent)
-		(dotimes (i (length test-set))
-		  (let* ((want (first (last (nth i test-set))))
-			 (got (best-k-defect (nth i test-set) train-set)))
-		    (if (equal want got)
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 3 true-grid))
-			      (incf (nth 0 false-grid))) 
-			    (progn
-			      (incf (nth 0 true-grid))
-			      (incf (nth 3 false-grid))))
-			(if (equal want 'TRUE)
-			    (progn
-			      (incf (nth 2 true-grid))
-			      (incf (nth 1 false-grid)))
-			    (progn
-			      (incf (nth 1 true-grid))
-			      (incf (nth 2 false-grid))))))))
+		(let* ((clusters (best-k-defect-cluster train-set)))
+		  (dotimes (i (length test-set))
+		    (let* ((want (first (last (nth i test-set))))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
+		      (if (equal want got)
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 3 true-grid))
+				(incf (nth 0 false-grid))) 
+			      (progn
+				(incf (nth 0 true-grid))
+				(incf (nth 3 false-grid))))
+			  (if (equal want 'TRUE)
+			      (progn
+				(incf (nth 2 true-grid))
+				(incf (nth 1 false-grid)))
+			      (progn
+				(incf (nth 1 true-grid))
+				(incf (nth 2 false-grid)))))))))
 	      (push (list 
 		     "Best-K"
 		     (list
