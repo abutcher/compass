@@ -19,3 +19,18 @@ class Arff:
                     if isnumeric(row[i]):
                         row[i] = float(row[i])
                 self.data.append(row)
+
+    def outputLisp(self, table, path):
+        outfile = open(path, "w")
+        outfile.write("(defun " + table  + " ()\n")
+        outfile.write("\t(data\n")
+        outfile.write("\t\t:name '" + table + "\n")
+        outfile.write("\t\t:columns '( COLUMNS HERE )\n")
+        outfile.write("\t\t:egs '(\n")
+        for row in self.data:
+            string=""
+            for item in row:
+                string = string + " " + str(item)
+            string = "\t\t\t(" + string + ")\n"
+            outfile.write(string)
+        outfile.write(")))\n")

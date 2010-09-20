@@ -117,7 +117,17 @@
 	"lisp/defect/kc1.lisp"
 	"lisp/defect/mc1.lisp"
 	"lisp/defect/pc1.lisp"
-	"lisp/defect/small.lisp"))
+	"lisp/defect/ar3.lisp"
+	"lisp/defect/ar4.lisp"
+	"lisp/defect/ar5.lisp"
+	"lisp/defect/cm1.lisp"
+	"lisp/defect/kc3.lisp"
+	"lisp/defect/mw1.lisp"
+	"lisp/defect/pc2.lisp"
+	"lisp/defect/pc3.lisp"
+	"lisp/defect/pc4.lisp"
+	"lisp/defect/small.lisp"
+	))
 
 (defun make-demo ()
   (make "lisp/examples/demo1.lisp"
