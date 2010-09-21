@@ -200,11 +200,7 @@
 		(let* ((clusters (meat-processor 4 (k-means 4 train-set))))
 		  (dotimes (i (length test-set))
 		    (let* ((want (first (last (nth i test-set))))
-<<<<<<< HEAD
-			   (got (matching-cluster-majority-vote (nth i test-set) train-set)))
-=======
 			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
->>>>>>> e47a208e0f4a63e3319605e316ed6645331f8f2c
 		      (if (equal want got)
 			  (if (equal want 'TRUE)
 			      (progn
