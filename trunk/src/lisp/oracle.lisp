@@ -1,4 +1,4 @@
-(defun data-oracle (data)
+(defun data-oracle (data &key (s 2) (m 4) (min-cluster-size 4) (printing? t))
   (let* ((data (shuffle-n data 20)) ;; Randomize 20x
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
@@ -76,20 +76,6 @@
 							     (node-contents (node-left c-node))))))))
 			   (insert-via-class (node-left c-node) instance class)
 			   (insert-via-class (node-right c-node) instance class)))))
-	     (re-compass (ctree)
-	       (labels ((walk (c-node)
-			  (if (and (> (length (node-contents c-node)) 4)
-				   (and (null (node-left c-node))
-					(null (node-right c-node))))
-			      (let ((new-node (compass (node-contents c-node)
-						       :distance-func 'euclidean-distance)))
-				(setf c-node new-node)))
-			  (unless (null (node-right c-node))
-			    (walk (node-right c-node)))
-			  (unless (null (node-left c-node))
-			    (walk (node-left c-node)))))
-		 (walk ctree))
-	       ctree)
 	     ) ;; End labels definitions.
 
       ;; Walk through each era, while slowly building a second compass
@@ -103,23 +89,25 @@
 	;; Using some heuristic within, find some interesting
 	;; instances to classify (magic number) and then place them
 	;; once we have the class information.
-	(dolist (instance (devious-instances-2 compass-tree))
+	(dolist (instance (devious-instances-2 compass-tree s m))
 	  (remove-from-tree instance compass-tree)
 	  (insert-via-class compass-tree instance (compass-teak-prebuilt instance compass-oracle)))
 	;; Seems like we should attack high variance leaves as well...
 	;; What I'm doing here is re-compassing the highest 50% of
 	;; leaves with high variance.
+;	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1))
 	(setf compass-tree (re-compass compass-tree))
 	(if (> (position this-era eras) 0)
 	    (let ((test-era (nth (1- (position this-era eras)) eras)))
 	      (push (test-era-on-tree test-era compass-tree) mdmres)))
 	)
-      (setf mdmres (reverse (copy-list mdmres)))
-      (let ((counter 0))
-	(dolist (mdmre mdmres)
-	  (format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
-		  counter (1+ counter) mdmre)
-	  (setf counter (1+ counter))))
+      (if printing?
+	  (setf mdmres (reverse (copy-list mdmres)))
+	  (let ((counter 0))
+	    (dolist (mdmre mdmres)
+	      (format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
+		      counter (1+ counter) mdmre)
+	      (setf counter (1+ counter)))))
       (strip-danglers compass-tree))))
 
 (defun test-era-on-tree (era ctree)
@@ -154,23 +142,33 @@
       (walk ctree-node))
     naughty-list))
 
-(defun devious-instances-2 (ctree-node &optional (s 3)) ;; How many do we take?
+(defun devious-instances-2 (ctree-node &optional (s 2) (m 4))
   (let* ((sibling-pairs (all-sibling-pairs ctree-node))
 	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs 1 1 1)))
 	 naughty-list)
     (dotimes (n s)
-      (let ((pair (extract-min-pair ranked)))
-	(push (centroid (condense-lists pair)) naughty-list)))
+      (let ((pair (condense-lists (extract-max-pair ranked))))
+	(dotimes (j m)
+	  (let ((c (centroid pair)))
+	    (setf pair (remove c (copy-list pair)))
+	    (push c naughty-list)))))
     (remove nil naughty-list)))
 
-(defun extract-min-pair (ranked)
-  (let ((min-rank 9999999999999) min-pair)
+(defun generate-instances (this that n)
+  "Give me n instances between this and that."
+  (let (new-instances)
+    (dotimes (i n)
+      (push (favored-median this that (my-random-int n) (my-random-int n)) new-instances))
+    new-instances))
+
+(defun extract-max-pair (ranked)
+  (let ((max-rank 0) max-pair)
     (dohash (key value ranked)
-      (if (> min-rank value)
-	  (progn (setf min-rank value)
-		 (setf min-pair key))))
-    (remhash min-pair ranked)
-    min-pair))
+      (if (< max-rank value)
+	  (progn (setf max-rank value)
+		 (setf max-pair key))))
+    (remhash max-pair ranked)
+    max-pair))
 
 (defun all-sibling-pairs (ctree-node)
   (let (pairs)
@@ -265,6 +263,27 @@
 ;      (walk ctree-node)))
 ;  ctree-node)
 
+(defun re-compass (ctree)
+  (labels ((walk (c-node)
+	     (unless (null (node-right c-node))
+	       (if (and (> (length (node-contents (node-right c-node))) 4)
+			(not (has-both-children (node-right c-node))))
+		   (setf (node-right c-node)
+			 (compass (node-contents (node-right c-node))
+				  :distance-func 'euclidean-distance))))
+	     (unless (null (node-left c-node))
+	       (if (and (> (length (node-contents (node-left c-node))) 4)
+			(not (has-both-children (node-left c-node))))
+		   (setf (node-left c-node)
+			 (compass (node-contents (node-left c-node))
+				  :distance-func 'euclidean-distance))))
+	     (unless (null (node-right c-node))
+	       (walk (node-right c-node)))
+	     (unless (null (node-left c-node))
+	       (walk (node-left c-node)))))
+    (walk ctree)
+    ctree))
+
 (defun an-interesting-instance-1 (data k)
   ;; Find the two clusters with the most distant centroids.
   (let ((clusters (meat-processor k (k-means k data)))
@@ -284,7 +303,7 @@
     (centroid (condense-lists farthest-two))))
 
 (defun oracle-test (&optional (datasets *DATASETS*)
-		    &key (distance-func 'euclidean-distance) (normalize? NIL))
+		    &key (distance-func 'euclidean-distance) (normalize? NIL) (s 2) (m 4))
   (let ((sets (copy-list datasets))
 	compass oracle variants)
     (dolist (set sets)
@@ -306,7 +325,7 @@
 	(let (tmp big-tmp)
 	  (dotimes (n 20)
 	    (dotimes (k (length projects))
-	      (push (oracle-teak (nth k projects) projects 1.1 1.1 :distance-func distance-func) tmp))
+	      (push (oracle-teak (nth k projects) projects 1.1 1.1 :s s :m m :distance-func distance-func) tmp))
 	    (push tmp big-tmp)
 	    (setf tmp nil))
 	  (push big-tmp oracle))
@@ -339,10 +358,10 @@
 				(if (= n 1) "COMPASS")))
 	    (format t "WIN: ~A TIE: ~A LOSS: ~A MDMRE: ~5,4f~%" win tie loss (median (condense-lists current-variant)))))))))
 
-(defun oracle-teak (this projects alpha beta &key (distance-func 'cosine-similarity))
+(defun oracle-teak (this projects alpha beta &key (s 2) (m 4) (distance-func 'cosine-similarity))
   (let* ((test this)
 	 (projects (remove test projects))
-	 (oracle-tree (data-oracle projects))
+	 (oracle-tree (data-oracle projects :s s :m m))
 	 (pruned-tree (variance-prune oracle-tree :alpha alpha :beta beta))
 	 (actual (first (last test)))
 	 (predicted 0))
