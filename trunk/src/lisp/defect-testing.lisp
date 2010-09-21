@@ -158,7 +158,7 @@
 		(let* ((clusters (meat-processor 2 (k-means 2 train-set))))
 		  (dotimes (i (length test-set))
 		    (let* ((want (first (last (nth i test-set))))
-			   (got (matching-cluster-majority-vote (nth i train-set) clusters)))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
 		      (if (equal want got)
 			  (if (equal want 'TRUE)
 			      (progn
@@ -201,7 +201,7 @@
 		(let* ((clusters (meat-processor 4 (k-means 4 train-set))))
 		  (dotimes (i (length test-set))
 		    (let* ((want (first (last (nth i test-set))))
-			   (got (k=?-defect 4 (nth i test-set) train-set)))
+			   (got (matching-cluster-majority-vote (nth i test-set) clusters)))
 		      (if (equal want got)
 			  (if (equal want 'TRUE)
 			      (progn
