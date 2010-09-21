@@ -115,7 +115,6 @@
   (make "lisp/defect-testing.lisp"
         "lisp/defect/jm1.lisp"
 	"lisp/defect/kc1.lisp"
-	"lisp/defect/mc1.lisp"
 	"lisp/defect/pc1.lisp"
 	"lisp/defect/ar3.lisp"
 	"lisp/defect/ar4.lisp"
