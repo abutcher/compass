@@ -154,6 +154,21 @@
 	    (push c naughty-list)))))
     (remove nil naughty-list)))
 
+(defun devious-instances-3 (ctree-node &optional (s 2) (m 4))
+  (let ((sibling-pairs (all-sibling-pairs ctree-node))
+	randomly-selected-pairs
+	naughty-list)
+    (dotimes (i s)
+      (let ((pair (random-element sibling-pairs)))
+	(setf sibling-pairs (remove pair (copy-list sibling-pairs)))
+	(push (condense-lists pair) randomly-selected-pairs)))
+    (dolist (pair randomly-selected-pairs)
+      (dotimes (j m)
+	(let ((instance (random-element pair)))
+	  (setf pair (remove instance (copy-list pair)))
+	  (push instance naughty-list))))
+    naughty-list))
+	
 (defun generate-instances (this that n)
   "Give me n instances between this and that."
   (let (new-instances)
@@ -220,6 +235,8 @@
 	     (if (= (length (node-contents c-node)) 1)
 		 (setf c-node nil)
 		 (progn
+		   ;(print instance)
+		   ;(print c-node)
 		   (setf (node-contents c-node) (remove instance (node-contents c-node)))
 		   (setf (node-variance c-node) (variance (node-contents c-node)))))
 	     (unless (null c-node)
