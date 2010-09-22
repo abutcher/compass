@@ -1,4 +1,4 @@
-(defun data-oracle (data &key (s 2) (m 4) (min-cluster-size 4) (printing? t))
+(defun data-oracle (data &key (s 2) (m 4) (min-cluster-size 4) (printing? nil))
   (let* ((data (shuffle-n data 20)) ;; Randomize 20x
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
@@ -96,18 +96,23 @@
 	;; What I'm doing here is re-compassing the highest 50% of
 	;; leaves with high variance.
 ;	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1))
+	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1))
 	(setf compass-tree (re-compass compass-tree))
-	(if (> (position this-era eras) 0)
-	    (let ((test-era (nth (1- (position this-era eras)) eras)))
+	(if (< (position this-era eras) (1- (length eras)))
+	    (let ((test-era (nth (1+ (position this-era eras)) eras)))
 	      (push (test-era-on-tree test-era compass-tree) mdmres)))
 	)
       (if printing?
-	  (setf mdmres (reverse (copy-list mdmres)))
-	  (let ((counter 0))
-	    (dolist (mdmre mdmres)
-	      (format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
-		      counter (1+ counter) mdmre)
-	      (setf counter (1+ counter)))))
+	  (progn
+	    (setf mdmres (reverse (copy-list mdmres)))
+	    (let ((counter 0))
+	      (dolist (mdmre mdmres)
+		(format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
+			(1+ counter) counter mdmre)
+		(setf counter (1+ counter))))
+	    (if (> (first mdmres) (first (last mdmres)))
+		(format t "IMROVED BY: ~A~%" (- (first mdmres) (first (last mdmres))))
+		(format t "WORSENED BY: ~A~%" (- (first (last mdmres)) (first mdmres))))))
       (strip-danglers compass-tree))))
 
 (defun test-era-on-tree (era ctree)
