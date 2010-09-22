@@ -1,4 +1,5 @@
-(defun data-oracle (data &key (s 2) (m 4) (min-cluster-size 4) (printing? nil))
+(defun data-oracle (data &key (s 2) (m 4) (a 1) (b 1) (c 1) (d 1)
+		    (min-cluster-size 4) (printing? nil))
   (let* ((data (shuffle-n data 20)) ;; Randomize 20x
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
@@ -13,12 +14,13 @@
 
 	 ;; The first X eras will be used to make an initial compass
 	 ;; tree.
-	 (compass-tree (compass (condense-lists (subseq eras 0 2))
+	 (compass-tree (compass (condense-lists (subseq eras 0 3))
 				:distance-func 'euclidean-distance))
 
 	 ;; Remove the starter eras from the list of eras.
-	 (eras (subseq eras 2))
-	 mdmres)
+	 (eras (subseq eras 3))
+	 mdmres
+	 maxvs)
 
     ;; Incremental insertion procedure which puts each new instance
     ;; where it belongs in the scheme of things.
@@ -96,7 +98,8 @@
 	;; What I'm doing here is re-compassing the highest 50% of
 	;; leaves with high variance.
 ;	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1))
-	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1))
+	(push (max-variance compass-tree) maxvs)
+	(setf compass-tree (variance-prune compass-tree :alpha 1.1 :beta 1.1 :maxvs maxvs))
 	(setf compass-tree (re-compass compass-tree))
 	(if (< (position this-era eras) (1- (length eras)))
 	    (let ((test-era (nth (1+ (position this-era eras)) eras)))
@@ -147,9 +150,9 @@
       (walk ctree-node))
     naughty-list))
 
-(defun devious-instances-2 (ctree-node &optional (s 2) (m 4))
+(defun devious-instances-2 (ctree-node &optional (s 2) (m 4) (a 1) (b 1) (c 1) (d 1))
   (let* ((sibling-pairs (all-sibling-pairs ctree-node))
-	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs 1 1 1)))
+	 (ranked (sort-ranked-pairs (rank-pairs sibling-pairs a b c d)))
 	 naughty-list)
     (dotimes (n s)
       (let ((pair (condense-lists (extract-max-pair ranked))))
@@ -203,17 +206,19 @@
       (walk ctree-node))
     pairs))
 
-(defun rank-pairs (pairs &optional (a 1) (b 1) (c 1)) ;; Magical tuning constants
+(defun rank-pairs (pairs &optional (a 1) (b 1) (c 1) (d 1)) ;; Magical tuning constants
   (let ((ranked (make-hash-table)))
     (dolist (pair pairs)
       (if (null (gethash pair ranked))
 	  (setf (gethash pair ranked)
-		(sqrt (+ (* a (expt (- (median (map-last (first pair)))
-				       (median (map-last (second pair)))) 2))
-			 (* b (expt (1- (/ (+ (variance (first pair))
-					      (variance (second pair))) 2)) 2))
-			 (* c (expt (/ (+ (length (first pair))
-					  (length (second pair))) 2) 2)))))))
+		(/ (sqrt (+ (* a (expt (- (median (map-last (first pair)))
+					  (median (map-last (second pair)))) 2))
+			    (* b (expt (1- (/ (+ (variance (first pair))
+						 (variance (second pair))) 2)) 2))
+			    (* c (expt (/ (+ (length (first pair))
+					     (length (second pair))) 2) 2))
+			    (* d (expt (intra-cluster-measure pair) 2))))
+		   (sqrt 4)))))
     ranked))
 
 (defun sort-ranked-pairs (ranked)
