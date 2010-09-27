@@ -1,6 +1,6 @@
 (defun data-oracle (data &key (s 2) (m 4) (a 1) (b 1) (c 1) (d 1)
-		    (min-cluster-size 4) (printing? nil))
-  (let* ((data (shuffle-n data 20)) ;; Randomize 20x
+		    (min-cluster-size 4) (printing? nil) (reorders 20) (era0 3))
+  (let* ((data (shuffle-n data reorders))
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
 	 (compass-oracle (variance-prune
@@ -14,11 +14,11 @@
 
 	 ;; The first X eras will be used to make an initial compass
 	 ;; tree.
-	 (compass-tree (compass (condense-lists (subseq eras 0 3))
+	 (compass-tree (compass (condense-lists (subseq eras 0 era0))
 				:distance-func 'euclidean-distance))
 
 	 ;; Remove the starter eras from the list of eras.
-	 (eras (subseq eras 3))
+	 (eras (subseq eras era0))
 	 mdmres
 	 maxvs)
 
@@ -107,6 +107,14 @@
 	)
       (if printing?
 	  (progn
+	    (format t "Reorders= ~A~%" reorders)
+	    (format t "Era0= ~A~%" (* era0 10))
+	    (format t "S= ~A~%" a)
+	    (format t "M= ~A~%" m)
+	    (format t "A= ~A~%" a)
+	    (format t "B= ~A~%" b)
+	    (format t "C= ~A~%" c)
+	    (format t "D= ~A~%" d)
 	    (setf mdmres (reverse (copy-list mdmres)))
 	    (let ((counter 0))
 	      (dolist (mdmre mdmres)
