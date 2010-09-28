@@ -1,5 +1,6 @@
 (defun data-oracle (data &key (s 2) (m 4) (a 1) (b 1) (c 1) (d 1)
-		    (min-cluster-size 4) (printing? nil) (reorders 20) (era0 3))
+		    (min-cluster-size 4) (printing? nil) (reorders 20) (era0 3) 
+		    (datfile "file.dat") (plotfile "file.plot"))
   (let* ((data (shuffle-n data reorders))
 	 ;; Build a compass tree with the first half of the data to
 	 ;; serve as the oracle.
@@ -107,23 +108,33 @@
 	)
       (if printing?
 	  (progn
-	    (format t "Reorders= ~A~%" reorders)
-	    (format t "Era0= ~A~%" (* era0 10))
-	    (format t "S= ~A~%" a)
-	    (format t "M= ~A~%" m)
-	    (format t "A= ~A~%" a)
-	    (format t "B= ~A~%" b)
-	    (format t "C= ~A~%" c)
-	    (format t "D= ~A~%" d)
-	    (setf mdmres (reverse (copy-list mdmres)))
-	    (let ((counter 0))
-	      (dolist (mdmre mdmres)
-		(format t "ERA: ~A vs. TREE: ~A --> MDMRE: ~A~%"
-			(1+ counter) counter mdmre)
-		(setf counter (1+ counter))))
-	    (if (> (first mdmres) (first (last mdmres)))
-		(format t "IMROVED BY: ~A~%" (- (first mdmres) (first (last mdmres))))
-		(format t "WORSENED BY: ~A~%" (- (first (last mdmres)) (first mdmres))))))
+	    (with-open-file (stream datfile
+				    :direction :output
+				    :if-exists :supersede
+				    :if-does-not-exist :create )
+	      (setf mdmres (reverse (copy-list mdmres)))
+	      (let ((counter 0))
+		(dolist (mdmre mdmres)
+		  (format stream "~A ~A~%"
+			  (1+ counter) mdmre)
+		  (setf counter (1+ counter)))))
+	    (with-open-file (stream plotfile
+				    :direction :output
+				    :if-exists :supersede
+				    :if-does-not-exist :create )
+	      (format stream "set terminal png~%")
+	      (format stream "set output '~A.png'~%" datfile)
+	      (format stream "set title 'Nasa93 A:~A B: ~A C: ~A D:~A'~%" a b c d)
+	      (format stream "set xlabel 'ERA'~%")
+	      (format stream "set ylabel 'MDMRE'~%")
+	      (format stream "set xrange [0:7]~%")
+	      (format stream "set yrange [0:35]~%")
+	      (format stream "set xtics 1~%")
+	      (format stream "set ytics 10~%")
+	      (format stream "plot '~A' notitle~%" datfile))
+	      (if (> (first mdmres) (first (last mdmres)))
+		  (format t "IMROVED BY: ~A~%" (- (first mdmres) (first (last mdmres))))
+		  (format t "WORSENED BY: ~A~%" (- (first (last mdmres)) (first mdmres))))))
       (strip-danglers compass-tree))))
 
 (defun test-era-on-tree (era ctree)
