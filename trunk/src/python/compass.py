@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #!/opt/local/bin/python
 from arff import *
 import csv
