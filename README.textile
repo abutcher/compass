@@ -15,8 +15,8 @@ another and the algorithm recurses on itself until a stopping point is
 reached.  Compass stops when a minimum leaf size is reached, which is
 generally the sqrt(n).
 
-A Compass tree is then pruned back by removing areas of radically
-increasing variance.
+A Compass tree is then pruned back by removing areas of greater
+variance.
 
 h2. Getting started
 

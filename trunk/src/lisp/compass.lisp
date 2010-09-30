@@ -83,6 +83,8 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk pruned-tree))
+    (if (= predicted 0)
+	(setf predicted (median (map-last (node-contents compass-tree)))))
     (mre actual predicted)))
 
 (defun compass-defect-1up-tree (this tree alpha beta &key (distance-func 'cosine-similarity) (lives 5))
@@ -265,6 +267,8 @@
 			   (walk (node-left c-node))
 			   (walk (node-right c-node)))))))
       (walk compass-tree))
+    (if (= predicted 0)
+	(setf predicted (median (map-last (node-contents compass-tree)))))
     (mre actual predicted)))
 
 (defun tree-leaves (c-tree)

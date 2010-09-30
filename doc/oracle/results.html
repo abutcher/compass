@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.32">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 24.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 12.0px Helvetica}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 12.0px Helvetica; min-height: 14.0px}
+span.s1 {text-decoration: underline}
+span.s2 {font: 12.0px Arial}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1">Monday, September 20th</p>
+<p class="p2"><br></p>
+<p class="p3">This is a look at what the <a href="oracle.html"><span class="s1">Oracle</span></a> is currently doing.<span class="Apple-converted-space">&nbsp; </span>Tree looks a little small considering we re-compass after each era, let's investigate and see what's going on here.</p>
+<p class="p2"><br></p>
+<p class="p3">PARAMS:</p>
+<p class="p3"><span class="Apple-tab-span">	</span>s, the number of pairs to sample from = 1</p>
+<p class="p3"><span class="Apple-tab-span">	</span>m, the number of instances to take from each pair = 4</p>
+<p class="p2"><br></p>
+<p class="p3"><img src="results.nasa93_1_4.png" alt="nasa93_1_4.png"><span class="Apple-converted-space">&nbsp;</span></p>
+<p class="p2"><br></p>
+<p class="p3">NASA93 turns into 10 eras of sizes: {10, 10, 10, 10, 10, 10, 10, 10, 10, 3}. <span class="Apple-converted-space">&nbsp;</span></p>
+<p class="p2"><br></p>
+<p class="p4"><img src="results.Pasted%20Graphic.png" alt="Pasted Graphic.pict"></p>
+<p class="p5"><br></p>
+<p class="p3">The problem appears to be in re-compass, which is destroying or either not altering the compass tree fed to it.<span class="Apple-converted-space">&nbsp; </span>Currently, re-compass will be applied to any leaf node with size &gt; min-cluster-size which is typically 4.</p>
+<p class="p2"><br></p>
+<p class="p3">Re-compass wasn't altering the structure of the tree sent to it, this should be resolved.<span class="Apple-converted-space">&nbsp; </span>Here is a small tree that I know should re-compass into a large structure.</p>
+<p class="p2"><br></p>
+<p class="p3"><img src="results.mynode.dot.png" alt="mynode.dot.png"></p>
+<p class="p2"><br></p>
+<p class="p3">Both children should be expanded, here is the result.</p>
+<p class="p2"><br></p>
+<p class="p3"><img src="results.re-compas_mynote.dot.png" alt="re-compas_mynote.dot.png"></p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p3">Now, back to the original experiment.<span class="Apple-converted-space">&nbsp; </span>Since the tree wasn't restructuring, the <a href="oracle.html"><span class="s1">Oracle</span></a>'s performance would have been completely shot. <span class="Apple-converted-space">&nbsp;</span></p>
+<p class="p2"><br></p>
+<p class="p4"><img src="results.Pasted%20Graphic-1.png" alt="Pasted Graphic-1.pict"></p>
+<p class="p5"><br></p>
+<p class="p3">Group of base tests with s=2, m=4 to see if the re-compassing affected the rig's performance.<span class="Apple-converted-space">&nbsp; </span>Having issues with small sets like cocomo81, maxwell, and sdr.</p>
+<p class="p2"><br></p>
+<p class="p3">ALBRECHT</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 2 TIE: 0 LOSS: 18 MDMRE: 3.1857</p>
+<p class="p3">COMPASS WIN: 18 TIE: 0 LOSS: 2 MDMRE: 1.7250</p>
+<p class="p2"><br></p>
+<p class="p3">DESHARNAIS-ALL</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 9 TIE: 0 LOSS: 11 MDMRE: 1.0632</p>
+<p class="p3">COMPASS WIN: 5 TIE: 12 LOSS: 3 MDMRE: 1.0403</p>
+<p class="p2"><br></p>
+<p class="p3">NASA93</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 0 TIE: 7 LOSS: 13 MDMRE: 5.9288</p>
+<p class="p3">COMPASS WIN: 20 TIE: 0 LOSS: 0 MDMRE: 3.9902</p>
+<p class="p2"><br></p>
+<p class="p3">FINNISH</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 0 TIE: 0 LOSS: 20 MDMRE: 2.6542</p>
+<p class="p3">COMPASS WIN: 20 TIE: 0 LOSS: 0 MDMRE: 1.3412</p>
+<p class="p2"><br></p>
+<p class="p3">COCOMO81</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 2 TIE: 0 LOSS: 18 MDMRE: 8.7865</p>
+<p class="p3">COMPASS WIN: 18 TIE: 0 LOSS: 2 MDMRE: 6.2931</p>
+<p class="p2"><br></p>
+<p class="p3">SDR</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 0 TIE: 6 LOSS: 14 MDMRE: 5.0879</p>
+<p class="p3">COMPASS WIN: 20 TIE: 0 LOSS: 0 MDMRE: 1.8728</p>
+<p class="p2"><br></p>
+<p class="p3">MAXWELL</p>
+<p class="p3"><span class="s1"><a href="oracle.html">ORACLE</a></span> WIN: 1 TIE: 0 LOSS: 19 MDMRE: 1.6631</p>
+<p class="p3">COMPASS WIN: 18 TIE: 2 LOSS: 0 MDMRE: 1.3492</p>
+<p class="p2"><br></p>
+<p class="p4"><img src="results.Pasted%20Graphic-2.png" alt="Pasted Graphic-2.pict"></p>
+<p class="p2"><br></p>
+<p class="p3">Now, we'll just focus on nasa93.<span class="Apple-converted-space">&nbsp; </span>Here's an era by era chart of the <a href="oracle.html"><span class="s1">Oracle</span></a>'s performance over time.</p>
+<p class="p2"><br></p>
+<p class="p3">ERA: 0 vs. TREE: 1 --&gt; MDMRE: 1.70766</p>
+<p class="p3">ERA: 1 vs. TREE: 2 --&gt; MDMRE: 1.0380751</p>
+<p class="p3">ERA: 2 vs. TREE: 3 --&gt; MDMRE: 4.7928762</p>
+<p class="p3">ERA: 3 vs. TREE: 4 --&gt; MDMRE: 1.5214523</p>
+<p class="p3">ERA: 4 vs. TREE: 5 --&gt; MDMRE: 1.5312512</p>
+<p class="p3">ERA: 5 vs. TREE: 6 --&gt; MDMRE: 3.036756</p>
+<p class="p3">ERA: 6 vs. TREE: 7 --&gt; MDMRE: 2.9092143</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4"><img src="results.Pasted%20Graphic-3.png" alt="Pasted Graphic-3.pict"></p>
+<p class="p2"><br></p>
+<p class="p3">Encountered a problem with a division by zero error in the remove-from-tree function.<span class="Apple-converted-space">&nbsp; </span>This function works as intended -- I think the problem is occuring in some special case.<span class="Apple-converted-space">&nbsp; </span>I already accounted for there being one instance in the node that's being updated.<span class="Apple-converted-space">&nbsp; </span>Here is an example of removing one item from the small tree pictured above.<span class="Apple-converted-space">&nbsp; </span>Every part of the tree is updated all the way down.</p>
+<p class="p2"><br></p>
+<p class="p3"><img src="results.rmcomp.dot.png" alt="rmcomp.dot.png"></p>
+<p class="p2"><br></p>
+<p class="p3">Running a test in super verbose mode to attempt to find out how it fails, 30 minutes in and nothing so far.</p>
+<p class="p2"><br></p>
+<p class="p3">In the mean-time -- here's a baseline using randomly selected pairs for era by era performance from the <a href="oracle.html"><span class="s1">Oracle</span></a> for nasa93.</p>
+<p class="p2"><br></p>
+<p class="p3">ERA: 0 vs. TREE: 1 --&gt; MDMRE: 1.9827645</p>
+<p class="p3">ERA: 1 vs. TREE: 2 --&gt; MDMRE: 13.232056</p>
+<p class="p3">ERA: 2 vs. TREE: 3 --&gt; MDMRE: 11.526922</p>
+<p class="p3">ERA: 3 vs. TREE: 4 --&gt; MDMRE: 2.974511</p>
+<p class="p3">ERA: 4 vs. TREE: 5 --&gt; MDMRE: 4.9138403</p>
+<p class="p3">ERA: 5 vs. TREE: 6 --&gt; MDMRE: 3.2930477</p>
+<p class="p3">ERA: 6 vs. TREE: 7 --&gt; MDMRE: <span class="s2">1.92969149</span></p>
+<p class="p2"><br></p>
+<p class="p3">Now we're looking at an hour for these results.</p>
+<p class="p2"><br></p>
+<p class="p3">Further meantime, I'm now linking the git repository to the svn repository.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+</body>
+</html>
+ 
