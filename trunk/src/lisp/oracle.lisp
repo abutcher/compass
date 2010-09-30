@@ -21,7 +21,9 @@
 	 ;; Remove the starter eras from the list of eras.
 	 (eras (subseq eras era0))
 	 mdmres
-	 maxvs)
+	 maxvs
+	 points
+	 everything)
 
     ;; Incremental insertion procedure which puts each new instance
     ;; where it belongs in the scheme of things.
@@ -117,6 +119,7 @@
 		(dolist (mdmre mdmres)
 		  (format stream "~A ~A~%"
 			  (1+ counter) mdmre)
+		  (push (make-point :x (1+ counter) :y mdmre) points)
 		  (setf counter (1+ counter)))))
 	    (with-open-file (stream plotfile
 				    :direction :output
@@ -128,13 +131,14 @@
 	      (format stream "set xlabel 'ERA'~%")
 	      (format stream "set ylabel 'MDMRE'~%")
 	      (format stream "set xrange [0:~A]~%" (length eras))
-	      (format stream "set yrange [0:~A]~%" (ceiling (max mdmres)))
+	      (format stream "set yrange [0:~A]~%" (ceiling (max (first mdmres))))
 	      (format stream "set xtics 1~%")
 	      (format stream "set ytics 5~%")
 	      (format stream "plot '~A' notitle  with linespoints lt 3 lw 4 pt 7~%" datfile))
-	      (if (> (first mdmres) (first (last mdmres)))
-		  (format t "IMROVED BY: ~A~%" (- (first mdmres) (first (last mdmres))))
-		  (format t "WORSENED BY: ~A~%" (- (first (last mdmres)) (first mdmres))))
+	    (format t "~A,~A,~A,~A,~A~%" a b c d (auc points))
+;	      (if (> (first mdmres) (first (last mdmres)))
+;		  (format t "IMROVED BY: ~A~%" (- (first mdmres) (first (last mdmres))))
+;		  (format t "WORSENED BY: ~A~%" (- (first (last mdmres)) (first mdmres))))
 	      ))
       (strip-danglers compass-tree))))
 
