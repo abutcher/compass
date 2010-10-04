@@ -68,6 +68,7 @@ class Idea:
 		if Parameters.Normalize == True:
 			ax1.set_xbound(0,1)
 			ax1.set_ybound(0,1)
+
 		return fig
 
 	def WriteToPNG(self, fig, filename):
