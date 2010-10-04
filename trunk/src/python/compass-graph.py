@@ -36,13 +36,13 @@ class CompassGraph:
 				self.West = tmp
 				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 				
-	def WriteToPNG(self,filename,n):
+	def WriteToPNG(self,filename,Parameters):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
 		ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
 		ticks = []
-		for i in range(n):
-			ticks.append( ( float(i)+1.0 )* (1.0/float(n) ) )
+		for i in range(Parameters.n):
+			ticks.append( ( float(i)+1.0 )* (1.0/float(Parameters.n) ) )
 		ax1.set_xticks(ticks)
 		ax1.set_yticks(ticks)
 		plt.title(filename)
@@ -76,9 +76,10 @@ class CompassGraph:
 			for i in range(len(self.DataCoordinates[0])):
 				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-NormalData[i],NormalData[i],0])
 			
+		if Parameters.Normalize == True:
+			ax1.set_xbound(0,1)
+			ax1.set_ybound(0,1)
 
-		ax1.set_xbound(0,1)
-		ax1.set_ybound(0,1)
 		plt.show()
 
 				
@@ -110,8 +111,9 @@ class CompassGraph:
 				datum[0] = math.log(datum[0]+0.0001)
 			if Parameters.logY is True:
 				datum[1] = math.log(datum[1]+0.0001)
-			datum[0] = datum[0] / MaxX
-			datum[1] = datum[1] / MaxY
+			if Parameters.Normalize is True:
+				datum[0] = datum[0] / MaxX
+				datum[1] = datum[1] / MaxY
 		return DataCoordinates, Classes
 
 	def FindPoles(self,data):
@@ -129,12 +131,14 @@ class CompassGraphParameters:
 	logX = False
 	logY = False
 	Magnetic = False
+	Normalize = False
 	
-	def __init__(self, inputN, inputlogX, inputlogY, inputMagnetic):
+	def __init__(self, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize):
 		self.n = int(inputN)
 		self.logX = inputlogX
 		self.logY = inputlogY
 		self.Magnetic = inputMagnetic
+		self.Normalize = inputNormalize
 	
 	
 def main():
@@ -145,6 +149,7 @@ def main():
 	parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
 	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
 	parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
+	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -159,10 +164,11 @@ def main():
 
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
-	parameters = CompassGraphParameters(options.n,options.logX, options.logY, options.magnetic)
+	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
+	parameters = CompassGraphParameters(options.n,options.logX, options.logY, options.magnetic, options.normalize)
 
 	compassgraph = CompassGraph(arff.data,parameters)
-	compassgraph.WriteToPNG(options.arff.split('.')[0],int(options.n))
+	compassgraph.WriteToPNG(options.arff.split('.')[0],parameters)
 
 if __name__ == '__main__':
 	main()
