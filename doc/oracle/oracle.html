@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="1038.32">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 24.0px 'Lucida Grande'}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 24.0px 'Lucida Grande'; min-height: 28.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px 'Lucida Grande'}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Lucida Grande'}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Lucida Grande'; min-height: 15.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+li.li4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Lucida Grande'}
+span.s1 {font: 12.0px Helvetica}
+ol.ol1 {list-style-type: decimal}
+ul.ul1 {list-style-type: hyphen}
+</style>
+</head>
+<body>
+<p class="p1"><b>Compass Oracle</b></p>
+<p class="p2"><br></p>
+<p class="p3">Parameters</p>
+<ul class="ul1">
+<li class="li4">a, multiplier for median similarity {0, 1}</li>
+<li class="li4">b, multiplier for variance similarity {0, 1}</li>
+<li class="li4">c, mulitplier for node size similarity {0, 1}</li>
+<li class="li4">s, the number of sibling pairs to sample {1, 2, 4, 8}</li>
+<li class="li4">m, the number of nodes to either synthetically generate or classify {1, 2, 4, 8}</li>
+</ul>
+<p class="p5"><br></p>
+<p class="p3">Ranking Function</p>
+<p class="p5"><br></p>
+<p class="p6"><img src="oracle._00000002.png" alt="_00000002.pdf"></p>
+<p class="p7"><br></p>
+<p class="p6"><img src="oracle._00000002-1.png" alt="_00000002-1.pdf"></p>
+<p class="p7"><br></p>
+<p class="p7"><br></p>
+<p class="p3">Algorithm</p>
+<p class="p5"><br></p>
+<p class="p4">Oracle (n):</p>
+<ol class="ol1">
+<li class="li4">Separate n into halves.</li>
+<li class="li4">Use the first half to make an oracle tree, O.</li>
+<li class="li4">Separate the second half into eras of size 10.</li>
+<li class="li4">Use the first 0-2 eras as a base compass tree, C.</li>
+<li class="li4">For eras 2-end, insert each instance one at a time.</li>
+<ul class="ul1">
+<li class="li4">After inserting the entire era of size 10, choose the most interesting instances or synthetically generate some.</li>
+<li class="li4">Remove the sampled instances from C, classify them using O, and reinsert them into C using their class information.</li>
+<li class="li4">Update the tree so to avoid clumping in the leaves.</li>
+</ul>
+<li class="li4">Return C.</li>
+</ol>
+<p class="p5"><br></p>
+<p class="p3">Avoiding Clumping in the Incremental Tree</p>
+<p class="p5"><br></p>
+<p class="p4">Ideas include:</p>
+<ul class="ul1">
+<li class="li4">Pruning before inserting each era, and then just recursively apply compass to nodes with min-size &gt; 4 | <span class="s1"><img src="oracle._00000002-2.png" alt="_00000002-2.pdf"></span></li>
+<li class="li4">Pruning or applying compass to the highest 10% of leaves according to their variance score.</li>
+</ul>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+<p class="p5"><br></p>
+</body>
+</html>
+ 

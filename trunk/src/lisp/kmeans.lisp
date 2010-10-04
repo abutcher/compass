@@ -126,7 +126,7 @@
 	    (current-k (1+ try)))
 	(if (= (first best-so-far) 0)
 	    (setf best-so-far (list current-avg current-k)))
-	(if (< current-avg (first best-so-far))
+	(if (<= current-avg (first best-so-far))
 	    (setf best-so-far (list current-avg current-k)))
 	(if (> current-avg (first best-so-far))
 	    (return))))

@@ -20,3 +20,18 @@
   (let ((l (sort l #'<)))
     (ceiling (/ (- (nth (- (length l) 1) l) (nth 0 l)) 2))))
 
+(defun favored-median (v1 v2 &optional (w1 1) (w2 1))
+  (let ((vhat))
+    (dotimes (i (length v1))
+      (let (l)
+        (dotimes (j (1+ w1))
+          (push (nth i v1) l))
+        (dotimes (k (1+ w2))
+          (push (nth i v2) l))
+        (if (numberp (nth i v1))
+            (push (/ (sum l) (length l)) vhat)
+            (if (eql (nth i v1) (nth i v2))
+                (push (nth i v1) vhat)
+                (push (random-element l) vhat)))))
+    (reverse vhat)))
+

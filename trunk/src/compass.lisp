@@ -10,6 +10,8 @@
 	"lisp/gen"
 	"lisp/compass"
 	"lisp/counted"
+	"lisp/auc"
+	"lisp/csv"
 	"lisp/cat.lisp"
 	"lisp/cluster"
 	"lisp/crossindex"
