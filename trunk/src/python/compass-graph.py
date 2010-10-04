@@ -17,9 +17,25 @@ class CompassGraph:
 
 	def __init__(self, InputData,Parameters):
 		self.data = InputData
-		(self.East, self.West) = self.FindPoles(InputData)
+		(self.West, self.East) = self.FindPoles(InputData)
 		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
-
+		if Parameters.Magnetic is True:
+			print("X-men! Welcome to die!")
+			EastSide = 0
+			WestSide = 0
+			# check to see if more points are at the other pole.  If so, we switch the poles.  Might be a better way to do this.  Will think about it.
+			for datum in self.DataCoordinates :
+				if datum[0] >= 0.5:
+					EastSide = EastSide + 1
+				else:
+					WestSide = WestSide + 1
+			if (EastSide > WestSide):
+				print("switching poles")
+				tmp = self.East
+				self.East = self.West
+				self.West = tmp
+				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
+				
 	def WriteToPNG(self,filename,n):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
@@ -90,13 +106,12 @@ class CompassGraph:
 				Classes = numpy.vstack((Classes,numpy.array([instance[len(instance)-1]])))
 		# Normalize coordinates
 		for datum in DataCoordinates:
+			if Parameters.logX is True:
+				datum[0] = math.log(datum[0]+0.0001)
+			if Parameters.logY is True:
+				datum[1] = math.log(datum[1]+0.0001)
 			datum[0] = datum[0] / MaxX
 			datum[1] = datum[1] / MaxY
-			if Parameters.logX is True:
-				datum[0] = math.log(datum[0]+0.0001,2)
-			if Parameters.logY is True:
-				datum[1] = math.log(datum[1]+0.0001,2)
-
 		return DataCoordinates, Classes
 
 	def FindPoles(self,data):
@@ -113,11 +128,13 @@ class CompassGraphParameters:
 	n = 4
 	logX = False
 	logY = False
+	Magnetic = False
 	
-	def __init__(self, inputN, inputlogX, inputlogY):
+	def __init__(self, inputN, inputlogX, inputlogY, inputMagnetic):
 		self.n = int(inputN)
 		self.logX = inputlogX
 		self.logY = inputlogY
+		self.Magnetic = inputMagnetic
 	
 	
 def main():
@@ -127,6 +144,7 @@ def main():
 	parser.add_option("--n", dest="n", default=4, metavar="N", help="Set n to draw n x n grids.")
 	parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
 	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
+	parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -138,12 +156,10 @@ def main():
 		sys.exit(-1)
 			
 	arff = Arff(options.arff)
-	print(options.logX)
 
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
-	parameters = CompassGraphParameters(options.n,options.logX, options.logY)
-	print(parameters.logX)
+	parameters = CompassGraphParameters(options.n,options.logX, options.logY, options.magnetic)
 
 	compassgraph = CompassGraph(arff.data,parameters)
 	compassgraph.WriteToPNG(options.arff.split('.')[0],int(options.n))
