@@ -15,10 +15,10 @@ class CompassGraph:
 	DataCoordinates = []
 	Classes = []
 
-	def __init__(self, InputData):
+	def __init__(self, InputData,Parameters):
 		self.data = InputData
 		(self.East, self.West) = self.FindPoles(InputData)
-		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates()
+		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 
 	def WriteToPNG(self,filename,n):
 		self.DataCoordinates = self.DataCoordinates.transpose()
@@ -67,7 +67,7 @@ class CompassGraph:
 
 				
 
-	def ComputeCoordinates(self):
+	def ComputeCoordinates(self,Parameters):
 		d = distance(self.East,self.West)
 		MaxX = 0
 		MaxY = 0
@@ -92,6 +92,11 @@ class CompassGraph:
 		for datum in DataCoordinates:
 			datum[0] = datum[0] / MaxX
 			datum[1] = datum[1] / MaxY
+			if Parameters.logX is True:
+				datum[0] = math.log(datum[0]+0.0001,2)
+			if Parameters.logY is True:
+				datum[1] = math.log(datum[1]+0.0001,2)
+
 		return DataCoordinates, Classes
 
 	def FindPoles(self,data):
@@ -103,20 +108,44 @@ class CompassGraph:
 		West = farthestfrom(East,data)
 		data.append(East)
 		return East, West
+
+class CompassGraphParameters:
+	n = 4
+	logX = False
+	logY = False
+	
+	def __init__(self, inputN, inputlogX, inputlogY):
+		self.n = int(inputN)
+		self.logX = inputlogX
+		self.logY = inputlogY
 	
 	
 def main():
+	ErrorState = "n"
 	parser = OptionParser()
 	parser.add_option("--arff", dest="arff", default=None, metavar="FILE", help="Make arff file to graph.")
 	parser.add_option("--n", dest="n", default=4, metavar="N", help="Set n to draw n x n grids.")
+	parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
+	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
 		print "Didn't supply an arff.  *grumble grumble*"
-		sys.exit(0)
-
+		ErrorState = "y"
+	
+	if ErrorState == "y":
+		print "Missing critical arguments.  Aborting."
+		sys.exit(-1)
+			
 	arff = Arff(options.arff)
-	compassgraph = CompassGraph(arff.data)
+	print(options.logX)
+
+	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
+	# Might be better to overload the constructor to accept a sequence.
+	parameters = CompassGraphParameters(options.n,options.logX, options.logY)
+	print(parameters.logX)
+
+	compassgraph = CompassGraph(arff.data,parameters)
 	compassgraph.WriteToPNG(options.arff.split('.')[0],int(options.n))
 
 if __name__ == '__main__':
