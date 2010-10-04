@@ -26,13 +26,24 @@ class CompassGraph:
 		plt.xlabel("x")
 		plt.ylabel("y")
 		plt.grid(True)
+		#check to see if our class is defect prediction or effort estimation.  Act accordingly.
 		if isinstance(self.Classes[0][0],str):
 			for i in range(len(self.DataCoordinates[0])):
 				if self.Classes[i][0].upper() == "TRUE":
 					plt.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"bo")
 				else:
 					plt.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"ro")
-		a = plt.gca()
+		else:
+			# normalize the effort scores so we can change the color of the dots depending if it's a high or low effort score
+			MaxScore = 0
+			MinScore = 9999999
+			for i in range(len(self.data)):
+				if self.data[i][len(self.data)-1] > MaxScore:
+					MaxScore = self.data[i][len(self.data)]
+				if self.data[i][len(self.data)-1] < MinScore:
+					MinScore = self.data[i][len(self.data)]
+			
+			
 		plt.show()
 				
 
