@@ -20,7 +20,6 @@ class Idea:
 		(self.West, self.East) = self.FindPoles(InputData)
 		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 		if Parameters.Magnetic is True:
-			print("X-men! Welcome to die!")
 			EastSide = 0
 			WestSide = 0
 			# check to see if more points are at the other pole.  If so, we switch the poles.  Might be a better way to do this.  Will think about it.
