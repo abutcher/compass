@@ -2,6 +2,7 @@ import os
 import sys
 import math
 import random
+import numpy as np
 
 def variance(data):
     if len(data) == 1:
@@ -74,14 +75,14 @@ def stddev(values, meanval=None):
 def mean(values):
     return sum(values) / float(len(values))
 
-def FindMinMax(data):
+def FindMinMax(data,indice):
     maxScore = 0
     minScore = 99999999999
     for i in range(len(data)):
-        if data[i][len(data[i])-1] < minScore:
-            minScore = data[i][len(data[i])-1]
-        if data[i][len(data[i])-1] > maxScore:
-            maxScore = data[i][len(data[i])-1]
+        if data[i][indice] < minScore:
+            minScore = data[i][indice]
+        if data[i][indice] > maxScore:
+            maxScore = data[i][indice]
     return minScore, maxScore
 
 def Normalize(data):
@@ -91,8 +92,19 @@ def Normalize(data):
         normalData.append((data[i][len(data[i])-1]-minScore)/(maxScore-minScore))
     return normalData
 
-def EqualWidthTicks(Min, Max, n):
+# indice will be 0 for x or 1 for y.
+def EqualFrequencyTicks(data,indice,n):
     ticks = []
+    SortedData = np.sort(data,axis=0)
+    NumPerGrid = int(round(len(data) / (n+1.0)))
+    for i in range(n):
+        ticks.append(data[NumPerGrid*i][indice])
+    ticks.append(data[len(data)-1][indice])
+    return ticks
+    
+def EqualWidthTicks(data, indice, n):
+    ticks = []
+    (Min, Max) = FindMinMax(data,indice)
     Interval = (Max - Min)/ float(n)
     for i in range(n+1):
         ticks.append( ( float(i) ) * float(Interval))
