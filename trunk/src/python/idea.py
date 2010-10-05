@@ -140,7 +140,7 @@ class Idea:
 				for i in range(len(self.DataCoordinates)):
 					xcoord = self.DataCoordinates[i][0]
 					ycoord = self.DataCoordinates[i][1]
-					if ( xcoord > xmin and xcoord < xmax ) and ( ycoord > ymin and ycoord < ymax ):
+					if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
 						coordinates.append(self.DataCoordinates[i])
 					Quadrants.append(Quadrant(xmin,xmax,ymin,ymax, coordinates))
 				print "Has coordinates:"
