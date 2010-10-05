@@ -20,7 +20,6 @@ class CompassGraph:
 		(self.West, self.East) = self.FindPoles(InputData)
 		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 		if Parameters.Magnetic is True:
-			print("X-men! Welcome to die!")
 			EastSide = 0
 			WestSide = 0
 			# check to see if more points are at the other pole.  If so, we switch the poles.  Might be a better way to do this.  Will think about it.
@@ -54,9 +53,9 @@ class CompassGraph:
 		if isinstance(self.Classes[0][0],str):
 			for i in range(len(self.DataCoordinates[0])):
 				if self.Classes[i][0].upper() == "TRUE":
-					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"bo")
+					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"bo",markersize=3)
 				else:
-					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"ro")
+					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"ro",markersize=3)
 		else:
 			# we're going to color by highest and lowest.  Best of luck to me.
 			# begin by normalizing the effort scores so we get a fluent gradient
@@ -76,9 +75,9 @@ class CompassGraph:
 			for i in range(len(self.DataCoordinates[0])):
 				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-NormalData[i],NormalData[i],0])
 			
-		if Parameters.Normalize == True:
-			ax1.set_xbound(0,1)
-			ax1.set_ybound(0,1)
+#		if Parameters.Normalize == True:
+#			ax1.set_xbound(0,1)
+#			ax1.set_ybound(0,1)
 
 		plt.show()
 
@@ -89,6 +88,9 @@ class CompassGraph:
 		MaxX = 0
 		MaxY = 0
 		DataCoordinates = None
+		if Parameters.NoPlotPole is True:
+			self.data.remove(self.East)
+			self.data.remove(self.West)
 		# Compute (x,y) coordinates for each instance
 		for instance in self.data:
 			a = distance(self.East,instance)
@@ -132,13 +134,15 @@ class CompassGraphParameters:
 	logY = False
 	Magnetic = False
 	Normalize = False
+	inputPolePlot = False
 	
-	def __init__(self, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize):
+	def __init__(self, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputPolePlot):
 		self.n = int(inputN)
 		self.logX = inputlogX
 		self.logY = inputlogY
 		self.Magnetic = inputMagnetic
 		self.Normalize = inputNormalize
+		self.NoPlotPole = inputPolePlot
 	
 	
 def main():
@@ -150,6 +154,7 @@ def main():
 	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
 	parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
 	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
+	parser.add_option("--noplotpole",dest="noplotpole",default=False,metavar="NONE",action="store_true", help="Remove the poles from the dataset when plotting.")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -165,7 +170,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.n,options.logX, options.logY, options.magnetic, options.normalize)
+	parameters = CompassGraphParameters(options.n,options.logX, options.logY, options.magnetic, options.normalize, options.noplotpole)
 
 	compassgraph = CompassGraph(arff.data,parameters)
 	compassgraph.WriteToPNG(options.arff.split('.')[0],parameters)
