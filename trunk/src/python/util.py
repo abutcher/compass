@@ -91,3 +91,9 @@ def Normalize(data):
         normalData.append((data[i][len(data[i])-1]-minScore)/(maxScore-minScore))
     return normalData
 
+def EqualWidthTicks(Min, Max, n):
+    ticks = []
+    Interval = (Max - Min)/ float(n)
+    for i in range(n+1):
+        ticks.append( ( float(i) ) * float(Interval))
+    return ticks
