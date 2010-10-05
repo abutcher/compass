@@ -5,6 +5,7 @@ import csv
 import numpy
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
+import matplotlib.collections as collections
 from optparse import OptionParser
 from util import *
 
@@ -35,7 +36,7 @@ class Idea:
 				self.West = tmp
 				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 				
-	def GenerateFigure(self, filename, Parameters):
+	def GenerateFigure(self, filename, Parameters, Quadrants):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
 		ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
@@ -73,6 +74,15 @@ class Idea:
 		if Parameters.Normalize == True:
 			ax1.set_xbound(0,1)
 			ax1.set_ybound(0,1)
+
+		for i in range(len(Quadrants)):
+			if (Quadrants[i].DataCoordinates != []):
+				print Quadrants[i].DataCoordinates
+				xmin = Quadrants[i].xmin
+				xmax = Quadrants[i].xmax
+				ymin = Quadrants[i].ymin
+				ymax = Quadrants[i].ymax
+				ax.broken_barh([ (xmin, 1.0/Parameters.n) ], (ymin, 1.0/Parameters.n), facecolors='blue') 
 
 		return fig
 
@@ -120,6 +130,42 @@ class Idea:
 		West = farthestfrom(East,data)
 		data.append(East)
 		return East, West
+
+
+	def Quadrants(self, Parameters):
+		Quadrants = []
+		# Assuming axes are 1.0 -> 1.0
+		for x in range(Parameters.n):
+			for y in range(Parameters.n):
+				xmin = float(x)/Parameters.n
+				xmax = (float(x)/Parameters.n) + (1.0/Parameters.n)
+				ymin = float(y)/Parameters.n
+				ymax = (float(y)/Parameters.n) + (1.0/Parameters.n)
+				print "Quadrant defined by\n\txmin: %f\n\txmax: %f\n\tymin: %f\n\tymax: %f\n" % (xmin, xmax, ymin, ymax)
+				coordinates = []
+				for i in range(len(self.DataCoordinates)):
+					xcoord = self.DataCoordinates[i][0]
+					ycoord = self.DataCoordinates[i][1]
+					if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
+						coordinates.append(self.DataCoordinates[i])
+					Quadrants.append(Quadrant(xmin,xmax,ymin,ymax, coordinates))
+				print "Has coordinates:"
+				print coordinates
+		return Quadrants
+
+class Quadrant:
+	xmin = None
+	xmax = None
+	ymin = None
+	ymax = None
+	DataCoordinates=[]
+
+	def __init__(self, XMin, XMax, YMin, YMax, Coordinates):
+		self.xmin = XMin
+		self.xmax = XMax
+		self.ymin = YMin
+		self.ymax = YMax
+		self.DataCoordinates = Coordinates
 
 class CompassGraphParameters:
         m = 4
@@ -174,7 +220,8 @@ def main():
 
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
-	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename)
+#	ideaplot.Quadrants(parameters)
+	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters, ideaplot.Quadrants(parameters)), filename)
 
 if __name__ == '__main__':
 	main()
