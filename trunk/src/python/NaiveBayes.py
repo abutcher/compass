@@ -1,30 +1,68 @@
 class Normal:
+    largest = []
+    smallest = []
+    n = []
+    Sum = []
+    SumSquared = []
+    
     def __init__(self,data):
+        for i in range(len(data)-1):
+            largest.append(0)
+            smallest.append(99999999)
+            n.append(len(data))
+            Sum.append(0)
+            SumSquared.append(0)
+
+        for instance in data:
+            for i in range(len(instance)-1):
+                if instance[i] > largest[i]:
+                    largest[i] = instance[i]
+                if instance[i] < smallest[i]:
+                    smallest[i] = instance[i]
+                Sum[i] = Sum[i] + instance[i]
+                SumSquared = SumSquared[i] + pow(instance[i],2)
+
+    def mean(self,Index):
+        return self.Sum[Index] / self.n[Index]
+
+    def stdev(self,Index):
+        return math.sqrt( (self.SumSquared - ( math.pow(self.Sum[Index],2) / self.n[Index] ))
+                   (self.n[Index] - 1))
+
+    def GaussianPDF(self,Index,x):
+        return ( 1 / math.sqrt(2 * math.pi * math.pow(self.stdev(self,Index),2) )) * math.pow(math.e,-1 * ( math.pow( x - self.stdev(Index),2) / (2 * math.pow(self.stdev(Index),2))))
+            
         
 
 def Naive-Bayes-Classify(instance, data, m=2, k=1):
-    (ListOfClasses,ClassFrequency) = Classes(data)
-    for ClassIndex in range(ListOfClasses):
+    data.remove(instance)
+    Classification = ["blank", -100]
+    (ClassList,ClassNormal) = GenerateNormalForClasses(data)
+    for ClassIndex in range(ClassList):
         # Calculate the prior
-        Prior = math.log( ClassFrequency[ClassIndex] + k ) / ( len(data) + ( k * len(ListOfClasses)))
+        tmp = math.log( ClassFrequency[ClassIndex] + k ) / ( len(data) + ( k * len(ListOfClasses)))
         for FeatureIndex in range(len(instance)-1):
             # Gaussian PDF function.  May fix for Discrete values later.
+            tmp = tmp + math.log(ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex]))
+        if Classification[1] < tmp:
+            Classification[0] = ClassList[ClassIndex]
+            Classification[1] = tmp
+    return Classification[0]
             
 
-        
+def GenerateNormalForClasses(data):
+    ClassInstances = []
+    ClassIndex = []
+    ClassNormal = []
+    for instance in data:
+        # Try to add an instance to the Class list
+        try:
+            ClassInstances[ClassIndex.index(instance[len(instance)-1])].append(instance)
+        except ValueError:
+            ClassIndex.append(instance[len(instance)-1])
+            ClassInstances.append = [instance]
+    for ClassNorm in ClassInstances:
+        ClassNormal.append(Normal(data))
+    return ClassIndex, ClassNormal    
 
-# Returns list of discrete classes and frequency of classes
-def Classes(data):
-    Classes = []
-    Frequency = []
-    if isinstance(data, ndarray):
-        for instance in data:
-            try:
-                # Try to increment a Classes frequency by one watching for the ValueError exception if the Class doesn't exist.
-                Frequency[Classes.index(instance[len(instance)-1])] = Frequency[Classes.index(instance[len(instance)-1])] + 1
-            except ValueError:
-                # Add the class to the list and add a frequency count of one.
-                Classes.append(instance[len(instance)-1])
-                Frequency.append(1)
-    return Classes, Frequency
 
