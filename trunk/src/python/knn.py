@@ -1,4 +1,4 @@
-import util
+from util import *
 
 def kNearestNeighbors(instance, data, k=10):
     Neighbors = []
@@ -15,3 +15,5 @@ def kNearestNeighbors(instance, data, k=10):
     # Add them back in case Python passes by reference
     for instance in Neighbors:
         data.append(instance)
+    return Neighbors
+
