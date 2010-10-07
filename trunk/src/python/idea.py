@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/local/bin/python2.6
 
 from arff import *
 import csv
@@ -87,6 +87,7 @@ class Idea:
 		return fig
 
 	def WriteToPNG(self, fig, filename):
+		plt.show()
 		plt.savefig("%s.png" % filename)
 
 	def ComputeCoordinates(self,Parameters):
