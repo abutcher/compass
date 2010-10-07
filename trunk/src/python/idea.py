@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.collections as collections
 from optparse import OptionParser
 from util import *
+from quadrant import *
+from instance import *
 
 class Idea:
 	East = None
@@ -193,28 +195,6 @@ class Idea:
 				for instance in data:
 					print instance.datum
 		return Quadrants
-
-class Quadrant:
-	xmin = None
-	xmax = None
-	ymin = None
-	ymax = None
-	Data=[] # Collection of instances which have coordinates and data information attached.
-
-	def __init__(self, XMin, XMax, YMin, YMax, Data):
-		self.xmin = XMin
-		self.xmax = XMax
-		self.ymin = YMin
-		self.ymax = YMax
-		self.Data = Data
-
-class Instance:
-	coords = None
-	datum = None
-
-	def __init__(self, coords, datum):
-		self.coords = coords
-		self.datum = datum
 
 class CompassGraphParameters:
         m = 4
