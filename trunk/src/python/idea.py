@@ -75,15 +75,15 @@ class Idea:
 			ax1.set_xbound(0,1)
 			ax1.set_ybound(0,1)
 
-		for i in range(len(Quadrants)):
-			if (Quadrants[i].DataCoordinates != []):
-				print Quadrants[i].DataCoordinates
-				xmin = Quadrants[i].xmin
-				xmax = Quadrants[i].xmax
-				ymin = Quadrants[i].ymin
-				ymax = Quadrants[i].ymax
-				ax.broken_barh([ (xmin, 1.0/Parameters.n) ], (ymin, 1.0/Parameters.n), facecolors='blue') 
-
+		if Parameters.Cluster:
+			for i in range(len(Quadrants)):
+				if (Quadrants[i].DataCoordinates != []):
+					print Quadrants[i].DataCoordinates
+					xmin = Quadrants[i].xmin
+					xmax = Quadrants[i].xmax
+					ymin = Quadrants[i].ymin
+					ymax = Quadrants[i].ymax
+					ax.broken_barh([ (xmin, 1.0/Parameters.n) ], (ymin, 1.0/Parameters.n), facecolors='blue') 
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -175,8 +175,9 @@ class CompassGraphParameters:
 	logY = False
 	Magnetic = False
 	Normalize = False
+	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -185,6 +186,7 @@ class CompassGraphParameters:
 		self.Normalize = inputNormalize
 		self.EqualWidth = inputEqualWidth
 		self.EqualFrequency = inputEqualFrequency
+		self.Cluster = cluster
 	
 def main():
 	ErrorState = "n"
@@ -198,6 +200,7 @@ def main():
 	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
 	parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
         parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
+	parser.add_option("--cluster", dest="cluster", default=False, metavar="NONE", action="store_true", help="Enables quadrant clustering.")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -217,7 +220,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster)
 
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
