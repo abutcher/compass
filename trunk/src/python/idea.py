@@ -145,6 +145,34 @@ class Idea:
 		Quadrants = []
 		# Logic here for building based on the type of gridding.
 
+		# XTICKS
+		# [0.90749189229765503, 1.0]
+		# YTICKS
+		# [0.80968210514920547, 0.0]
+
+		# Transposed
+		# [[0.90749189229765503, 0.80968210514920547], 
+		#  [1.0, 0.0]]
+
+		# Do something with these, I think we need the boundary ticks, more tomorrow.
+		"""
+		for x, y in ticks:
+			xmin = 
+			xmax = 
+			ymin = 
+			ymax = 
+			data = []
+			for i in range(len(self.DataCoordinates)):
+				xcoord = self.DataCoordinates[i][0]
+				ycoord = self.DataCoordinates[i][1]
+				if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
+					data.append(Instance(self.DataCoordinates[i], self.data[i]))
+				Quadrants.append(Quadrant(xmin, xmax, ymin, ymax, data))
+			print "Has data:"
+			for instance in data:
+				print instance.datum
+		"""	
+
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
 		for x in range(Parameters.n):
