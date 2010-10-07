@@ -77,8 +77,8 @@ class Idea:
 
 		if Parameters.Cluster:
 			for i in range(len(Quadrants)):
-				if (Quadrants[i].DataCoordinates != []):
-					print Quadrants[i].DataCoordinates
+				if (Quadrants[i].Data != []):
+					#print Quadrants[i].Data
 					xmin = Quadrants[i].xmin
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
@@ -132,9 +132,11 @@ class Idea:
 		data.append(East)
 		return East, West
 
-
 	def Quadrants(self, Parameters):
 		Quadrants = []
+		# Logic here for building based on the type of gridding.
+
+		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
@@ -143,15 +145,16 @@ class Idea:
 				ymin = float(y)/Parameters.n
 				ymax = (float(y)/Parameters.n) + (1.0/Parameters.n)
 				print "Quadrant defined by\n\txmin: %f\n\txmax: %f\n\tymin: %f\n\tymax: %f\n" % (xmin, xmax, ymin, ymax)
-				coordinates = []
+				data = []
 				for i in range(len(self.DataCoordinates)):
 					xcoord = self.DataCoordinates[i][0]
 					ycoord = self.DataCoordinates[i][1]
 					if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
-						coordinates.append(self.DataCoordinates[i])
-					Quadrants.append(Quadrant(xmin,xmax,ymin,ymax, coordinates))
-				print "Has coordinates:"
-				print coordinates
+						data.append(Instance(self.DataCoordinates[i], self.data[i]))
+					Quadrants.append(Quadrant(xmin, xmax, ymin, ymax, data))
+				print "Has data:"
+				for instance in data:
+					print instance.datum
 		return Quadrants
 
 class Quadrant:
@@ -159,14 +162,22 @@ class Quadrant:
 	xmax = None
 	ymin = None
 	ymax = None
-	DataCoordinates=[]
+	Data=[]
 
-	def __init__(self, XMin, XMax, YMin, YMax, Coordinates):
+	def __init__(self, XMin, XMax, YMin, YMax, Data):
 		self.xmin = XMin
 		self.xmax = XMax
 		self.ymin = YMin
 		self.ymax = YMax
-		self.DataCoordinates = Coordinates
+		self.Data = Data
+
+class Instance:
+	coords = None
+	datum = None
+
+	def __init__(self, coords, datum):
+		self.coords = coords
+		self.datum = datum
 
 class CompassGraphParameters:
         m = 4
