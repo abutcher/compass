@@ -36,7 +36,7 @@ class Idea:
 				self.West = tmp
 				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 				
-	def GenerateFigure(self, filename, Parameters, Quadrants):
+	def GenerateFigure(self, filename, Parameters):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
 		ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
@@ -49,6 +49,12 @@ class Idea:
                 elif Parameters.EqualFrequency == True:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
+
+		print "XTICKS"
+		print xticks
+		print "YTICKS"
+		print yticks
+
 		ax1.set_xticks(xticks)
 		ax1.set_yticks(yticks)
 		plt.title(filename)
@@ -76,6 +82,9 @@ class Idea:
 			ax1.set_ybound(0,1)
 
 		if Parameters.Cluster:
+			self.DataCoordinates = self.DataCoordinates.transpose()
+			Quadrants = self.Quadrants(Parameters)
+
 			for i in range(len(Quadrants)):
 				if (Quadrants[i].Data != []):
 					#print Quadrants[i].Data
@@ -137,7 +146,7 @@ class Idea:
 		# Logic here for building based on the type of gridding.
 
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
-		# Assuming axes are 1.0 -> 1.0
+		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
@@ -162,7 +171,7 @@ class Quadrant:
 	xmax = None
 	ymin = None
 	ymax = None
-	Data=[]
+	Data=[] # Collection of instances which have coordinates and data information attached.
 
 	def __init__(self, XMin, XMax, YMin, YMax, Data):
 		self.xmin = XMin
@@ -236,7 +245,7 @@ def main():
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
 #	ideaplot.Quadrants(parameters)
-	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters, ideaplot.Quadrants(parameters)), filename)
+	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename)
 
 if __name__ == '__main__':
 	main()
