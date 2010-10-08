@@ -42,8 +42,8 @@ class CompassGraph:
 		ticks = []
 		for i in range(Parameters.n):
 			ticks.append( ( float(i)+1.0 )* (1.0/float(Parameters.n) ) )
-		ax1.set_xticks(ticks)
-		ax1.set_yticks(ticks)
+		#ax1.set_xticks(ticks)
+		#ax1.set_yticks(ticks)
 		plt.title(filename)
 		plt.xlabel("x")
 		plt.ylabel("y")
@@ -109,13 +109,13 @@ class CompassGraph:
 				Classes = numpy.vstack((Classes,numpy.array([instance[len(instance)-1]])))
 		# Normalize coordinates
 		for datum in DataCoordinates:
+			if Parameters.Normalize is True:
+				datum[0] = datum[0] / MaxX
+				datum[1] = datum[1] / MaxY
 			if Parameters.logX is True:
 				datum[0] = math.log(datum[0]+0.0001)
 			if Parameters.logY is True:
 				datum[1] = math.log(datum[1]+0.0001)
-			if Parameters.Normalize is True:
-				datum[0] = datum[0] / MaxX
-				datum[1] = datum[1] / MaxY
 		return DataCoordinates, Classes
 
 	def FindPoles(self,data):

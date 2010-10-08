@@ -135,6 +135,7 @@ class Idea:
 	def Quadrants(self, Parameters):
 		Quadrants = []
 		# Assuming axes are 1.0 -> 1.0
+		# I've added two functions to util.py EqualWidthTicks and EqualFrequencyTicks that will generate the ticks for you.
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
