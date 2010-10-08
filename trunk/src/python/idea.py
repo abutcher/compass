@@ -182,6 +182,7 @@ class Idea:
 		"""
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
+>>>>>>> 3799469e0a267fef425c16ae4768421420112b8b
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
