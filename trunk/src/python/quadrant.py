@@ -25,3 +25,9 @@ class Quadrant:
 			for datum in instance.datum:
 				classes.append(datum[-1])
 		return numpy.std(classes)
+	
+	def DataCoordinates(self):
+		coords = []
+		for instance in self.Data:
+			coords.append(instance.coords)
+		return coords
