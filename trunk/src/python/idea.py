@@ -93,9 +93,13 @@ class Idea:
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
-					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='blue', alpha='0.5') 
-
-
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gold', alpha='0.5')
+				else:
+					xmin = Quadrants[i].xmin
+					xmax = Quadrants[i].xmax
+					ymin = Quadrants[i].ymin
+					ymax = Quadrants[i].ymax
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.5')
 
 		ax1.set_xticks(self.xticks)
 		ax1.set_yticks(self.yticks)
@@ -167,7 +171,6 @@ class Idea:
 		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0, self.DataCoordinates, self.data))
 
 
-		# Initial four quadrants are done, time to recurse
 		for Quadrant in Quadrants:
 			if len(Quadrant.Data) > 4:
 #				print "Length is: %d" % len(Quadrant.Data)
@@ -176,13 +179,12 @@ class Idea:
 #				print "Ymin: %f" % Quadrant.ymin
 #				print "Ymax: %f" % Quadrant.ymax
 				newQuadrants = self.SplitQuadrant(Quadrant, Parameters)
-				Quadrants.remove(Quadrant)
-				Quadrants += newQuadrants
+#				Quadrants.remove(Quadrant)
+#				Quadrants += newQuadrants
 
 		"""
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
->>>>>>> 3799469e0a267fef425c16ae4768421420112b8b
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
@@ -208,7 +210,7 @@ class Idea:
 		for i in range(len(DataCoordinates)):
 			xcoord = DataCoordinates[i][0]
 			ycoord = DataCoordinates[i][1]
-			if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
+			if ( xcoord > xmin and xcoord < xmax ) and ( ycoord > ymin and ycoord < ymax ):
 				QuadrantData.append(Instance(DataCoordinates[i], data[i]))
 		return Quadrant(xmin, xmax, ymin, ymax, QuadrantData)
 
