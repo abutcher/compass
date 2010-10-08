@@ -60,3 +60,9 @@ class Quadrant:
                 else:
                         # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
                         print("DO IT... NUMERICALLY!")
+	
+	def DataCoordinates(self):
+		coords = []
+		for instance in self.Data:
+			coords.append(instance.coords)
+		return coords

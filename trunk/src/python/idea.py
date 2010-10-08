@@ -1,4 +1,4 @@
-#!/opt/local/bin/python2.6
+#!/usr/bin/env python
 
 from arff import *
 import csv
@@ -17,6 +17,8 @@ class Idea:
 	data = []
 	DataCoordinates = []
 	Classes = []
+	xticks = []
+	yticks = []
 
 	def __init__(self, InputData,Parameters):
 		self.data = InputData
@@ -52,18 +54,16 @@ class Idea:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
 
-		print "XTICKS"
-		print xticks
-		print "YTICKS"
-		print yticks
+		self.UpdateTicks(xticks, yticks)
 
-		ax1.set_xticks(xticks)
-		ax1.set_yticks(yticks)
 		plt.title(filename)
 		plt.xlabel("x")
 		plt.ylabel("y")
+
 		for ax in fig.axes:
 			ax.grid(True)
+
+
 		if isinstance(self.Classes[0][0],str):
 			# Discrete class values.
 			for i in range(len(self.DataCoordinates[0])):
@@ -89,12 +89,20 @@ class Idea:
 
 			for i in range(len(Quadrants)):
 				if (Quadrants[i].Data != []):
-					#print Quadrants[i].Data
 					xmin = Quadrants[i].xmin
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
-					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='blue') 
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gold', alpha='0.5')
+				else:
+					xmin = Quadrants[i].xmin
+					xmax = Quadrants[i].xmax
+					ymin = Quadrants[i].ymin
+					ymax = Quadrants[i].ymax
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.5')
+
+		ax1.set_xticks(self.xticks)
+		ax1.set_yticks(self.yticks)
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -151,22 +159,32 @@ class Idea:
 		y = yticks[0]
 
 		# Bottom Left
-		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y))
+		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y, self.DataCoordinates, self.data))
 		
 		# Bottom Right
-		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y))
+		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y, self.DataCoordinates, self.data))
 
 		# Top Left
-		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0))
+		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0, self.DataCoordinates, self.data))
 
 		# Top Right
-		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0))
-		
-				
+		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0, self.DataCoordinates, self.data))
+
+
+		for Quadrant in Quadrants:
+			if len(Quadrant.Data) > 4:
+#				print "Length is: %d" % len(Quadrant.Data)
+#				print "Xmin: %f" % Quadrant.xmin
+#				print "Xmax: %f" % Quadrant.xmax
+#				print "Ymin: %f" % Quadrant.ymin
+#				print "Ymax: %f" % Quadrant.ymax
+				newQuadrants = self.SplitQuadrant(Quadrant, Parameters)
+#				Quadrants.remove(Quadrant)
+#				Quadrants += newQuadrants
+
 		"""
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
->>>>>>> 3799469e0a267fef425c16ae4768421420112b8b
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
@@ -187,14 +205,56 @@ class Idea:
 		"""
 		return Quadrants
 
-	def MakeQuadrant(self, xmin, xmax, ymin, ymax):
-		data = []
-		for i in range(len(self.DataCoordinates)):
-			xcoord = self.DataCoordinates[i][0]
-			ycoord = self.DataCoordinates[i][1]
-			if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
-				data.append(Instance(self.DataCoordinates[i], self.data[i]))
-		return Quadrant(xmin, xmax, ymin, ymax, data)
+	def MakeQuadrant(self, xmin, xmax, ymin, ymax, DataCoordinates, data):
+		QuadrantData = []
+		for i in range(len(DataCoordinates)):
+			xcoord = DataCoordinates[i][0]
+			ycoord = DataCoordinates[i][1]
+			if ( xcoord > xmin and xcoord < xmax ) and ( ycoord > ymin and ycoord < ymax ):
+				QuadrantData.append(Instance(DataCoordinates[i], data[i]))
+		return Quadrant(xmin, xmax, ymin, ymax, QuadrantData)
+
+	def SplitQuadrant(self, Quadrant, Parameters):
+		print "Splitting"
+		Quadrants = []
+		Data = Quadrant.Data
+		Coords = Quadrant.DataCoordinates()
+
+		xminBorder = Quadrant.xmin
+		xmaxBorder = Quadrant.xmax
+		yminBorder = Quadrant.ymin
+		ymaxBorder = Quadrant.ymax
+		
+		xticks = EqualFrequencyTicks(Coords,0,Parameters.m)
+		yticks = EqualFrequencyTicks(Coords,1,Parameters.n)
+
+		self.UpdateTicks(xticks, yticks)
+
+#		print "xticks"
+#		print xticks
+#		print "yticks"
+#		print yticks
+
+		x = xticks[1]
+		y = yticks[1]
+		
+		# Bottom Left
+		Quadrants.append(self.MakeQuadrant(xminBorder, x, yminBorder, y, self.DataCoordinates, self.data))
+		
+		# Bottom Right
+		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, yminBorder, y, self.DataCoordinates, self.data))
+
+		# Top Left
+		Quadrants.append(self.MakeQuadrant(xminBorder, x, y, ymaxBorder, self.DataCoordinates, self.data))
+
+		# Top Right
+		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, y, ymaxBorder, self.DataCoordinates, self.data))
+
+		return Quadrants
+
+	def UpdateTicks(self, xticks, yticks):
+		self.xticks += xticks
+		self.yticks += yticks
 
 class CompassGraphParameters:
         m = 4
