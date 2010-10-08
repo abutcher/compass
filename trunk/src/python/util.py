@@ -85,6 +85,16 @@ def FindMinMax(data,indice):
             maxScore = data[i][indice]
     return minScore, maxScore
 
+def FindMinMax(data):
+    maxScore = 0
+    minScore = 99999999999
+    for i in range(len(data)):
+        if data[i][len(data[i])-1] < minScore:
+            minScore = data[i][len(data[i])-1]
+        if data[i][len(data[i])-1] > maxScore:
+            maxScore = data[i][len(data[i])-1]
+    return minScore, maxScore
+
 def Normalize(data):
     normalData=[]
     minScore, maxScore = FindMinMax(data)

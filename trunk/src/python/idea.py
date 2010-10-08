@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/local/bin/python2.6
 
 from arff import *
 import csv
@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.collections as collections
 from optparse import OptionParser
 from util import *
+from quadrant import *
+from instance import *
 
 class Idea:
 	East = None
@@ -36,7 +38,7 @@ class Idea:
 				self.West = tmp
 				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
 				
-	def GenerateFigure(self, filename, Parameters, Quadrants):
+	def GenerateFigure(self, filename, Parameters):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
 		ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
@@ -49,6 +51,12 @@ class Idea:
                 elif Parameters.EqualFrequency == True:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
+
+		print "XTICKS"
+		print xticks
+		print "YTICKS"
+		print yticks
+
 		ax1.set_xticks(xticks)
 		ax1.set_yticks(yticks)
 		plt.title(filename)
@@ -75,18 +83,22 @@ class Idea:
 			ax1.set_xbound(0,1)
 			ax1.set_ybound(0,1)
 
-		for i in range(len(Quadrants)):
-			if (Quadrants[i].DataCoordinates != []):
-				print Quadrants[i].DataCoordinates
-				xmin = Quadrants[i].xmin
-				xmax = Quadrants[i].xmax
-				ymin = Quadrants[i].ymin
-				ymax = Quadrants[i].ymax
-				ax.broken_barh([ (xmin, 1.0/Parameters.n) ], (ymin, 1.0/Parameters.n), facecolors='blue') 
+		if Parameters.Cluster:
+			self.DataCoordinates = self.DataCoordinates.transpose()
+			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
+			for i in range(len(Quadrants)):
+				if (Quadrants[i].Data != []):
+					#print Quadrants[i].Data
+					xmin = Quadrants[i].xmin
+					xmax = Quadrants[i].xmax
+					ymin = Quadrants[i].ymin
+					ymax = Quadrants[i].ymax
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='blue') 
 		return fig
 
 	def WriteToPNG(self, fig, filename):
+		plt.show()
 		plt.savefig("%s.png" % filename)
 
 	def ComputeCoordinates(self,Parameters):
@@ -131,11 +143,30 @@ class Idea:
 		data.append(East)
 		return East, West
 
-
-	def Quadrants(self, Parameters):
+	def MakeQuadrants(self, Parameters, xticks, yticks):
 		Quadrants = []
-		# Assuming axes are 1.0 -> 1.0
-		# I've added two functions to util.py EqualWidthTicks and EqualFrequencyTicks that will generate the ticks for you.
+
+		# Assume we're doing a 4 way split, then we only have one point of interest to split on.
+		x = xticks[0]
+		y = yticks[0]
+
+		# Bottom Left
+		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y))
+		
+		# Bottom Right
+		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y))
+
+		# Top Left
+		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0))
+
+		# Top Right
+		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0))
+		
+				
+		"""
+		# This is simply for --n integer and has not yet been implemented for equal freq etc.
+		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
+>>>>>>> 3799469e0a267fef425c16ae4768421420112b8b
 		for x in range(Parameters.n):
 			for y in range(Parameters.n):
 				xmin = float(x)/Parameters.n
@@ -143,30 +174,27 @@ class Idea:
 				ymin = float(y)/Parameters.n
 				ymax = (float(y)/Parameters.n) + (1.0/Parameters.n)
 				print "Quadrant defined by\n\txmin: %f\n\txmax: %f\n\tymin: %f\n\tymax: %f\n" % (xmin, xmax, ymin, ymax)
-				coordinates = []
+				data = []
 				for i in range(len(self.DataCoordinates)):
 					xcoord = self.DataCoordinates[i][0]
 					ycoord = self.DataCoordinates[i][1]
 					if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
-						coordinates.append(self.DataCoordinates[i])
-					Quadrants.append(Quadrant(xmin,xmax,ymin,ymax, coordinates))
-				print "Has coordinates:"
-				print coordinates
+						data.append(Instance(self.DataCoordinates[i], self.data[i]))
+					Quadrants.append(Quadrant(xmin, xmax, ymin, ymax, data))
+				print "Has data:"
+				for instance in data:
+					print instance.datum
+		"""
 		return Quadrants
 
-class Quadrant:
-	xmin = None
-	xmax = None
-	ymin = None
-	ymax = None
-	DataCoordinates=[]
-
-	def __init__(self, XMin, XMax, YMin, YMax, Coordinates):
-		self.xmin = XMin
-		self.xmax = XMax
-		self.ymin = YMin
-		self.ymax = YMax
-		self.DataCoordinates = Coordinates
+	def MakeQuadrant(self, xmin, xmax, ymin, ymax):
+		data = []
+		for i in range(len(self.DataCoordinates)):
+			xcoord = self.DataCoordinates[i][0]
+			ycoord = self.DataCoordinates[i][1]
+			if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
+				data.append(Instance(self.DataCoordinates[i], self.data[i]))
+		return Quadrant(xmin, xmax, ymin, ymax, data)
 
 class CompassGraphParameters:
         m = 4
@@ -175,8 +203,9 @@ class CompassGraphParameters:
 	logY = False
 	Magnetic = False
 	Normalize = False
+	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -185,6 +214,7 @@ class CompassGraphParameters:
 		self.Normalize = inputNormalize
 		self.EqualWidth = inputEqualWidth
 		self.EqualFrequency = inputEqualFrequency
+		self.Cluster = cluster
 	
 def main():
 	ErrorState = "n"
@@ -198,6 +228,7 @@ def main():
 	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
 	parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
         parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
+	parser.add_option("--cluster", dest="cluster", default=False, metavar="NONE", action="store_true", help="Enables quadrant clustering.")
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -217,12 +248,12 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster)
 
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
 #	ideaplot.Quadrants(parameters)
-	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters, ideaplot.Quadrants(parameters)), filename)
+	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename)
 
 if __name__ == '__main__':
 	main()
