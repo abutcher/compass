@@ -97,7 +97,7 @@ class Idea:
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
-					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='red', alpha='0.2')
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.2')
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -171,11 +171,16 @@ class Idea:
 		def walk(quadrant):
 			if quadrant.children != []:
 				for child in quadrant.children:
-					if len(child.Data) >= 4:
+					if len(child.Data) >= 6:
 						child.children = self.SplitQuadrant(child, Parameters)
 						for grandchild in child.children:
 							walk(grandchild)
-		
+			else:
+				if len(quadrant.Data) > 6:
+					quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+					for child in quadrant.children:
+						walk(child)
+
 		walk(root)
 		leaflist = []
 
