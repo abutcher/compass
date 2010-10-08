@@ -85,7 +85,7 @@ class Idea:
 
 		if Parameters.Cluster:
 			self.DataCoordinates = self.DataCoordinates.transpose()
-			Quadrants = self.Quadrants(Parameters)
+			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
 			for i in range(len(Quadrants)):
 				if (Quadrants[i].Data != []):
@@ -94,7 +94,7 @@ class Idea:
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
-					ax.broken_barh([ (xmin, 1.0/Parameters.n) ], (ymin, 1.0/Parameters.n), facecolors='blue') 
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='blue') 
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -143,38 +143,27 @@ class Idea:
 		data.append(East)
 		return East, West
 
-	def Quadrants(self, Parameters):
+	def MakeQuadrants(self, Parameters, xticks, yticks):
 		Quadrants = []
-		# Logic here for building based on the type of gridding.
 
-		# XTICKS
-		# [0.90749189229765503, 1.0]
-		# YTICKS
-		# [0.80968210514920547, 0.0]
+		# Assume we're doing a 4 way split, then we only have one point of interest to split on.
+		x = xticks[0]
+		y = yticks[0]
 
-		# Transposed
-		# [[0.90749189229765503, 0.80968210514920547], 
-		#  [1.0, 0.0]]
+		# Bottom Left
+		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y))
+		
+		# Bottom Right
+		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y))
 
-		# Do something with these, I think we need the boundary ticks, more tomorrow.
+		# Top Left
+		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0))
+
+		# Top Right
+		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0))
+		
+				
 		"""
-		for x, y in ticks:
-			xmin = 
-			xmax = 
-			ymin = 
-			ymax = 
-			data = []
-			for i in range(len(self.DataCoordinates)):
-				xcoord = self.DataCoordinates[i][0]
-				ycoord = self.DataCoordinates[i][1]
-				if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
-					data.append(Instance(self.DataCoordinates[i], self.data[i]))
-				Quadrants.append(Quadrant(xmin, xmax, ymin, ymax, data))
-			print "Has data:"
-			for instance in data:
-				print instance.datum
-		"""	
-
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
 		# Assuming axes are 1.0 -> 1.0 and split by Parameters.n
 		for x in range(Parameters.n):
@@ -194,7 +183,17 @@ class Idea:
 				print "Has data:"
 				for instance in data:
 					print instance.datum
+		"""
 		return Quadrants
+
+	def MakeQuadrant(self, xmin, xmax, ymin, ymax):
+		data = []
+		for i in range(len(self.DataCoordinates)):
+			xcoord = self.DataCoordinates[i][0]
+			ycoord = self.DataCoordinates[i][1]
+			if ( xcoord >= xmin and xcoord <= xmax ) and ( ycoord >= ymin and ycoord <= ymax ):
+				data.append(Instance(self.DataCoordinates[i], self.data[i]))
+		return Quadrant(xmin, xmax, ymin, ymax, data)
 
 class CompassGraphParameters:
         m = 4
