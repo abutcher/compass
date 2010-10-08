@@ -4,6 +4,7 @@ class Quadrant:
 	ymin = None
 	ymax = None
 	Data=[] # Collection of instances which have coordinates and data information attached.
+	children = []
 
 	def __init__(self, XMin, XMax, YMin, YMax, Data):
 		self.xmin = XMin

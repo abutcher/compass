@@ -17,8 +17,6 @@ class Idea:
 	data = []
 	DataCoordinates = []
 	Classes = []
-	xticks = []
-	yticks = []
 
 	def __init__(self, InputData,Parameters):
 		self.data = InputData
@@ -54,15 +52,15 @@ class Idea:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
 
-		self.UpdateTicks(xticks, yticks)
 
+		ax1.set_xticks(xticks)
+		ax1.set_yticks(yticks)
 		plt.title(filename)
 		plt.xlabel("x")
 		plt.ylabel("y")
 
 		for ax in fig.axes:
 			ax.grid(True)
-
 
 		if isinstance(self.Classes[0][0],str):
 			# Discrete class values.
@@ -88,7 +86,7 @@ class Idea:
 			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
 			for i in range(len(Quadrants)):
-				if (Quadrants[i].Data != []):
+				if (Quadrants[i].Data != []) and (len(Quadrants[i].Data) > 4):
 					xmin = Quadrants[i].xmin
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
@@ -99,10 +97,7 @@ class Idea:
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
-					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.5')
-
-		ax1.set_xticks(self.xticks)
-		ax1.set_yticks(self.yticks)
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='red', alpha='0.2')
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -160,27 +155,39 @@ class Idea:
 
 		# Bottom Left
 		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y, self.DataCoordinates, self.data))
-		
 		# Bottom Right
 		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y, self.DataCoordinates, self.data))
-
 		# Top Left
 		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0, self.DataCoordinates, self.data))
-
 		# Top Right
 		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0, self.DataCoordinates, self.data))
 
+		# Treat quadrants as a tree, where root is the initial board.
+		root = self.MakeQuadrant(0.0,1.0,0.0,1.0, self.DataCoordinates, self.data)
+		root.children = Quadrants
 
-		for Quadrant in Quadrants:
-			if len(Quadrant.Data) > 4:
-#				print "Length is: %d" % len(Quadrant.Data)
-#				print "Xmin: %f" % Quadrant.xmin
-#				print "Xmax: %f" % Quadrant.xmax
-#				print "Ymin: %f" % Quadrant.ymin
-#				print "Ymax: %f" % Quadrant.ymax
-				newQuadrants = self.SplitQuadrant(Quadrant, Parameters)
-#				Quadrants.remove(Quadrant)
-#				Quadrants += newQuadrants
+		# Nested functions, how pleasant...
+
+		def walk(quadrant):
+			if quadrant.children != []:
+				for child in quadrant.children:
+					if len(child.Data) >= 4:
+						child.children = self.SplitQuadrant(child, Parameters)
+						for grandchild in child.children:
+							walk(grandchild)
+		
+		walk(root)
+		leaflist = []
+
+		def collectleaves(quadrant):
+			if quadrant.children == []:
+				leaflist.append(quadrant)
+			else:
+				for child in quadrant.children:
+					collectleaves(child)
+				
+		collectleaves(root)
+		Quadrants = leaflist
 
 		"""
 		# This is simply for --n integer and has not yet been implemented for equal freq etc.
@@ -215,7 +222,6 @@ class Idea:
 		return Quadrant(xmin, xmax, ymin, ymax, QuadrantData)
 
 	def SplitQuadrant(self, Quadrant, Parameters):
-		print "Splitting"
 		Quadrants = []
 		Data = Quadrant.Data
 		Coords = Quadrant.DataCoordinates()
@@ -228,25 +234,15 @@ class Idea:
 		xticks = EqualFrequencyTicks(Coords,0,Parameters.m)
 		yticks = EqualFrequencyTicks(Coords,1,Parameters.n)
 
-		self.UpdateTicks(xticks, yticks)
-
-#		print "xticks"
-#		print xticks
-#		print "yticks"
-#		print yticks
-
 		x = xticks[1]
 		y = yticks[1]
 		
 		# Bottom Left
 		Quadrants.append(self.MakeQuadrant(xminBorder, x, yminBorder, y, self.DataCoordinates, self.data))
-		
 		# Bottom Right
 		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, yminBorder, y, self.DataCoordinates, self.data))
-
 		# Top Left
 		Quadrants.append(self.MakeQuadrant(xminBorder, x, y, ymaxBorder, self.DataCoordinates, self.data))
-
 		# Top Right
 		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, y, ymaxBorder, self.DataCoordinates, self.data))
 
