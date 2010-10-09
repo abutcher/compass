@@ -90,6 +90,9 @@ def stddev(values, meanval=None):
 def mean(values):
     return sum(values) / float(len(values))
 
+def MRE(actual, predicted):
+    return abs(actual - predicted) / actual
+
 def FindMinMax(data,indice):
     maxScore = 0
     minScore = 99999999999
