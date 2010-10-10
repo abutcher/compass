@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/local/bin/python2.6
 
 from arff import *
 import csv
@@ -10,6 +10,7 @@ from optparse import OptionParser
 from util import *
 from quadrant import *
 from instance import *
+from tile import *
 
 class Idea:
 	East = None
@@ -85,6 +86,7 @@ class Idea:
 			self.DataCoordinates = self.DataCoordinates.transpose()
 			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
+			"""
 			for i in range(len(Quadrants)):
 				if (Quadrants[i].Data != []) and (len(Quadrants[i].Data) > 4):
 					xmin = Quadrants[i].xmin
@@ -98,6 +100,16 @@ class Idea:
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
 					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.2')
+			"""		
+			Clusters = GRIDCLUS(Quadrants)
+			for Cluster in Clusters:
+				for Quadrant in Cluster:
+					xmin = Quadrant.xmin
+					xmax = Quadrant.xmax
+					ymin = Quadrant.ymin
+					ymax = Quadrant.ymax
+					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5')
+					
 		return fig
 
 	def WriteToPNG(self, fig, filename):
