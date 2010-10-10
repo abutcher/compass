@@ -10,7 +10,7 @@ from optparse import OptionParser
 from util import *
 from quadrant import *
 from instance import *
-from tile import *
+from gridclus import *
 
 class Idea:
 	East = None
@@ -88,19 +88,27 @@ class Idea:
 
 			"""
 			for i in range(len(Quadrants)):
-				if (Quadrants[i].Data != []) and (len(Quadrants[i].Data) > 4):
+			if (Quadrants[i].Data != []) and (len(Quadrants[i].Data) > 4):
 					xmin = Quadrants[i].xmin
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
 					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gold', alpha='0.5')
+
 				else:
 					xmin = Quadrants[i].xmin
 					xmax = Quadrants[i].xmax
 					ymin = Quadrants[i].ymin
 					ymax = Quadrants[i].ymax
 					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.2')
-			"""		
+			"""
+			for i in range(len(Quadrants)):
+				xmin = Quadrants[i].xmin
+				xmax = Quadrants[i].xmax
+				ymin = Quadrants[i].ymin
+				ymax = Quadrants[i].ymax
+				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white')
+			
 			Clusters = GRIDCLUS(Quadrants)
 			for Cluster in Clusters:
 				for Quadrant in Cluster:
