@@ -32,7 +32,7 @@ class Quadrant:
         # This Quadrant structure made this mad easy. Well played, Andrew! -Kel
         def Density(self):
                 N = len(self.Data)
-                Volume = (XMax - Xmin) * (YMax - YMin)
+                Volume = (self.xmax - self.xmin) * (self.ymax - self.ymin)
                 return N/Volume
 
         # Classify given an instance.
