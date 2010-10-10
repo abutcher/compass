@@ -1,4 +1,5 @@
 from util import *
+from statistics import *
 
 class Quadrant:
 	xmin = None
@@ -57,10 +58,36 @@ class Quadrant:
         def PerformanceScore(self):
                 if isinstance(str,self.Data[0][len(self.Data)-1]):
                         # This is a DEFECT set, so we calculate PD/PF for the true class
-                        print("DO IT... DISCRETELY!")
+                        Stats = DefectStats()
+                        for instance in self.Data:
+                                self.Data.remove(instance)
+                                Got = self.Classify(instance,"DEFECT")
+                                Want = instance[len(instance)-1]
+                                if Got is Want:
+                                        if Got is "true":
+                                                Stats.incf("TRUE","d")
+                                                Stats.incf("FALSE","a")
+                                        elif Got is "false":
+                                                Stats.incf("FALSE","d")
+                                                Stats.incf("TRUE","a")
+                                elif Got is not Want:
+                                        if Got is "true":
+                                                Stats.incf("TRUE","c")
+                                                Stats.incf("FALSE","b")
+                                        elif Got is "false":
+                                                Stats.incf("FALSE","b")
+                                                Stats.incf("TRUE","c")
+                                self.Data.append(instance)
+                        return [Stats.pd("TRUE"),Stats.pf("TRUE")]
                 else:
                         # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
-                        print("DO IT... NUMERICALLY!")
+                        MRE = []
+                        for instance in self.Data:
+                                self.Data.remove(instance)
+                                MRE.append(MRE(instance[len(instance)-1],self.Classify(instance, "EFFORT")))
+                                self.Data.append(instance)
+                        return median(MRE)
+                                
 	
 	def DataCoordinates(self):
 		coords = []
