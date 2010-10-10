@@ -16,4 +16,3 @@ def kNearestNeighbors(instance, data, k=10):
     for instance in Neighbors:
         data.append(instance)
     return Neighbors
-

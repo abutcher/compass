@@ -1,4 +1,4 @@
-#!/opt/local/bin/python2.6
+#!/usr/bin/env python
 
 from arff import *
 import csv
@@ -11,6 +11,8 @@ from util import *
 from quadrant import *
 from instance import *
 from gridclus import *
+from cluster import *
+
 
 class Idea:
 	East = None
@@ -102,6 +104,8 @@ class Idea:
 					ymax = Quadrants[i].ymax
 					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='gray', alpha='0.2')
 			"""
+
+			# Display the cuts we made
 			for i in range(len(Quadrants)):
 				xmin = Quadrants[i].xmin
 				xmax = Quadrants[i].xmax
@@ -109,6 +113,7 @@ class Idea:
 				ymax = Quadrants[i].ymax
 				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white')
 			
+			# Color the clusters green.
 			Clusters = GRIDCLUS(Quadrants)
 			for Cluster in Clusters:
 				for Quadrant in Cluster:
@@ -117,6 +122,16 @@ class Idea:
 					ymin = Quadrant.ymin
 					ymax = Quadrant.ymax
 					ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5')
+
+			# Gather performance scores for each cluster
+			Scores = []
+			for Cluster in Clusters:
+				Scores.append(PerformanceScore(Cluster))
+			
+			# Print the scores
+			print Scores
+
+			# We could do some coloring here based on the scores (best = green, okay = yellow, red = shitty
 					
 		return fig
 
