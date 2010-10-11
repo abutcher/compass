@@ -80,9 +80,9 @@ class Idea:
 			for i in range(len(self.DataCoordinates[0])):
 				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-normalData[i],normalData[i],0],markersize=3)
 			
-		if Parameters.Normalize == True:
-			ax1.set_xbound(0,1)
-			ax1.set_ybound(0,1)
+#		if Parameters.Normalize == True:
+#			ax1.set_xbound(0,1)
+#			ax1.set_ybound(0,1)
 
 		if Parameters.Cluster:
 			self.DataCoordinates = self.DataCoordinates.transpose()
