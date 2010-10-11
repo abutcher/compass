@@ -130,7 +130,7 @@ class Idea:
 			
 				
 			TYPE=""
-			if type(Scores[0][1][0].Data[0].datum[-1]) is str:
+			if self.Classes[0][0] == "TRUE":
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
 				TYPE = "DEFECT"
 			else:
