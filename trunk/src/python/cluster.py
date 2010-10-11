@@ -31,7 +31,8 @@ def PerformanceScore(cluster):
                 elif Got == "false":
                     Stats.incf("FALSE","b")
                     Stats.incf("TRUE","c")
-        return [Stats.pd("TRUE"),Stats.pf("TRUE")]
+       #return [Stats.pd("TRUE"),Stats.pf("TRUE")]
+        return Stats.HarmonicMean("TRUE")
     else:
         # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
         MDMRE = []
