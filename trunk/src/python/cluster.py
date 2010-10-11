@@ -6,7 +6,6 @@ from NaiveBayes import *
 
 def PerformanceScore(cluster):
     Data = []
-    print "Performance Score GO GO!"
     for quadrant in cluster:
         for instance in quadrant.Data:
             Data.append(instance.datum)
@@ -41,7 +40,6 @@ def PerformanceScore(cluster):
             Data.remove(instance)
             MDMRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
             Data.append(instance)
-        print(MDMRE)
         return median(MDMRE)
 
 def Classify(instance, Data, InputType=None):
