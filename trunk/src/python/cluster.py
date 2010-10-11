@@ -1,7 +1,12 @@
+from util import MRE
+from knn import *
+from NaiveBayes import *
+
 """ Statistics for a list of quadrants """
 
 def PerformanceScore(cluster):
     Data = []
+    print "Performance Score GO GO!"
     for quadrant in cluster:
         for instance in quadrant.Data:
             Data.append(instance.datum)
@@ -29,14 +34,14 @@ def PerformanceScore(cluster):
                     Stats.incf("TRUE","c")
                     Data.append(instance)
             return [Stats.pd("TRUE"),Stats.pf("TRUE")]
-        else:
-            # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
-            MDMRE = []
-            for instance in Data:
-                Data.remove(instance)
-                MDMRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
-                Data.append(instance)
-            return median(MDMRE)
+    else:
+        # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
+        MDMRE = []
+        for instance in Data:
+            Data.remove(instance)
+            MDMRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
+            Data.append(instance)
+        return median(MDMRE)
 
 def Classify(instance, Data, InputType=None):
     if InputType is None:
