@@ -1,6 +1,7 @@
 from util import MRE
 from knn import *
 from NaiveBayes import *
+from statistics import *
 
 """ Statistics for a list of quadrants """
 
@@ -14,25 +15,23 @@ def PerformanceScore(cluster):
         # This is a DEFECT set, so we calculate PD/PF for the true class
         Stats = DefectStats()
         for instance in Data:
-            Data.remove(instance)
             Got = Classify(instance, Data, "DEFECT")
             Want = instance[len(instance)-1]
-            if Got is Want:
-                if Got is "true":
+            if Got == Want:
+                if Got == "true":
                     Stats.incf("TRUE","d")
                     Stats.incf("FALSE","a")
-                elif Got is "false":
+                elif Got == "false":
                     Stats.incf("FALSE","d")
                     Stats.incf("TRUE","a")
-            elif Got is not Want:
-                if Got is "true":
+            elif Got != Want:
+                if Got == "true":
                     Stats.incf("TRUE","c")
                     Stats.incf("FALSE","b")
-                elif Got is "false":
+                elif Got == "false":
                     Stats.incf("FALSE","b")
                     Stats.incf("TRUE","c")
-                    Data.append(instance)
-            return [Stats.pd("TRUE"),Stats.pf("TRUE")]
+        return [Stats.pd("TRUE"),Stats.pf("TRUE")]
     else:
         # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
         MDMRE = []
@@ -49,7 +48,7 @@ def Classify(instance, Data, InputType=None):
         else:
             InputType="EFFORT"
     if InputType == "DEFECT":
-        Neigbors = kNearestNeighbors(instance,Data)
+        Neighbors = kNearestNeighbors(instance,Data)
         return NaiveBayesClassify(instance,Neighbors)
     elif InputType == "EFFORT":
         Neighbors = kNearestNeighbors(instance,Data)

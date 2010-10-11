@@ -8,7 +8,7 @@ class Normal:
     SumSquared = []
     
     def __init__(self,data):
-        for i in range(len(data)-1):
+        for i in range(len(data[0])):
             self.largest.append(0)
             self.smallest.append(99999999)
             self.n.append(len(data))
@@ -34,7 +34,10 @@ class Normal:
             return 0.00000001
 
     def GaussianPDF(self,Index,x):
-        return ( 1 / sqrt(2 * pi * pow(self.stdev(Index),2) )) * pow(e,-1 * ( pow( x - self.stdev(Index),2) / (2 * pow(self.stdev(Index),2))))
+        try:
+            return ( 1 / sqrt(2 * pi * pow(self.stdev(Index),2) )) * pow(e,-1 * ( pow( x - self.stdev(Index),2) / (2 * pow(self.stdev(Index),2))))
+        except:
+            return 0.0
             
         
 
