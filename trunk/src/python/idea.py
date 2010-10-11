@@ -170,7 +170,6 @@ class Idea:
 		return fig
 
 	def WriteToPNG(self, fig, filename):
-		plt.show()
 		plt.savefig("%s.png" % filename)
 
 	def ComputeCoordinates(self,Parameters):
