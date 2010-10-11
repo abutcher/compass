@@ -13,7 +13,6 @@ from instance import *
 from gridclus import *
 from cluster import *
 
-
 class Idea:
 	East = None
 	West = None
@@ -129,14 +128,21 @@ class Idea:
 			for Cluster in Clusters:
 				Scores.append((PerformanceScore(Cluster), Cluster))
 			
+				
+			TYPE=""
 			if type(Scores[0][1][0].Data[0].datum[-1]) is str:
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
-				
+				TYPE = "DEFECT"
 			else:
 				Scores = sorted(Scores, key=lambda score: score[0])
+				TYPE = "EFFORT"
 
 			for i in range(len(Scores)):
-				print Scores[i][0]
+				if TYPE == "DEFECT":
+					print "Harmonic Mean: %.2f" % Scores[i][0]
+				else:
+					print "MDMRE: %.2f" % Scores[i][0]
+
 				# Top 25%
 				if (i < len(Scores)/4):
 					for Quadrant in Scores[i][1]:
