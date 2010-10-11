@@ -219,21 +219,28 @@ class Idea:
 	def MakeQuadrants(self, Parameters, xticks, yticks):
 		Quadrants = []
 
+		# xticks
+		# [0.12950011803651956, 1.0]
+		# yticks
+		# [0.055597763327383122, 0.0]
+
 		# Assume we're doing a 4 way split, then we only have one point of interest to split on.
 		x = xticks[0]
 		y = yticks[0]
+		minn = yticks[1]
+		maxn = xticks[1]
 
 		# Bottom Left
-		Quadrants.append(self.MakeQuadrant(0.0, x, 0.0, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(minn, x, minn, y, self.DataCoordinates, self.data))
 		# Bottom Right
-		Quadrants.append(self.MakeQuadrant(x, 1.0, 0.0, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, maxn, minn, y, self.DataCoordinates, self.data))
 		# Top Left
-		Quadrants.append(self.MakeQuadrant(0.0, x, y, 1.0, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(minn, x, y, maxn, self.DataCoordinates, self.data))
 		# Top Right
-		Quadrants.append(self.MakeQuadrant(x, 1.0, y, 1.0, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, maxn, y, maxn, self.DataCoordinates, self.data))
 
 		# Treat quadrants as a tree, where root is the initial board.
-		root = self.MakeQuadrant(0.0,1.0,0.0,1.0, self.DataCoordinates, self.data)
+		root = self.MakeQuadrant(minn,maxn,minn,maxn, self.DataCoordinates, self.data)
 		root.children = Quadrants
 
 		# Nested functions, how pleasant...
