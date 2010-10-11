@@ -143,7 +143,7 @@ class Idea:
 					print "MDMRE: %.2f" % Scores[i][0]
 
 				# Top 25%
-				if (i < len(Scores)/4):
+				if (i < round(len(Scores)/4)):
 					for Quadrant in Scores[i][1]:
 						xmin = Quadrant.xmin
 						xmax = Quadrant.xmax
@@ -151,7 +151,7 @@ class Idea:
 						ymax = Quadrant.ymax
 						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5')
 				# Middle 50%
-				elif (i < len(Scores)/2) and (i > len(Scores)/4):
+				elif (i < round(len(Scores)/2)) and (i > round(len(Scores)/4)):
 					for Quadrant in Scores[i][1]:
 						xmin = Quadrant.xmin
 						xmax = Quadrant.xmax
@@ -159,7 +159,7 @@ class Idea:
 						ymax = Quadrant.ymax
 						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='yellow', alpha='0.5')
 				# Bottom 25%
-				elif (i < len(Scores)) and (i > len(Scores)/2):
+				elif (i < len(Scores)) and (i > round(len(Scores)/2)):
 					for Quadrant in Scores[i][1]:
 						xmin = Quadrant.xmin
 						xmax = Quadrant.xmax
@@ -225,8 +225,28 @@ class Idea:
 		# Assume we're doing a 4 way split, then we only have one point of interest to split on.
 		x = xticks[0]
 		y = yticks[0]
-		minn = yticks[1]
-		maxn = xticks[1]
+
+		minx = 9999999
+		miny = 9999999
+		for point in self.DataCoordinates:
+			if point[0] < minx:
+				minx = point[0]
+			if point[1] < miny:
+				miny = point[1]
+
+		maxx = -999999
+		maxy = -999999
+		for point in self.DataCoordinates:
+			if point[0] > maxx:
+				maxx = point[0]
+			if point[1] > maxy:
+				maxy = point[1]
+
+
+		minn = minx
+		maxn = maxy
+#		minn = yticks[1]
+#		maxn = xticks[1]
 
 		# Bottom Left
 		Quadrants.append(self.MakeQuadrant(minn, x, minn, y, self.DataCoordinates, self.data))
