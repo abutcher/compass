@@ -128,9 +128,8 @@ class Idea:
 			for Cluster in Clusters:
 				Scores.append((PerformanceScore(Cluster), Cluster))
 			
-				
 			TYPE=""
-			if self.Classes[0][0] == "TRUE":
+			if type(self.data[0][-1]) is str:
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
 				TYPE = "DEFECT"
 			else:
