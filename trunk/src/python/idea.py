@@ -68,16 +68,16 @@ class Idea:
 			# Discrete class values.
 			for i in range(len(self.DataCoordinates[0])):
 				if self.Classes[i][0].upper() == "TRUE":
-					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"bo",markersize=2,alpha=0.7)
+					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"bo",markersize=2,alpha=0.5)
 				else:
-					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"ro",markersize=2,alpha=0.7)
+					ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],"ro",markersize=2,alpha=0.5)
 		else:
 			# Continuous class values.
 			normalData = Normalize(self.data)
 
 			# Draw t3h datars.
 			for i in range(len(self.DataCoordinates[0])):
-				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-normalData[i],normalData[i],0],markersize=1,alpha=0.7)
+				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-normalData[i],normalData[i],0],markersize=2,alpha=0.5)
 			
 #		if Parameters.Normalize == True:
 #			ax1.set_xbound(0,1)
