@@ -14,13 +14,13 @@ def median(data):
     Scores = []
     for i in range(len(data)):
         try:
-            Scores.append(data[i][len(data)-1])
+            Scores.append(data[i][-1])
         except:
             Scores.append(data[i])
     Scores.sort()
     if len(Scores) % 2 == 0:
         middle = int(math.floor(len(Scores) / 2))
-        return int((Scores[middle] + Scores[middle+1]) / 2)
+        return (Scores[middle] + Scores[middle+1]) / 2
     else:
         return Scores[len(Scores) / 2]
     

@@ -31,12 +31,12 @@ def PerformanceScore(cluster):
             return [Stats.pd("TRUE"),Stats.pf("TRUE")]
         else:
             # This is likely an EFFORT set, so we calculate Median Magnitude of Relative Error
-            MRE = []
+            MDMRE = []
             for instance in Data:
                 Data.remove(instance)
-                MRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
+                MDMRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
                 Data.append(instance)
-            return median(MRE)
+            return median(MDMRE)
 
 def Classify(instance, Data, InputType=None):
     if InputType is None:
