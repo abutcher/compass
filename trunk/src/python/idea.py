@@ -126,11 +126,39 @@ class Idea:
 			# Gather performance scores for each cluster
 			Scores = []
 			for Cluster in Clusters:
-				Scores.append(PerformanceScore(Cluster))
+				Scores.append((PerformanceScore(Cluster), Cluster))
 			
-			# Print the scores
-			print Scores
-
+			if type(Scores[0][0]) is tuple: # Defect scores
+				print "DEFECT"
+			else:
+				Scores = sorted(Scores, key=lambda score: score[0])
+			
+				for i in range(len(Scores)):
+					# Top 25%
+					if (i < len(Scores)/4):
+						for Quadrant in Scores[i][1]:
+							xmin = Quadrant.xmin
+							xmax = Quadrant.xmax
+							ymin = Quadrant.ymin
+							ymax = Quadrant.ymax
+							ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5')
+				# Middle 50%
+					elif (i < len(Scores)/2) and (i > len(Scores)/4):
+						for Quadrant in Scores[i][1]:
+							xmin = Quadrant.xmin
+							xmax = Quadrant.xmax
+							ymin = Quadrant.ymin
+							ymax = Quadrant.ymax
+							ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='yellow', alpha='0.5')
+				# Bottom 25%
+					elif (i < len(Scores)) and (i > len(Scores)/2):
+						for Quadrant in Scores[i][1]:
+							xmin = Quadrant.xmin
+							xmax = Quadrant.xmax
+							ymin = Quadrant.ymin
+							ymax = Quadrant.ymax
+							ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='red', alpha='0.5')
+				
 			# We could do some coloring here based on the scores (best = green, okay = yellow, red = shitty
 					
 		return fig
