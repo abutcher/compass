@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Run Effort Sets
+echo "********** RUNNING EFFORT SETS **********"
+for FILENAME in arff/*.arff;
+do
+    echo $FILENAME
+    time /opt/local/bin/python2.6 idea.py --cluster --arff $FILENAME --equalfrequency --logX --logY --m 1 --n 1
+done
+
+# Run Defect Sets
+echo "********** RUNNING DEFECT SETS **********"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    time /opt/local/bin/python2.6 idea.py --cluster --arff $FILENAME --equalfrequency --logX --logY --m 1 --n 1
+done
