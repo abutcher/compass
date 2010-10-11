@@ -242,16 +242,16 @@ class Idea:
 		root.children = Quadrants
 
 		# Nested functions, how pleasant...
-
+		
 		def walk(quadrant):
 			if quadrant.children != []:
 				for child in quadrant.children:
-					if len(child.Data) >= 6:
+					if len(child.Data) >= int(Parameters.q):
 						child.children = self.SplitQuadrant(child, Parameters)
 						for grandchild in child.children:
 							walk(grandchild)
 			else:
-				if len(quadrant.Data) > 6:
+				if len(quadrant.Data) >= int(Parameters.q):
 					quadrant.children = self.SplitQuadrant(quadrant, Parameters)
 					for child in quadrant.children:
 						walk(child)
@@ -341,7 +341,7 @@ class CompassGraphParameters:
 	Normalize = False
 	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -351,6 +351,7 @@ class CompassGraphParameters:
 		self.EqualWidth = inputEqualWidth
 		self.EqualFrequency = inputEqualFrequency
 		self.Cluster = cluster
+		self.q = q
 	
 def main():
 	ErrorState = "n"
@@ -365,6 +366,8 @@ def main():
 	parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
         parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
 	parser.add_option("--cluster", dest="cluster", default=False, metavar="NONE", action="store_true", help="Enables quadrant clustering.")
+	parser.add_option("--q", dest="q", default=6, metavar="Q", help="Min quadrant size.")
+	
 	(options, args) = parser.parse_args()
 	
 	if options.arff == None:
@@ -384,7 +387,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q)
 
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
