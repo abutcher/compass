@@ -2,160 +2,167 @@ kelcecil@kelcecil-laptop:~/Research/compass/trunk/src/python$ ./run
 ********** RUNNING EFFORT SETS **********
 arff/albrecht.arff
 
-real	0m0.728s
-user	0m0.624s
-sys	0m0.056s
+real	0m0.760s
+user	0m0.616s
+sys	0m0.096s
 arff/china.arff
+MDMRE: 0.04
 MDMRE: 0.04
 MDMRE: 0.06
 MDMRE: 0.07
 MDMRE: 0.07
-MDMRE: 0.09
 MDMRE: 0.10
-MDMRE: 0.12
 MDMRE: 0.12
 MDMRE: 0.15
-MDMRE: 0.18
+MDMRE: 0.16
 MDMRE: 0.19
 MDMRE: 0.21
-MDMRE: 0.26
+MDMRE: 0.21
 MDMRE: 0.27
-MDMRE: 0.36
-MDMRE: 0.42
-MDMRE: 0.45
+MDMRE: 0.33
+MDMRE: 0.44
+MDMRE: 0.49
+MDMRE: 0.53
+MDMRE: 0.60
 MDMRE: 0.68
-MDMRE: 0.91
+MDMRE: 0.74
+MDMRE: 2.76
 
 real	0m2.617s
-user	0m2.512s
-sys	0m0.060s
+user	0m2.464s
+sys	0m0.096s
 arff/coc81.arff
+MDMRE: 1.96
+MDMRE: 5.30
 
-real	0m0.771s
-user	0m0.656s
-sys	0m0.080s
+real	0m0.964s
+user	0m0.828s
+sys	0m0.092s
 arff/cocomo_sdr.arff
-MDMRE: 1.89
 
-real	0m0.678s
-user	0m0.564s
-sys	0m0.076s
+real	0m0.683s
+user	0m0.560s
+sys	0m0.084s
 arff/desharnais_1_1.arff
-MDMRE: 0.00
+MDMRE: 0.25
 MDMRE: 0.50
-MDMRE: 0.50
+MDMRE: 1.50
 
-real	0m0.857s
-user	0m0.760s
-sys	0m0.064s
+real	0m0.906s
+user	0m0.780s
+sys	0m0.092s
 arff/finnish.arff
 MDMRE: 0.01
-MDMRE: 0.10
+MDMRE: 0.09
+MDMRE: 0.12
 
-real	0m0.731s
-user	0m0.616s
-sys	0m0.080s
+real	0m0.760s
+user	0m0.628s
+sys	0m0.088s
 arff/kemerer.arff
-MDMRE: 0.18
 
-real	0m0.679s
-user	0m0.552s
-sys	0m0.084s
-arff/maxwell.arff
-MDMRE: 0.57
-
-real	0m0.817s
-user	0m0.680s
-sys	0m0.092s
-arff/nasa93.arff
-MDMRE: 0.42
-
-real	0m2.569s
-user	0m2.476s
+real	0m0.704s
+user	0m0.608s
 sys	0m0.056s
-arff/telecom1.arff
+arff/maxwell.arff
 
-real	0m0.669s
-user	0m0.556s
+real	0m0.834s
+user	0m0.728s
+sys	0m0.060s
+arff/nasa93.arff
+MDMRE: 1.42
+
+real	0m1.334s
+user	0m1.220s
 sys	0m0.068s
+arff/telecom1.arff
+MDMRE: 1.15
+
+real	0m0.757s
+user	0m0.600s
+sys	0m0.108s
 ********** RUNNING DEFECT SETS **********
 arff/defect/ar3.arff
 Harmonic Mean: 0.00
 
-real	0m0.805s
-user	0m0.676s
-sys	0m0.080s
+real	0m0.826s
+user	0m0.696s
+sys	0m0.084s
 arff/defect/ar4.arff
 Harmonic Mean: 0.00
-Harmonic Mean: 0.00
 
-real	0m1.134s
-user	0m1.000s
-sys	0m0.096s
+real	0m1.038s
+user	0m0.908s
+sys	0m0.088s
 arff/defect/ar5.arff
 
-real	0m0.723s
-user	0m0.552s
-sys	0m0.116s
+real	0m0.709s
+user	0m0.612s
+sys	0m0.052s
 arff/defect/jm1.arff
 Harmonic Mean: 1.00
-Harmonic Mean: 1.00
+Harmonic Mean: 0.99
 Harmonic Mean: 0.98
 Harmonic Mean: 0.98
-Harmonic Mean: 0.97
-Harmonic Mean: 0.97
+Harmonic Mean: 0.98
+Harmonic Mean: 0.96
+Harmonic Mean: 0.95
 Harmonic Mean: 0.94
-Harmonic Mean: 0.93
+Harmonic Mean: 0.92
 Harmonic Mean: 0.92
 Harmonic Mean: 0.91
+Harmonic Mean: 0.91
+Harmonic Mean: 0.89
 Harmonic Mean: 0.89
 Harmonic Mean: 0.88
 Harmonic Mean: 0.88
 Harmonic Mean: 0.88
 Harmonic Mean: 0.88
-Harmonic Mean: 0.88
 Harmonic Mean: 0.87
 Harmonic Mean: 0.87
 Harmonic Mean: 0.86
-Harmonic Mean: 0.86
 Harmonic Mean: 0.85
 Harmonic Mean: 0.85
-Harmonic Mean: 0.84
+Harmonic Mean: 0.85
 Harmonic Mean: 0.84
 Harmonic Mean: 0.83
-Harmonic Mean: 0.82
-Harmonic Mean: 0.82
+Harmonic Mean: 0.83
+Harmonic Mean: 0.83
 Harmonic Mean: 0.81
 Harmonic Mean: 0.81
 Harmonic Mean: 0.80
 Harmonic Mean: 0.80
 Harmonic Mean: 0.80
+Harmonic Mean: 0.79
+Harmonic Mean: 0.78
 Harmonic Mean: 0.77
 Harmonic Mean: 0.76
 Harmonic Mean: 0.76
 Harmonic Mean: 0.76
-Harmonic Mean: 0.75
+Harmonic Mean: 0.76
+Harmonic Mean: 0.76
 Harmonic Mean: 0.73
 Harmonic Mean: 0.73
-Harmonic Mean: 0.72
 Harmonic Mean: 0.71
 Harmonic Mean: 0.70
 Harmonic Mean: 0.70
 Harmonic Mean: 0.69
 Harmonic Mean: 0.67
-Harmonic Mean: 0.67
-Harmonic Mean: 0.67
-Harmonic Mean: 0.67
+Harmonic Mean: 0.66
 Harmonic Mean: 0.65
 Harmonic Mean: 0.65
 Harmonic Mean: 0.65
 Harmonic Mean: 0.65
 Harmonic Mean: 0.64
+Harmonic Mean: 0.64
+Harmonic Mean: 0.63
 Harmonic Mean: 0.63
 Harmonic Mean: 0.62
 Harmonic Mean: 0.62
 Harmonic Mean: 0.61
 Harmonic Mean: 0.58
+Harmonic Mean: 0.57
+Harmonic Mean: 0.57
 Harmonic Mean: 0.57
 Harmonic Mean: 0.57
 Harmonic Mean: 0.56
@@ -167,12 +174,10 @@ Harmonic Mean: 0.53
 Harmonic Mean: 0.48
 Harmonic Mean: 0.46
 Harmonic Mean: 0.44
-Harmonic Mean: 0.41
 Harmonic Mean: 0.40
 Harmonic Mean: 0.36
 Harmonic Mean: 0.33
 Harmonic Mean: 0.33
-Harmonic Mean: 0.31
 Harmonic Mean: 0.25
 Harmonic Mean: 0.18
 Harmonic Mean: 0.17
@@ -282,22 +287,27 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
 
-real	1m59.812s
-user	1m59.051s
-sys	0m0.576s
+real	2m0.148s
+user	1m59.707s
+sys	0m0.344s
 arff/defect/kc1.arff
 Harmonic Mean: 0.94
-Harmonic Mean: 0.94
+Harmonic Mean: 0.90
 Harmonic Mean: 0.89
+Harmonic Mean: 0.84
+Harmonic Mean: 0.83
 Harmonic Mean: 0.81
-Harmonic Mean: 0.81
+Harmonic Mean: 0.79
 Harmonic Mean: 0.76
-Harmonic Mean: 0.74
-Harmonic Mean: 0.73
-Harmonic Mean: 0.73
-Harmonic Mean: 0.50
-Harmonic Mean: 0.33
+Harmonic Mean: 0.76
+Harmonic Mean: 0.40
+Harmonic Mean: 0.31
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
@@ -313,28 +323,31 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 
-real	0m11.828s
-user	0m11.645s
-sys	0m0.132s
+real	0m12.436s
+user	0m12.289s
+sys	0m0.100s
 arff/defect/kc2.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
 
-real	0m2.332s
-user	0m2.232s
-sys	0m0.064s
+real	0m2.196s
+user	0m2.068s
+sys	0m0.088s
 arff/defect/kc3.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
+Harmonic Mean: 0.00
 
-real	0m3.132s
-user	0m3.016s
-sys	0m0.076s
+real	0m3.350s
+user	0m3.232s
+sys	0m0.072s
 arff/defect/mw1.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
@@ -342,9 +355,9 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 
-real	0m3.175s
-user	0m3.048s
-sys	0m0.076s
+real	0m2.290s
+user	0m2.188s
+sys	0m0.056s
 arff/defect/pc1.arff
 Harmonic Mean: 0.83
 Harmonic Mean: 0.00
@@ -366,11 +379,10 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
-Harmonic Mean: 0.00
 
-real	0m6.540s
-user	0m6.396s
-sys	0m0.084s
+real	0m5.533s
+user	0m5.380s
+sys	0m0.096s
 arff/defect/pc2.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
@@ -407,10 +419,12 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
 
-real	0m24.665s
-user	0m24.370s
-sys	0m0.180s
+real	0m24.353s
+user	0m24.094s
+sys	0m0.196s
 arff/defect/pc3.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
@@ -437,14 +451,10 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
-Harmonic Mean: 0.00
-Harmonic Mean: 0.00
-Harmonic Mean: 0.00
-Harmonic Mean: 0.00
 
-real	0m16.162s
-user	0m15.961s
-sys	0m0.120s
+real	0m17.478s
+user	0m17.273s
+sys	0m0.148s
 arff/defect/pc4.arff
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
@@ -469,8 +479,12 @@ Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
 Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
+Harmonic Mean: 0.00
 
-real	0m11.715s
-user	0m11.549s
-sys	0m0.096s
+real	0m11.410s
+user	0m11.229s
+sys	0m0.132s
 
