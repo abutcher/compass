@@ -41,6 +41,7 @@ def PerformanceScore(cluster):
             Data.remove(instance)
             MDMRE.append(MRE(instance[-1],Classify(instance, Data, "EFFORT")))
             Data.append(instance)
+        print(MDMRE)
         return median(MDMRE)
 
 def Classify(instance, Data, InputType=None):
