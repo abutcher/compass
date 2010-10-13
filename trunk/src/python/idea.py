@@ -110,7 +110,7 @@ class Idea:
 				xmax = Quadrants[i].xmax
 				ymin = Quadrants[i].ymin
 				ymax = Quadrants[i].ymax
-				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white')
+				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white', linewidth=0.2)
 			
 			# Color the clusters green.
 			Clusters = GRIDCLUS(Quadrants)
@@ -149,7 +149,7 @@ class Idea:
 						xmax = Quadrant.xmax
 						ymin = Quadrant.ymin
 						ymax = Quadrant.ymax
-						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5')
+						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='green', alpha='0.5', linewidth=0.2)
 				# Middle 50%
 				elif (i < round(len(Scores)/2)) and (i > round(len(Scores)/4)):
 					for Quadrant in Scores[i][1]:
@@ -157,7 +157,7 @@ class Idea:
 						xmax = Quadrant.xmax
 						ymin = Quadrant.ymin
 						ymax = Quadrant.ymax
-						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='yellow', alpha='0.5')
+						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='yellow', alpha='0.5', linewidth=0.2)
 				# Bottom 25%
 				elif (i < len(Scores)) and (i > round(len(Scores)/2)):
 					for Quadrant in Scores[i][1]:
@@ -165,7 +165,7 @@ class Idea:
 						xmax = Quadrant.xmax
 						ymin = Quadrant.ymin
 						ymax = Quadrant.ymax
-						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='red', alpha='0.5')
+						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='red', alpha='0.5', linewidth=0.2)
 				
 		return fig
 
