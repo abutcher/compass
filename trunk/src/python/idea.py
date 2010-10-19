@@ -308,7 +308,7 @@ class CompassGraphParameters:
 	Normalize = False
 	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, train):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -319,6 +319,7 @@ class CompassGraphParameters:
 		self.EqualFrequency = inputEqualFrequency
 		self.Cluster = cluster
 		self.q = q
+		self.train = train
 	
 def main():
 	ErrorState = "n"
@@ -329,6 +330,7 @@ def main():
 	parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
 	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
 	parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
+	parser.add_option("--train", dest="train", default=None, metavar="FILE", help="Provide a test set.")
 	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
 	parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
         parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
@@ -348,13 +350,19 @@ def main():
 	if ErrorState == "y":
 		print "Missing critical arguments.  Aborting."
 		sys.exit(-1)
-			
+		
 	arff = Arff(options.arff)
+
+	# If the user uses --train, we set the train set to be used later.
+	if options.train is not None:
+                train = Arff(options.train)
+        else:
+                train = None
 
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, train)
 
 	filename = options.arff.split('.')[0]
 	ideaplot = Idea(arff.data,parameters)

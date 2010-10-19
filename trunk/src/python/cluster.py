@@ -5,11 +5,14 @@ from statistics import *
 
 """ Statistics for a list of quadrants """
 
-def PerformanceScore(cluster):
+def PerformanceScore(cluster,Test=None):
     Data = []
-    for quadrant in cluster:
-        for instance in quadrant.Data:
-            Data.append(instance.datum)
+    if Test is None:
+        for quadrant in cluster:
+            for instance in quadrant.Data:
+                Data.append(instance.datum)
+    else:
+        Data = Test
             
     if type(Data[0][-1]) is str:
         # This is a DEFECT set, so we calculate PD/PF for the true class
