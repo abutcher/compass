@@ -5,7 +5,11 @@ class Arff:
     data=[]
 
     def __init__(self, filename):
-        self.Extract(filename)
+        if type(filename) == list:
+            for addthis in filename:
+                self.Extract(addthis)
+        else:
+            self.Extract(filename)
 
     def Extract(self, path):
         try:

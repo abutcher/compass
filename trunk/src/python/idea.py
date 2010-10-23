@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.collections as collections
 from matplotlib import cm, colors
 from optparse import OptionParser
+# Need this instead of depreciated OptionParser for multiple file input
+import argparse
 from util import *
 from quadrant import *
 from instance import *
@@ -323,23 +325,41 @@ class CompassGraphParameters:
 	
 def main():
 	ErrorState = "n"
-	parser = OptionParser()
-	parser.add_option("--arff", dest="arff", default=None, metavar="FILE", help="Make arff file to graph.")
-	parser.add_option("--m", dest="m", default=4, metavar="M", help="Set m to draw m x n grids.")
-	parser.add_option("--n", dest="n", default=4, metavar="N", help="Set n to draw m x n grids.")
-	parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
-	parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
-	parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
-	parser.add_option("--train", dest="train", default=None, metavar="FILE", help="Provide a test set.")
-	parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
-	parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
-        parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
-	parser.add_option("--cluster", dest="cluster", default=False, metavar="NONE", action="store_true", help="Enables quadrant clustering.")
-	parser.add_option("--q", dest="q", default=6, metavar="Q", help="Min quadrant size.")
+
+        # Keeping this in case there's a compatibility issue with the standard Mac Python.  Shouldn't be a problem if the default Mac Python is 2.7 or greater.
+	#parser = OptionParser()
+	# Parameters under OptionParser
+	#parser.add_option("--arff", dest="arff", default=None, metavar="FILE", help="Make arff file to graph.")
+	#parser.add_option("--m", dest="m", default=4, metavar="M", help="Set m to draw m x n grids.")
+	#parser.add_option("--n", dest="n", default=4, metavar="N", help="Set n to draw m x n grids.")
+	#parser.add_option("--logX", dest="logX", default=False, metavar="NONE", action="store_true", help="Apply a log to X axis values")
+	#parser.add_option("--logY", dest="logY",default=False, metavar="NONE", action="store_true", help="Apply a log to Y axis values")
+	#parser.add_option("--magnetic", dest="magnetic", default=False, metavar="NONE", action="store_true", help="Force the West pole to be more densely populated. Useful for --logX and --logY")
+	#parser.add_option("--train", dest="train", default=None, metavar="FILE", help="Provide a test set.")
+	#parser.add_option("--nonormalize",dest="normalize",default=True, metavar="NONE", action="store_false", help="Prevents normalization of data between 0 and 1.")
+	#parser.add_option("--equalwidth",dest="equalwidth",default=False, metavar="NONE", action="store_true", help="Enables grid lines equally spaced between points.")
+        #parser.add_option("--equalfrequency", dest="equalfrequency", default=False, metavar="NONE", action="store_true", help="Enables grid lines of equal frequency between points.")
+	#parser.add_option("--cluster", dest="cluster", default=False, metavar="NONE", action="store_true", help="Enables quadrant clustering.")
+	#parser.add_option("--q", dest="q", default=6, metavar="Q", help="Min quadrant size.")
+
+	# Parambeters under parseargs
+	parser = argparse.ArgumentParser(description='Perform IDEA on given train and test sets.')
+	parser.add_argument('--train', dest='train', metavar='FILE', type=str, nargs='+', help='Specify arff file[s] from which to construct the training set.')
+	parser.add_argument('--m', dest='m', default='1', metavar='M', type=int, help='Set m initial horizontal splits for clustering.')
+	parser.add_argument('--n', dest='n', default='1', metavar='N', type=int, help='Set n initial vertical splits for clustering.')
+	parser.add_argument('--logX', dest='logX', default=False, action='store_true', help='Apply a log transform to the X axis.')
+	parser.add_argument('--logY', dest='logY', default=False, action='store_true', help='Apply a log transform to the Y axis.')
+	parser.add_argument('--magnetic', dest='magnetic', default=False, action='store_true', help='Force the West pole to be more densely populated.')
+	parser.add_argument('--test', dest='test', metavar='FILE', type=str, nargs='+', help='Specify arff files[s] from which to construct a test set.')
+	parser.add_argument('--nonormalize', dest='normalize', default=True, action='store_false', help='Prevents normalization of data in the range (0,1)')
+	parser.add_argument('--equalwidth', dest='equalwidth', default=False, action='store_true', help='Instructs equally sized splits based on graph distance.')
+	parser.add_argument('--equalfrequency', dest='equalfrequency', default=False, action='store_true', help='Instructs equally sized splits based on distribution of points on the graph.')
+	parser.add_argument('--cluster', dest='cluster', default=False, action='store_true', help='Enables quadrant clustering.')
+	parser.add_argument('--q', dest='q', default=6, type=int, metavar="Q", help='Minimum Quadrant size')
 	
-	(options, args) = parser.parse_args()
+	options = parser.parse_args()
 	
-	if options.arff == None:
+	if options.train == None:
 		print "Didn't supply an arff.  *grumble grumble*"
 		ErrorState = "y"
 
@@ -351,7 +371,7 @@ def main():
 		print "Missing critical arguments.  Aborting."
 		sys.exit(-1)
 		
-	arff = Arff(options.arff)
+	arff = Arff(options.train)
 
 	# If the user uses --train, we set the train set to be used later.
 	if options.train is not None:
@@ -364,7 +384,7 @@ def main():
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
 	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, train)
 
-	filename = options.arff.split('.')[0]
+	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
 #	ideaplot.Quadrants(parameters)
 	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename)
