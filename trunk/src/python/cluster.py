@@ -7,18 +7,17 @@ from statistics import *
 
 def PerformanceScore(cluster,Test=None):
     Data = []
+    for quadrant in cluster:
+        for instance in quadrant.Data:
+            Data.append(instance.datum)
     if Test is None:
-        for quadrant in cluster:
-            for instance in quadrant.Data:
-                Data.append(instance.datum)
-    else:
-        Data = Test
-            
+        Test = Data
+
     if type(Data[0][-1]) is str:
         # This is a DEFECT set, so we calculate PD/PF for the true class
         Stats = DefectStats()
-        for instance in Data:
-            #print "instance"
+        for instance in Test:
+            print "instance"
             Got = Classify(instance, Data, "DEFECT")
             Want = instance[len(instance)-1]
             if Got == Want:
