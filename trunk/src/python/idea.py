@@ -142,12 +142,12 @@ class Idea:
 				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
 
 			# Turning off the legend for now.
-			"""
+
 			ax.legend()
 			leg = plt.gca().get_legend()
 			ltext  = leg.get_texts()
 			plt.setp(ltext, fontsize='x-small')
-			"""	
+
 				
 		return fig
 
@@ -243,18 +243,27 @@ class Idea:
 
 		# Nested functions, how pleasant...
 		
-		def walk(quadrant):
-			if quadrant.children != []:
-				for child in quadrant.children:
-					if len(child.Data) >= int(Parameters.q):
-						child.children = self.SplitQuadrant(child, Parameters)
-						for grandchild in child.children:
-							walk(grandchild)
-			else:
-				if len(quadrant.Data) >= int(Parameters.q):
-					quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+		def walk(quadrant, lives = 3):
+			if (lives > 0):
+				if quadrant.children != []:
 					for child in quadrant.children:
-						walk(child)
+						if len(child.Data) >= int(Parameters.q):
+							child.children = self.SplitQuadrant(child, Parameters)
+							for grandchild in child.children:
+								if len(grandchild.Datums()) > 0:
+									if (entropy(grandchild.Datums()) > entropy(child.Datums())):
+										walk(grandchild, lives - 1)
+									else:
+										walk(grandchild)
+				else:
+					if len(quadrant.Data) >= int(Parameters.q):
+						quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+						for child in quadrant.children:
+							if len(child.Datums()) > 0:
+								if (entropy(child.Datums()) > entropy(quadrant.Datums())):
+									walk(child, lives - 1)
+								else:
+									walk(child)
 
 		walk(root)
 		leaflist = []

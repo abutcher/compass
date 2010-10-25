@@ -94,3 +94,9 @@ class Quadrant:
 		for instance in self.Data:
 			coords.append(instance.coords)
 		return coords
+
+	def Datums(self):
+		datums = []
+		for instance in self.Data:
+			datums.append(instance.datum)
+		return datums

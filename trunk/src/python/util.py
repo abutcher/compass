@@ -164,3 +164,33 @@ def EqualWidthTicks(data, indice, n):
     for i in range(n+1):
         ticks.append( ( float(i) ) * float(Interval))
     return ticks
+
+def entropy (population):
+    if (len(population) == 0):
+        print "Population is zero?"
+    
+    columns = transpose(population)
+    frequencies = []
+    entropy = 0
+    for column in columns:
+        d = {}
+        for item in column:
+            if item not in d.keys():
+                d[item] = 1
+            else:
+                d[item] += 1
+        frequencies.append(d)
+    for piece in population:
+        e = 0
+        for i in range(len(piece)):
+            pn = frequencies[i][piece[i]]
+            pd = 0
+            for key in frequencies[i].keys():
+                pd += frequencies[i][key]
+            pn = float(pn)
+            pd = float(pd)
+            e += (pn/pd) * math.log(pn/pd, 2)
+        entropy += e
+    return abs(entropy/len(population))
+
+    
