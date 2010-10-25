@@ -5,7 +5,7 @@ echo "********** RUNNING EFFORT SETS **********"
 for FILENAME in arff/*.arff;
 do
     echo $FILENAME
-    time ./idea.py --cluster --train $FILENAME --equalfrequency --logX --logY --m 1 --n 1 --q 6
+    time ./idea.py --cluster --train $FILENAME --equalfrequency --logX --m 1 --n 1 --q 6
 done
 
 # Run Defect Sets
@@ -13,5 +13,5 @@ echo "********** RUNNING DEFECT SETS **********"
 for FILENAME in arff/defect/*.arff;
 do
     echo $FILENAME
-    time ./idea.py --cluster --train $FILENAME --equalfrequency --logX --logY --m 1 --n 1 --q 20
+    time ./idea.py --cluster --train $FILENAME --equalfrequency --logX --m 1 --n 1 --q 20
 done

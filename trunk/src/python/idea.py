@@ -105,9 +105,15 @@ class Idea:
 
 			# Gather performance scores for each cluster
 			Scores = []
-			for Cluster in Clusters:
-				Scores.append((PerformanceScore(Cluster), Cluster))
-			
+			if Parameters.test == None:
+                                for Cluster in Clusters:
+                                        Scores.append((PerformanceScore(Cluster), Cluster))
+                        else:
+                                for Cluster in Clusters:
+                                        #print "cluster go"
+                                        Scores.append((PerformanceScore(Cluster,Parameters.test.data), Cluster))
+                                
+			print "finished performance score"
 			if type(self.data[0][-1]) is str:
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
 				TYPE = "DEFECT"
@@ -330,7 +336,7 @@ class CompassGraphParameters:
 	Cluster = False
 	
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, train,stratisfied):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratisfied):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -341,7 +347,7 @@ class CompassGraphParameters:
 		self.EqualFrequency = inputEqualFrequency
 		self.Cluster = cluster
 		self.q = q
-		self.train = train
+		self.test = test
 		self.stratisfied = stratisfied
 	
 def main():
@@ -379,13 +385,16 @@ def main():
 		
 	arff = Arff(options.train)
 
-	# If the user uses --train, we set the train set to be used later.
+	# If the user uses --test, we set the test set to be used later.
 	if options.test is not None:
                 test = Arff(filename)
         else:
                 test = None
-                
 
+        if options.stratisfied is not None:
+                (arff,test) = StratisfiedCrossVal(arff,options.stratisfied)
+
+        print "finished stratisfied"
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
