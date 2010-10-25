@@ -152,7 +152,7 @@ class Idea:
 			ax.legend()
 			leg = plt.gca().get_legend()
 			ltext  = leg.get_texts()
-			plt.setp(ltext, fontsize='x-small')
+			plt.setp(ltext, fontsize='xx-small')
 
 				
 		return fig
