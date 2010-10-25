@@ -6,8 +6,14 @@ class Arff:
 
     def __init__(self, filename=None):
         if type(filename) == list:
-            for addthis in filename:
-                self.Extract(addthis)
+            if type(filename[0]) == str:
+                for addthis in filename:
+                    self.Extract(addthis)
+            # If filename is a list of lists, then it's a
+            # pre-processed dataset that we can just assign
+            # to self.data and move on.
+            elif type(filename[0]) == list:
+                self.data = filename
         else:
             self.Extract(filename)
 
