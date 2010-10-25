@@ -137,7 +137,7 @@ class Idea:
 						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
 
 
-			colors = make_N_colors(cm.RdYlGn, len(Scores)*10)
+			colors = make_N_colors(cm.summer, len(Scores)*20)
 			colors = colors[::-1]
 
 			for i in range(len(Scores)):
@@ -145,7 +145,7 @@ class Idea:
 					label = "HarMean: %.2f" % Scores[i][0]
 				else:
 					label = "MDMRE: %.2f" % Scores[i][0]
-				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
+				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*20])
 
 			# Turning off the legend for now.
 
