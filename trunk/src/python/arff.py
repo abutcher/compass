@@ -4,7 +4,7 @@ from util import *
 class Arff:
     data=[]
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         if type(filename) == list:
             for addthis in filename:
                 self.Extract(addthis)

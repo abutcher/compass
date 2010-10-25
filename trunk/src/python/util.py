@@ -1,3 +1,4 @@
+from util import *
 import os
 import sys
 import math
@@ -27,7 +28,29 @@ def median(data):
         return (Scores[middle] + Scores[middle+1]) / 2
     else:
         return Scores[len(Scores) / 2]
-    
+
+def StratisfiedCrossVal(data, parameters):
+    data = SortByClass(data)
+    trainCount = 0
+    testCount = 0
+    train = []
+    test = []
+    for datum in data.data:
+        if trainCount < parameters.stratisfied[0]:
+            trainCount = trainCount + 1
+            train.append(datum)
+        elif testCount < parameters.stratisfied[1]:
+            testCount = testCount + 1
+            test.append(datum)
+        if trainCount == parameters.stratisfied[0] and testCount == parameters.stratisfied[1]:
+            trainCount = 0
+            testCount = 0
+    return train,test
+            
+
+def SortByClass(data):
+    data.data.sort(key=lambda datum: datum[-1])
+    return data
 
 def transpose(lists):
    if not lists: 
