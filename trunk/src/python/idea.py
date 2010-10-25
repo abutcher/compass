@@ -116,28 +116,39 @@ class Idea:
 				Scores = sorted(Scores, key=lambda score: score[0])
 				TYPE = "EFFORT"
 
+			def make_N_colors(cmap_name, N):
+				cmap = cm.get_cmap(cmap_name, N)
+				return cmap(np.arange(N))
+ 
+			def ColorQuadrants(score, quadrants, color):
+				for i in range(len(quadrants)):
+					xmin = quadrants[i].xmin
+					xmax = quadrants[i].xmax
+					ymin = quadrants[i].ymin
+					ymax = quadrants[i].ymax
+					if (i == 0):
+						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2, label=label)
+					else:
+						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
+
+
+			colors = make_N_colors(cm.RdYlGn, len(Scores)*10)
+			colors = colors[::-1]
+
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
-					print "Harmonic Mean: %.2f" % Scores[i][0]
+					label = "HarMean: %.2f" % Scores[i][0]
 				else:
-					print "MDMRE: %.2f" % Scores[i][0]
+					label = "MDMRE: %.2f" % Scores[i][0]
+				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
 
-					
-				def make_N_colors(cmap_name, N):
-					cmap = cm.get_cmap(cmap_name, N)
-					return cmap(np.arange(N))
-
-				def ColorQuadrants(quadrants, color):
-					for quadrant in quadrants:
-						xmin = quadrant.xmin
-						xmax = quadrant.xmax
-						ymin = quadrant.ymin
-						ymax = quadrant.ymax
-						ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , color=color, linewidth=0.2)
-
-				colors = make_N_colors(cm.hot, len(Scores)*10)
-				colors = colors[::-1]
-				ColorQuadrants(Scores[i][1], colors[i*10])
+			# Turning off the legend for now.
+			"""
+			ax.legend()
+			leg = plt.gca().get_legend()
+			ltext  = leg.get_texts()
+			plt.setp(ltext, fontsize='x-small')
+			"""	
 				
 		return fig
 
