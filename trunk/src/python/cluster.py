@@ -18,6 +18,7 @@ def PerformanceScore(cluster,Test=None):
         # This is a DEFECT set, so we calculate PD/PF for the true class
         Stats = DefectStats()
         for instance in Data:
+            #print "instance"
             Got = Classify(instance, Data, "DEFECT")
             Want = instance[len(instance)-1]
             if Got == Want:

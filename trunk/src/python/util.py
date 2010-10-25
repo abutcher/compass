@@ -1,9 +1,9 @@
-from util import *
 import os
 import sys
 import math
 import random
 import numpy as np
+import arff
 
 def variance(data):
     if len(data) == 1:
@@ -29,25 +29,24 @@ def median(data):
     else:
         return Scores[len(Scores) / 2]
 
-def StratisfiedCrossVal(data, parameters):
+def StratisfiedCrossVal(data, option):
     data = SortByClass(data)
     trainCount = 0
     testCount = 0
     train = []
     test = []
     for datum in data.data:
-        if trainCount < parameters.stratisfied[0]:
+        if trainCount < option[0]:
             trainCount = trainCount + 1
             train.append(datum)
-        elif testCount < parameters.stratisfied[1]:
+        elif testCount < option[1]:
             testCount = testCount + 1
             test.append(datum)
-        if trainCount == parameters.stratisfied[0] and testCount == parameters.stratisfied[1]:
+        if trainCount == option[0] and testCount == option[1]:
             trainCount = 0
             testCount = 0
-    return train,test
+    return arff.Arff(train),arff.Arff(test)
             
-
 def SortByClass(data):
     data.data.sort(key=lambda datum: datum[-1])
     return data

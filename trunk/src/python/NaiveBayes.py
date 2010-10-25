@@ -42,7 +42,6 @@ class Normal:
         
 
 def NaiveBayesClassify(instance, data, m=2, k=1):
-    data.remove(instance)
     Classification = ["blank", -100]
     (ClassList,ClassNormal) = GenerateNormalForClasses(data)
     for ClassIndex in range(len(ClassList)):
