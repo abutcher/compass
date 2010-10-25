@@ -359,7 +359,7 @@ def main():
 		
 	arff = Arff(options.train)
 
-	# If the user uses --train, we set the train set to be used later.
+	# If the user uses --test, we set the test set to be used later.
 	if options.test is not None:
                 test = Arff(filename)
         else:
