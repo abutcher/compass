@@ -60,7 +60,7 @@ class DefectStats:
 
     def HarmonicMean(self,CLASS):
         try:
-            return float((2 * self.pf(CLASS) * self.pd(CLASS))) / float((self.pf(CLASS) + self.pd(CLASS)))
+            return float((2 * (1 - self.pf(CLASS)) * self.pd(CLASS))) / float(((1 - self.pf(CLASS)) + self.pd(CLASS)))
         except:
             return 0.0
 
