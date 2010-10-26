@@ -153,6 +153,7 @@ class Idea:
 			leg = plt.gca().get_legend()
 			ltext  = leg.get_texts()
 			plt.setp(ltext, fontsize='xx-small')
+			leg.get_frame().set_alpha(0.5)
 
 				
 		return fig
