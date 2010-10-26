@@ -137,7 +137,7 @@ class Idea:
 						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
 
 
-			colors = make_N_colors(cm.summer, len(Scores)*20)
+			colors = make_N_colors(cm.RdYlGn, len(Scores)*10)
 			colors = colors[::-1]
 
 			for i in range(len(Scores)):
@@ -145,12 +145,15 @@ class Idea:
 					label = "HarMean: %.2f" % Scores[i][0]
 				else:
 					label = "MDMRE: %.2f" % Scores[i][0]
-				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*20])
+				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
+
 
 			# Legend stuff
-			handles, labels = ax.get_legend_handles_labels()
-			l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
-				
+			try:
+                                handles, labels = ax.get_legend_handles_labels()
+                                l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
+                        except:
+                                print "legend divided by zero 0.  No legend."
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -245,41 +248,18 @@ class Idea:
 
 		# Nested functions, how pleasant...
 		
-		if (Parameters.lives):
-			def walk(quadrant, lives = 3):
-				if (lives > 0):
-					if quadrant.children != []:
-						for child in quadrant.children:
-							if len(child.Data) >= int(Parameters.q):
-								child.children = self.SplitQuadrant(child, Parameters)
-								for grandchild in child.children:
-									if len(grandchild.Datums()) > 0:
-										if (entropy(grandchild.Datums()) > entropy(child.Datums())):
-											walk(grandchild, lives - 1)
-										else:
-											walk(grandchild)
-					else:
-						if len(quadrant.Data) >= int(Parameters.q):
-							quadrant.children = self.SplitQuadrant(quadrant, Parameters)
-							for child in quadrant.children:
-								if len(child.Datums()) > 0:
-									if (entropy(child.Datums()) > entropy(quadrant.Datums())):
-										walk(child, lives - 1)
-									else:
-										walk(child)
-		else:
-			def walk(quadrant):
-				if quadrant.children != []:
+		def walk(quadrant):
+			if quadrant.children != []:
+				for child in quadrant.children:
+					if len(child.Data) >= int(Parameters.q):
+						child.children = self.SplitQuadrant(child, Parameters)
+						for grandchild in child.children:
+							walk(grandchild)
+			else:
+				if len(quadrant.Data) >= int(Parameters.q):
+					quadrant.children = self.SplitQuadrant(quadrant, Parameters)
 					for child in quadrant.children:
-						if len(child.Data) >= int(Parameters.q):
-							child.children = self.SplitQuadrant(child, Parameters)
-							for grandchild in child.children:
-								walk(grandchild)
-				else:
-					if len(quadrant.Data) >= int(Parameters.q):
-						quadrant.children = self.SplitQuadrant(quadrant, Parameters)
-						for child in quadrant.children:
-							walk(child)
+						walk(child)
 
 		walk(root)
 		leaflist = []
@@ -346,7 +326,7 @@ class CompassGraphParameters:
 	Cluster = False
 	
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratisfied, lives):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -358,9 +338,9 @@ class CompassGraphParameters:
 		self.Cluster = cluster
 		self.q = q
 		self.test = test
-		self.stratisfied = stratisfied
-		self.lives = lives
-		
+		self.stratified = stratified
+		self.outputdir = outputdir
+	
 def main():
 	ErrorState = "n"
 
@@ -368,7 +348,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Perform IDEA on given train and test sets.')
 	parser.add_argument('--train', dest='train', metavar='FILE', type=str, nargs='+', help='Specify arff file[s] from which to construct the training set.')
 	parser.add_argument('--test', dest='test', metavar='FILE', type=str, nargs='+', help='Specify arff files[s] from which to construct a test set. Not specifying this results in a self-test that\'s only useful for quick tests of the software.')
-	parser.add_argument('--stratisfied', dest='stratisfied',default=None, metavar='RATIO', type=int, nargs=2, help='Specify a ratio for a stratisfied cross-validation scheme.  This takes two arguments for a x train to x test ratio. Do not include a test set with this flag.)')
+	parser.add_argument('--stratified', dest='stratified',default=None, metavar='RATIO', type=int, nargs=2, help='Specify a ratio for a stratified cross-validation scheme.  This takes two arguments for a x train to x test ratio. Do not include a test set with this flag.)')
 	parser.add_argument('--m', dest='m', default='1', metavar='M', type=int, help='Set m initial horizontal splits for clustering.')
 	parser.add_argument('--n', dest='n', default='1', metavar='N', type=int, help='Set n initial vertical splits for clustering.')
 	parser.add_argument('--logX', dest='logX', default=False, action='store_true', help='Apply a log transform to the X axis.')
@@ -379,8 +359,7 @@ def main():
 	parser.add_argument('--equalfrequency', dest='equalfrequency', default=False, action='store_true', help='Instructs equally sized splits based on distribution of points on the graph.')
 	parser.add_argument('--cluster', dest='cluster', default=False, action='store_true', help='Enables quadrant clustering.')
 	parser.add_argument('--q', dest='q', default=6, type=int, metavar="Q", help='Minimum Quadrant size')
-	parser.add_argument('--lives', dest='lives', default=False, action='store_true', help='Turn on 3 lives splitting rule.')
-
+	parser.add_argument('--output', dest='output', type=str, metavar='CONCAT', default='', help='Specify an output dir.')
 	
 	options = parser.parse_args()
 	
@@ -404,19 +383,18 @@ def main():
         else:
                 test = None
 
-        if options.stratisfied is not None:
-                (arff,test) = StratisfiedCrossVal(arff,options.stratisfied)
+        if options.stratified is not None:
+                (arff,test) = StratifiedCrossVal(arff,options.stratified)
 
-        print "finished stratisfied"
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratisfied, options.lives)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output)
 
 	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
 #	ideaplot.Quadrants(parameters)
-	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename)
+	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename+options.output)
 
 if __name__ == '__main__':
 	main()
