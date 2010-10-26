@@ -247,19 +247,43 @@ class Idea:
 		root.children = Quadrants
 
 		# Nested functions, how pleasant...
-		
-		def walk(quadrant):
-			if quadrant.children != []:
-				for child in quadrant.children:
-					if len(child.Data) >= int(Parameters.q):
-						child.children = self.SplitQuadrant(child, Parameters)
-						for grandchild in child.children:
-							walk(grandchild)
-			else:
-				if len(quadrant.Data) >= int(Parameters.q):
-					quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+
+
+		if (Parameters.lives):
+			def walk(quadrant, lives = 3):
+				if (lives > 0):
+					if quadrant.children != []:
+						for child in quadrant.children:
+							if len(child.Data) >= int(Parameters.q):
+								child.children = self.SplitQuadrant(child, Parameters)
+								for grandchild in child.children:
+									if len(grandchild.Datums()) > 0:
+										if (entropy(grandchild.Datums()) > entropy(child.Datums())):
+											walk(grandchild, lives - 1)
+										else:
+											walk(grandchild)
+					else:
+						if len(quadrant.Data) >= int(Parameters.q):
+							quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+							for child in quadrant.children:
+								if len(child.Datums()) > 0:
+									if (entropy(child.Datums()) > entropy(quadrant.Datums())):
+										walk(child, lives - 1)
+									else:
+										walk(child)
+		else:
+			def walk(quadrant):
+				if quadrant.children != []:
 					for child in quadrant.children:
-						walk(child)
+						if len(child.Data) >= int(Parameters.q):
+							child.children = self.SplitQuadrant(child, Parameters)
+							for grandchild in child.children:
+								walk(grandchild)
+				else:
+					if len(quadrant.Data) >= int(Parameters.q):
+						quadrant.children = self.SplitQuadrant(quadrant, Parameters)
+						for child in quadrant.children:
+							walk(child)
 
 		walk(root)
 		leaflist = []
@@ -326,7 +350,7 @@ class CompassGraphParameters:
 	Cluster = False
 	
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -340,6 +364,7 @@ class CompassGraphParameters:
 		self.test = test
 		self.stratified = stratified
 		self.outputdir = outputdir
+		self.lives = lives
 	
 def main():
 	ErrorState = "n"
@@ -360,6 +385,7 @@ def main():
 	parser.add_argument('--cluster', dest='cluster', default=False, action='store_true', help='Enables quadrant clustering.')
 	parser.add_argument('--q', dest='q', default=6, type=int, metavar="Q", help='Minimum Quadrant size')
 	parser.add_argument('--output', dest='output', type=str, metavar='CONCAT', default='', help='Specify an output dir.')
+	parser.add_argument('--lives', dest='lives', default=False, action='store_true', help='Turn on 3 lives stopping policy.')
 	
 	options = parser.parse_args()
 	
@@ -389,7 +415,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output, options.lives)
 
 	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)

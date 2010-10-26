@@ -29,7 +29,7 @@ def median(data):
     else:
         return Scores[len(Scores) / 2]
 
-def StratisfiedCrossVal(data, option):
+def StratifiedCrossVal(data, option):
     data = SortByClass(data)
     trainCount = 0
     testCount = 0
