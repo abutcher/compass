@@ -147,14 +147,9 @@ class Idea:
 					label = "MDMRE: %.2f" % Scores[i][0]
 				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*20])
 
-			# Turning off the legend for now.
-
-			ax.legend()
-			leg = plt.gca().get_legend()
-			ltext  = leg.get_texts()
-			plt.setp(ltext, fontsize='xx-small')
-			leg.get_frame().set_alpha(0.5)
-
+			# Legend stuff
+			handles, labels = ax.get_legend_handles_labels()
+			l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
 				
 		return fig
 
