@@ -149,8 +149,11 @@ class Idea:
 
 
 			# Legend stuff
-			handles, labels = ax.get_legend_handles_labels()
-			l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))				
+			try:
+                                handles, labels = ax.get_legend_handles_labels()
+                                l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
+                        except:
+                                print "legend divided by zero 0.  No legend."
 		return fig
 
 	def WriteToPNG(self, fig, filename):
