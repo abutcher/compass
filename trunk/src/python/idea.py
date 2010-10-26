@@ -147,14 +147,10 @@ class Idea:
 					label = "MDMRE: %.2f" % Scores[i][0]
 				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
 
-			# Turning off the legend for now.
-			"""
-			ax.legend()
-			leg = plt.gca().get_legend()
-			ltext  = leg.get_texts()
-			plt.setp(ltext, fontsize='x-small')
-			"""	
-				
+
+			# Legend stuff
+			handles, labels = ax.get_legend_handles_labels()
+			l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))				
 		return fig
 
 	def WriteToPNG(self, fig, filename):
