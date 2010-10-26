@@ -1,6 +1,11 @@
 h1. Compass
 
-Compass Explorer
+h2. Idea: Iterative Dichotomization on Every Attribute
+
+<img src="http://afrolegs.com/kc1.png" alt="Idea" />
+
+h2. Compass Explorer
+
 <img src="http://afrolegs.com/compass.png" alt="Compass" />
 
 h2. What is Compass?
@@ -59,18 +64,22 @@ h3. Python
 
 h4. Prerequisites
 
-Compass python implementation requires the following libraries:
+Compass python implementation requires python26 and the following libraries:
 
 networkx
 numpy
 pydot
 scipy
+argparse
 
 and for the graphical explorer:
 
 wxpython
+networkx
 
 h4. How to run?
+
+h5. Compass Explorer
 
 compass.py relies on your environment being setup correctly.
 
@@ -82,3 +91,43 @@ the following:
 
 This command will generate a networkx graph as well as a graphviz dot,
 both in png format.
+
+h5. IDEA
+
+usage: idea.py [-h] [--train FILE [FILE ...]] [--test FILE [FILE ...]]
+               [--stratisfied RATIO RATIO] [--m M] [--n N] [--logX] [--logY]
+               [--magnetic] [--nonormalize] [--equalwidth] [--equalfrequency]
+               [--cluster] [--q Q] [--lives]
+
+Perform IDEA on given train and test sets.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --train FILE [FILE ...]
+                        Specify arff file[s] from which to construct the
+                        training set.
+  --test FILE [FILE ...]
+                        Specify arff files[s] from which to construct a test
+                        set. Not specifying this results in a self-test that's
+                        only useful for quick tests of the software.
+  --stratisfied RATIO RATIO
+                        Specify a ratio for a stratisfied cross-validation
+                        scheme. This takes two arguments for a x train to x
+                        test ratio. Do not include a test set with this flag.)
+  --m M                 Set m initial horizontal splits for clustering.
+  --n N                 Set n initial vertical splits for clustering.
+  --logX                Apply a log transform to the X axis.
+  --logY                Apply a log transform to the Y axis.
+  --magnetic            Force the West pole to be more densely populated.
+  --nonormalize         Prevents normalization of data in the range (0,1)
+  --equalwidth          Instructs equally sized splits based on graph
+                        distance.
+  --equalfrequency      Instructs equally sized splits based on distribution
+                        of points on the graph.
+  --cluster             Enables quadrant clustering.
+  --q Q                 Minimum Quadrant size
+  --lives               Turn on 3 lives splitting rule.
+
+  Example:
+
+  ./idea.py --cluster --equalfrequency --m 1 --n 1 --logX --logY --q 10 --lives --train arff/defect/kc1.arff
