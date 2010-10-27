@@ -6,6 +6,7 @@ import numpy
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
+import matplotlib.gridspec as gridspec
 from matplotlib import cm, colors
 # Need this instead of depreciated OptionParser for multiple file input
 import argparse
@@ -29,7 +30,10 @@ class Idea:
 		if Parameters.Magnetic is True:
 			EastSide = 0
 			WestSide = 0
-			# check to see if more points are at the other pole.  If so, we switch the poles.  Might be a better way to do this.  Will think about it.
+			# check to see if more points are at the other
+			# pole.  If so, we switch the poles.  Might be
+			# a better way to do this.  Will think about
+			# it.
 			for datum in self.DataCoordinates :
 				if datum[0] >= 0.5:
 					EastSide = EastSide + 1
@@ -56,7 +60,7 @@ class Idea:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
 
-
+		# Removed the ticks stuff, doesn't seem necessary.
 		#ax1.set_xticks(xticks)
 		#ax1.set_yticks(yticks)
 
@@ -100,7 +104,6 @@ class Idea:
 				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white', linewidth=0.2)
 			"""
 
-			# Color the clusters green.
 			Clusters = GRIDCLUS(Quadrants)
 
 			# Gather performance scores for each cluster
@@ -131,25 +134,35 @@ class Idea:
 					xmax = quadrants[i].xmax
 					ymin = quadrants[i].ymin
 					ymax = quadrants[i].ymax
-					if (i == 0):
-						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2, label=label)
-					else:
-						ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
-
-
-			colors = make_N_colors(cm.RdYlGn, len(Scores)*10)
-			colors = colors[::-1]
+					ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
 
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
-					label = "HarMean: %.2f" % Scores[i][0]
+					#label = "HarMean: %.2f" % Scores[i][0]
+					if (Scores[i][0] > .75):
+						ColorQuadrants(Scores[i][0], Scores[i][1], 'green')
+					elif (Scores[i][0] > 0.25):
+						ColorQuadrants(Scores[i][0], Scores[i][1], 'yellow')
+					elif (Scores[i][0] < 0.25):
+						ColorQuadrants(Scores[i][0], Scores[i][1], 'red')
 				else:
-					label = "MDMRE: %.2f" % Scores[i][0]
-				ColorQuadrants(Scores[i][0], Scores[i][1], colors[i*10])
+					#label = "MDMRE: %.2f" % Scores[i][0]
+					if (Scores[i][0] < 0.5):
+						ColorQuadrants(Scores[i][0], Scores[i][1], 'green')
+					else:
+						ColorQuadrants(Scores[i][0], Scores[i][1], 'red')
 
 
 			# Legend stuff
-			try:
+			try:				
+				if (TYPE == "DEFECT"):
+					ax.bar(0,0, width=0, bottom=0, facecolor='green', label="HarMean > 0.75")
+					ax.bar(0,0, width=0, bottom=0, facecolor='yellow', label="HarMean > 0.25")
+					ax.bar(0,0, width=0, bottom=0, facecolor='red', label="HarMean < 0.25")
+				else:
+					ax.bar(0,0, width=0, bottom=0, facecolor='green', label="MDMRE < 0.5")
+					ax.bar(0,0, width=0, bottom=0, facecolor='red', label="MDMRE < 0.5")
+
                                 handles, labels = ax.get_legend_handles_labels()
                                 l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
                         except:
@@ -250,7 +263,7 @@ class Idea:
 
 
 		if (Parameters.lives):
-			def walk(quadrant, lives = 3):
+			def walk(quadrant, lives = 15):
 				if (lives > 0):
 					if quadrant.children != []:
 						for child in quadrant.children:

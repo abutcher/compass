@@ -47,7 +47,7 @@ def adjacent(A, B):
         return False        
 
 def shouldmark(A, B):
-    if adjacent(A[1], B[1]) and ((0.2 > (abs(A[0] - B[0])/A[0])) or (0.2 > (abs(A[0]-B[0])/B[0]))):
+    if adjacent(A[1], B[1]) and ((0.12 > (abs(A[0] - B[0])/A[0])) or (0.12 > (abs(A[0]-B[0])/B[0]))):
         return True
     else:
         return False
