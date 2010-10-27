@@ -46,6 +46,26 @@ def StratifiedCrossVal(data, option):
             trainCount = 0
             testCount = 0
     return arff.Arff(train),arff.Arff(test)
+
+def kFoldStratifiedCrossVal(data,k=5):
+    Bins = []
+    data = SortByClass(data)
+    for i in range(k):
+        Bins.append([])
+        BinCount.append(0)
+    for datum in data.data:
+        try:
+            index = BinCount.index(0)
+            Bins[index].append(datum)
+            BinCount[index] = 1
+        except:
+            for i in range(k):
+                BinCount[i]=0
+            index = BinCount.index(0)
+            Bins[index].append(datum)
+            BinCount[index] = 1
+    return Bins
+                
             
 def SortByClass(data):
     data.data.sort(key=lambda datum: datum[-1])
