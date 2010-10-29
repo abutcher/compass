@@ -49,6 +49,7 @@ def StratifiedCrossVal(data, option):
 
 def kFoldStratifiedCrossVal(data,k=5):
     Bins = []
+    BinCount = []
     data = SortByClass(data)
     for i in range(k):
         Bins.append([])
