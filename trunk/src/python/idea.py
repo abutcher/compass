@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/opt/local/bin/python2.6
 
 from arff import *
 import csv
@@ -58,6 +58,9 @@ class Idea:
 
 		ax1.set_xlabel('x')
 		ax1.set_ylabel('y')
+
+		plt.setp(ax2, xticks=[], yticks=[])
+		plt.setp(ax3, xticks=[], yticks=[])
 
 		for ax in fig.axes:
 			ax.grid(True)
@@ -141,7 +144,6 @@ class Idea:
 					else:
 						ColorQuadrants(Scores[i][0], Scores[i][1], '#e24d4d')
 
-
 			# Legend stuff
 			try:				
 				if (TYPE == "DEFECT"):
@@ -182,12 +184,12 @@ class Idea:
 					elif Scores[i][0] > 0.5:
 						for quadrant in Scores[i][1]:
 							bad += len(quadrant.Datums())
-
 			ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'])
 
-		plt.setp(ax2, xticks=[], yticks=[])
-		plt.setp(ax3, xticks=[], yticks=[])
-
+			# Output clustered data in csv format.
+			if (Parameters.clus2csv):
+				writeClusters(Clusters, filename)
+			
 		return fig
 
 	def WriteToPNG(self, fig, filename):
@@ -278,7 +280,7 @@ class Idea:
 
 		# Nested functions, how pleasant...
 		if (Parameters.lives):
-			def walk(quadrant, lives = 15):
+			def walk(quadrant, lives = 6):
 				if (lives > 0):
 					if quadrant.children != []:
 						for child in quadrant.children:
@@ -377,7 +379,7 @@ class CompassGraphParameters:
 	Normalize = False
 	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives, clus2csv):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -392,6 +394,7 @@ class CompassGraphParameters:
 		self.stratified = stratified
 		self.outputdir = outputdir
 		self.lives = lives
+		self.clus2csv = clus2csv
 	
 def main():
 	ErrorState = "n"
@@ -413,6 +416,7 @@ def main():
 	parser.add_argument('--q', dest='q', default=6, type=int, metavar="Q", help='Minimum Quadrant size')
 	parser.add_argument('--output', dest='output', type=str, metavar='CONCAT', default='', help='Specify an output dir.')
 	parser.add_argument('--lives', dest='lives', default=False, action='store_true', help='Turn on 3 lives stopping policy.')
+	parser.add_argument('--clus2csv', dest='clus2csv', default=False, action='store_true', help='Save the clustered data to csv.')
 	
 	options = parser.parse_args()
 	
@@ -442,7 +446,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output, options.lives)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output, options.lives, options.clus2csv)
 
 	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
