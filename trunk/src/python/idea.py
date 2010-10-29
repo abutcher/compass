@@ -49,7 +49,14 @@ class Idea:
 	def GenerateFigure(self, filename, Parameters):
 		self.DataCoordinates = self.DataCoordinates.transpose()
 		fig = plt.figure()
-		ax1 = fig.add_axes([0.1,0.1,0.85,0.85])
+		
+		ax1 = fig.add_axes([0.1,0.1,0.6,0.8])
+		plt.title(filename)
+		ax2 = fig.add_axes([0.75,0.7,0.2,0.2])
+		plt.title('Legend')
+		ax3 = fig.add_axes([0.75,0.3,0.2,0.3])
+		plt.title('Distribution')
+
 		xticks = []
 		yticks = []
                 # Set the ticks between two choices.
@@ -64,9 +71,8 @@ class Idea:
 		#ax1.set_xticks(xticks)
 		#ax1.set_yticks(yticks)
 
-		plt.title(filename)
-		plt.xlabel("x")
-		plt.ylabel("y")
+		ax1.set_xlabel('x')
+		ax1.set_ylabel('y')
 
 		for ax in fig.axes:
 			ax.grid(True)
@@ -134,39 +140,72 @@ class Idea:
 					xmax = quadrants[i].xmax
 					ymin = quadrants[i].ymin
 					ymax = quadrants[i].ymax
-					ax.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
+					ax1.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
 
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
 					#label = "HarMean: %.2f" % Scores[i][0]
 					if (Scores[i][0] > .75):
-						ColorQuadrants(Scores[i][0], Scores[i][1], 'green')
+						ColorQuadrants(Scores[i][0], Scores[i][1], '#44d241')
 					elif (Scores[i][0] > 0.25):
-						ColorQuadrants(Scores[i][0], Scores[i][1], 'yellow')
+						ColorQuadrants(Scores[i][0], Scores[i][1], '#e8f554')
 					elif (Scores[i][0] < 0.25):
-						ColorQuadrants(Scores[i][0], Scores[i][1], 'red')
+						ColorQuadrants(Scores[i][0], Scores[i][1], '#e24d4d')
 				else:
 					#label = "MDMRE: %.2f" % Scores[i][0]
 					if (Scores[i][0] < 0.5):
-						ColorQuadrants(Scores[i][0], Scores[i][1], 'green')
+						ColorQuadrants(Scores[i][0], Scores[i][1], '#44d241')
 					else:
-						ColorQuadrants(Scores[i][0], Scores[i][1], 'red')
+						ColorQuadrants(Scores[i][0], Scores[i][1], '#e24d4d')
 
 
 			# Legend stuff
 			try:				
 				if (TYPE == "DEFECT"):
-					ax.bar(0,0, width=0, bottom=0, facecolor='green', label="HarMean > 0.75")
-					ax.bar(0,0, width=0, bottom=0, facecolor='yellow', label="HarMean > 0.25")
-					ax.bar(0,0, width=0, bottom=0, facecolor='red', label="HarMean < 0.25")
+					ax1.bar(0,0, width=0, bottom=0, facecolor='#44d241', label="HM > 0.75")
+					ax1.bar(0,0, width=0, bottom=0, facecolor='#e8f554', label="HM > 0.25")
+					ax1.bar(0,0, width=0, bottom=0, facecolor='#e24d4d', label="HM < 0.25")
 				else:
-					ax.bar(0,0, width=0, bottom=0, facecolor='green', label="MDMRE < 0.5")
-					ax.bar(0,0, width=0, bottom=0, facecolor='red', label="MDMRE < 0.5")
+					ax1.bar(0,0, width=0, bottom=0, facecolor='#44d241', label="MDMRE < 0.5")
+					ax1.bar(0,0, width=0, bottom=0, facecolor='#e24d4d', label="MDMRE < 0.5")
 
-                                handles, labels = ax.get_legend_handles_labels()
-                                l = fig.legend(handles, labels, loc='right', prop=dict(family='sans-serif',size=8))
+                                handles, labels = ax1.get_legend_handles_labels()
+                                l = ax2.legend(handles, labels, loc='center', prop=dict(family='sans-serif',size=8))
+				l.get_frame().set_linewidth(0)
                         except:
                                 print "legend divided by zero 0.  No legend."
+
+			# Pie Chart Stuff
+			good = 0
+			okay = 0
+			bad = 0
+			unclustered = 0
+			for i in range(len(Scores)):
+				if TYPE == "DEFECT":
+					if Scores[i][0] > 0.75:
+						for quadrant in Scores[i][1]:
+							good += len(quadrant.Datums())
+					elif Scores[i][0] > 0.25:
+						for quadrant in Scores[i][1]:
+							okay += len(quadrant.Datums())
+					elif Scores[i][0] < 0.25:
+						for quadrant in Scores[i][1]:
+							bad += len(quadrant.Datums())
+					unclustered = len(self.data) - (good+okay+bad)
+				if TYPE == "EFFORT":
+					if Scores[i][0] < 0.5:
+						for quadrant in Scores[i][1]:
+							good += len(quadrant.Datums())
+					elif Scores[i][0] > 0.5:
+						for quadrant in Scores[i][1]:
+							bad += len(quadrant.Datums())
+
+			ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'])
+
+#		plt.setp(ax1, xticks=[], yticks=[])
+		plt.setp(ax2, xticks=[], yticks=[])
+		plt.setp(ax3, xticks=[], yticks=[])
+
 		return fig
 
 	def WriteToPNG(self, fig, filename):
