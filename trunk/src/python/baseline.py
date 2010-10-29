@@ -62,7 +62,16 @@ def main():
             
         
     elif options.loo is True:
-        print "Do leave-one-out."
+        if type(data.data[0][-1]) is str:
+            print "do defect sets"
+
+        else:
+            MREs = []
+            for datum in data.data:
+                predicted = median(kNearestNeighbors(datum, data.data, 10))
+                MREs.append(MRE(datum[-1],predicted))
+            print median(MREs)
+        
     else:
         print "Not really sure what to do now. Aborting."
         sys.exit(-1)
