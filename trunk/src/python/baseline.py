@@ -4,8 +4,8 @@ from arff import *
 import argparse
 import sys
 import NaiveBayes
-import knn
-from util import kFoldStratifiedCrossVal, SortByClass
+from knn import *
+from util import *
 
 def main():
     ErrorState = "n"
@@ -19,7 +19,7 @@ def main():
     options = parser.parse_args()
 
     if options.loo == False and options.xval is None:
-        print "Must specify either stratified cross validation (--xval) or Leave-one-out (-loo).')
+        print "Must specify either stratified cross validation (--xval) or Leave-one-out (-loo)."
         ErrorState = 'y'
 
     if options.data is None or len(options.data) is 0:
@@ -30,17 +30,35 @@ def main():
         print "Aborting."
         sys.exit(-1)
 
-    data = Arff(options.train)
+    data = Arff(options.data)
 
     if options.xval is not None:
+        MDMRE = []
         Sets = kFoldStratifiedCrossVal(data,options.xval)
-        for i in len(Sets):
+        for i in range(len(Sets)):
             # Pop the first item on the list off as the test.
             test = Sets[0]
             Sets.remove(test)
+            train = []
+            for i in range(len(Sets)):
+                train.extend(Sets[i])
+                
+            if type(test[0][-1]) is str:
+                print "do defect sets"
 
+            else:
+                MREs = []
+                for datum in test:
+                    predicted = median(kNearestNeighbors(datum, train, 10))
+                    MREs.append(MRE(datum[-1],predicted))
+                MDMRE.append(median(MREs))
+                
+            
             # Append it back on the end before we continue with the cross-validation.
             Sets.append(test)
+
+        if len(MDMRE) is not 0:
+            print MDMRE
             
         
     elif options.loo is True:
