@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import matplotlib.collections as collections
 import matplotlib.gridspec as gridspec
 from matplotlib import cm, colors
-# Need this instead of depreciated OptionParser for multiple file input
 import argparse
 from util import *
 from quadrant import *
@@ -30,7 +29,7 @@ class Idea:
 		if Parameters.Magnetic is True:
 			EastSide = 0
 			WestSide = 0
-			# check to see if more points are at the other
+			# Check to see if more points are at the other
 			# pole.  If so, we switch the poles.  Might be
 			# a better way to do this.  Will think about
 			# it.
@@ -57,25 +56,23 @@ class Idea:
 		ax3 = fig.add_axes([0.75,0.3,0.2,0.3])
 		plt.title('Distribution')
 
+		ax1.set_xlabel('x')
+		ax1.set_ylabel('y')
+
+		for ax in fig.axes:
+			ax.grid(True)
+
 		xticks = []
 		yticks = []
+
                 # Set the ticks between two choices.
+		# Needed for the initial splits in quadrant creation.
                 if Parameters.EqualWidth == True:
                         xticks = EqualWidthTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualWidthTicks(self.DataCoordinates.transpose(),1,Parameters.n)
                 elif Parameters.EqualFrequency == True:
                         xticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),0,Parameters.m)
                         yticks = EqualFrequencyTicks(self.DataCoordinates.transpose(),1,Parameters.n)
-
-		# Removed the ticks stuff, doesn't seem necessary.
-		#ax1.set_xticks(xticks)
-		#ax1.set_yticks(yticks)
-
-		ax1.set_xlabel('x')
-		ax1.set_ylabel('y')
-
-		for ax in fig.axes:
-			ax.grid(True)
 
 		if isinstance(self.Classes[0][0],str):
 			# Discrete class values.
@@ -92,23 +89,9 @@ class Idea:
 			for i in range(len(self.DataCoordinates[0])):
 				ax1.plot(self.DataCoordinates[0][i],self.DataCoordinates[1][i],'o',color=[1-normalData[i],normalData[i],0],markersize=2,alpha=0.5)
 			
-#		if Parameters.Normalize == True:
-#			ax1.set_xbound(0,1)
-#			ax1.set_ybound(0,1)
-
 		if Parameters.Cluster:
 			self.DataCoordinates = self.DataCoordinates.transpose()
 			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
-
-			# Display the cuts we made.  Since we don't care about unclustered regions, leaving this out.
-			"""
-			for i in range(len(Quadrants)):
-				xmin = Quadrants[i].xmin
-				xmax = Quadrants[i].xmax
-				ymin = Quadrants[i].ymin
-				ymax = Quadrants[i].ymax
-				ax.broken_barh([ (xmin, (xmax - xmin)) ], (ymin, (ymax - ymin)) , facecolors='white', linewidth=0.2)
-			"""
 
 			Clusters = GRIDCLUS(Quadrants)
 
@@ -202,7 +185,6 @@ class Idea:
 
 			ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'])
 
-#		plt.setp(ax1, xticks=[], yticks=[])
 		plt.setp(ax2, xticks=[], yticks=[])
 		plt.setp(ax3, xticks=[], yticks=[])
 
@@ -255,13 +237,10 @@ class Idea:
 
 	def MakeQuadrants(self, Parameters, xticks, yticks):
 		Quadrants = []
-
-		# xticks
-		# [0.12950011803651956, 1.0]
-		# yticks
-		# [0.055597763327383122, 0.0]
-
-		# Assume we're doing a 4 way split, then we only have one point of interest to split on.
+		
+		# Assume we're doing a 4 way split, then we only have
+		# one point of interest to split on.
+		
 		x = xticks[0]
 		y = yticks[0]
 
@@ -281,7 +260,6 @@ class Idea:
 			if point[1] > maxy:
 				maxy = point[1]
 
-
 		minn = minx
 		maxn = maxy
 
@@ -299,8 +277,6 @@ class Idea:
 		root.children = Quadrants
 
 		# Nested functions, how pleasant...
-
-
 		if (Parameters.lives):
 			def walk(quadrant, lives = 15):
 				if (lives > 0):
@@ -401,7 +377,6 @@ class CompassGraphParameters:
 	Normalize = False
 	Cluster = False
 	
-	
 	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives):
                 self.m = int(inputM)
 		self.n = int(inputN)
@@ -471,7 +446,6 @@ def main():
 
 	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)
-#	ideaplot.Quadrants(parameters)
 	ideaplot.WriteToPNG(ideaplot.GenerateFigure(filename, parameters), filename+options.output)
 
 if __name__ == '__main__':
