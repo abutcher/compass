@@ -1,3 +1,4 @@
+import csv
 from util import MRE
 from knn import *
 from NaiveBayes import *
@@ -57,5 +58,9 @@ def Classify(instance, Data, InputType=None):
         Neighbors = kNearestNeighbors(instance,Data)
         return median(Neighbors)
     
-
-        
+def writeClusters(clusters, filename):        
+    csvWriter = csv.writer(open(filename + '.csv', 'wb'), delimiter=',')
+    for cluster in clusters:
+        for quadrant in cluster:
+            for datum in quadrant.Datums():
+                csvWriter.writerow(datum)
