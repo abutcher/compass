@@ -3,7 +3,9 @@
 from arff import *
 import argparse
 import sys
-import NaiveBayes
+from NaiveBayes import *
+from cluster import *
+from statistics import *
 from knn import *
 from util import *
 
@@ -34,6 +36,7 @@ def main():
 
     if options.xval is not None:
         MDMRE = []
+        HarmonicMeans = []
         Sets = kFoldStratifiedCrossVal(data,options.xval)
         for i in range(len(Sets)):
             # Pop the first item on the list off as the test.
@@ -44,7 +47,26 @@ def main():
                 train.extend(Sets[i])
                 
             if type(test[0][-1]) is str:
-                print "do defect sets"
+                Stats = DefectStats()
+                for instance in test:
+                    Got = Classify(instance, train, "DEFECT")
+                    Want = instance[-1]
+                    if Got == Want:
+                        if Got == "true":
+                            Stats.incf("TRUE","d")
+                            Stats.incf("FALSE","a")
+                        elif Got == "false":
+                            Stats.incf("FALSE","d")
+                            Stats.incf("TRUE","a")
+                    elif Got != Want:
+                        if Got == "true":
+                            Stats.incf("TRUE","c")
+                            Stats.incf("FALSE","b")
+                        elif Got == "false":
+                            Stats.incf("FALSE","b")
+                            Stats.incf("TRUE","c")
+               #return [Stats.pd("TRUE"),Stats.pf("TRUE")]
+                HarmonicMeans.append(Stats.HarmonicMean("TRUE"))
 
             else:
                 MREs = []
