@@ -2,18 +2,34 @@
 
 # Run Effort Sets
 echo "********** RUNNING EFFORT SETS **********"
-echo "********** 5 fold Cross Val    **********"
 for FILENAME in arff/*.arff;
 do
     echo $FILENAME
-    ./baseline.py --xval 5 --data $FILENAME
+    echo "5 fold"
+    echo "K = 1"
+    ./baseline.py --xval 5 --data $FILENAME --k 1
+    echo "K = 5"
+    ./baseline.py --xval 5 --data $FILENAME --k 5
+    echo "K = 10"
+    ./baseline.py --xval 5 --data $FILENAME --k 10
+    echo ""
+    echo "3  fold"
+    echo "K = 1"
+    ./baseline.py --xval 5 --data $FILENAME --k 1
+    echo "K = 5"
+    ./baseline.py --xval 5 --data $FILENAME --k 5
+    echo "K = 10"
+    ./baseline.py --xval 5 --data $FILENAME --k 10
+    echo ""
 done
+
+
 
 echo "********** Leave One Out   ***********"
 for FILENAME in arff/*.arff;
 do 
 	echo $FILENAME
-	./baseline.py -loo --data $FILENAME
+	./baseline.py --loo --data $FILENAME --k 5
 done
 
 

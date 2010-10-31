@@ -8,6 +8,7 @@ from cluster import *
 from statistics import *
 from knn import *
 from util import *
+import random
 
 def main():
     ErrorState = "n"
@@ -17,6 +18,7 @@ def main():
     parser.add_argument('--data', dest='data',default = None, metavar='FILE', type=str, nargs='+', help='Specify the arff file(s) from which to load data.')
     parser.add_argument('--loo', dest='loo', default=False, action='store_true', help='Enables leave one out cross-validation')
     parser.add_argument('--xval', dest='xval', default=None, type=int, help='Enables stratified cross-validation.  Accepts a number to indicate the number of folds of the cross-validation.')
+    parser.add_argument('--k', dest='k', default=10, type=int, help='Specify the value k for nearest neighbors.')
 
     options = parser.parse_args()
 
@@ -33,6 +35,7 @@ def main():
         sys.exit(-1)
 
     data = Arff(options.data)
+    random.shuffle(data.data,random.random)
 
     if options.xval is not None:
         MDMRE = []
@@ -69,9 +72,9 @@ def main():
                 HarmonicMeans.append(Stats.HarmonicMean("TRUE"))
 
             else:
-                MREs = []
+                MREs = []                    
                 for datum in test:
-                    predicted = median(kNearestNeighbors(datum, train, 10))
+                    predicted = median(kNearestNeighbors(datum, train, options.k))
                     MREs.append(MRE(datum[-1],predicted))
                 MDMRE.append(median(MREs))
                 
@@ -81,6 +84,7 @@ def main():
 
         if len(MDMRE) is not 0:
             print MDMRE
+            print median(MDMRE)
             
         
     elif options.loo is True:
@@ -90,7 +94,7 @@ def main():
         else:
             MREs = []
             for datum in data.data:
-                predicted = median(kNearestNeighbors(datum, data.data, 10))
+                predicted = median(kNearestNeighbors(datum, data.data, options.k))
                 MREs.append(MRE(datum[-1],predicted))
             print median(MREs)
         
