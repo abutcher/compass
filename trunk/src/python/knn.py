@@ -2,6 +2,15 @@ from util import *
 
 def kNearestNeighbors(instance, data, k=10):
     Neighbors = []
+    Num = 0
+    while True:
+        if instance in data:
+            Num = Num + 1
+            data.remove(instance)
+        else:
+            DNE = True
+            break
+            
     # Find nighbors
     for i in range(k):
         try:
@@ -13,6 +22,8 @@ def kNearestNeighbors(instance, data, k=10):
             # neighbors we have.
             break
     # Add them back in case Python passes by reference
-    for instance in Neighbors:
+    for neighbor in Neighbors:
+        data.append(neighbor)
+    for i in range(Num):
         data.append(instance)
     return Neighbors

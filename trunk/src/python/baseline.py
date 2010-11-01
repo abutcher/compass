@@ -43,11 +43,11 @@ def main():
         Sets = kFoldStratifiedCrossVal(data,options.xval)
         for i in range(len(Sets)):
             # Pop the first item on the list off as the test.
-            test = Sets[0]
-            Sets.remove(test)
-            train = []
+            train = Sets[0]
+            Sets.remove(train)
+            test = []
             for i in range(len(Sets)):
-                train.extend(Sets[i])
+                test.extend(Sets[i])
                 
             if type(test[0][-1]) is str:
                 Stats = DefectStats()
