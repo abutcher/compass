@@ -40,6 +40,7 @@ class Bore:
         return freqtable
 
     def score(self):
+        """
         bscores=[]
         for d in self.bfreq:
             dscores=[]
@@ -48,7 +49,19 @@ class Bore:
             bscores.append(sorted(dscores, key=lambda dscore: dscore[1], reverse=True))
         for i in range(len(bscores)):
             print "Best in column %d is %s with score %.2f" % (i, str(bscores[i][0][0]), bscores[i][0][1])
-                
+        """
+        trans = transpose(self.data)
+        colscores = []
+        for i in range(len(trans)):
+            scores = []
+            for j in range(len(trans[i])):
+                scores.append(self.like(trans[i][j], self.bfreq[i])**2/(self.like(trans[i][j],self.bfreq[i])+self.like(trans[i][j], self.rfreq[i])))
+            colscores.append((i, median(scores)))
+        print "Top X columns:"
+        for sortedcol in sorted(colscores, key=lambda score: score[1], reverse=True):
+            if sortedcol[1] != 0:
+                print "\tColumn: %d, Score: %.2f" % (sortedcol[0], sortedcol[1])
+            
     def like(self, item, d):
         if item not in d.keys():
             return 0
