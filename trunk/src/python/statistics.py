@@ -14,16 +14,16 @@ class DefectStats:
         if CLASS is "TRUE":
             if pos is "a":
                 self.TRUE[0] = self.TRUE[0] + 1
-#                print(self.TRUE)
+                print(self.TRUE)
             elif pos is "b":
                 self.TRUE[1] = self.TRUE[1] + 1
-#                print(self.TRUE)
+                print(self.TRUE)
             elif pos is "c":
                 self.TRUE[2] = self.TRUE[2] + 1
-#                print (self.TRUE)
+                print (self.TRUE)
             elif pos is "d":
                 self.TRUE[3] = self.TRUE[3] + 1
-#                print (self.TRUE)
+                print (self.TRUE)
         elif CLASS is "FALSE":
             if pos is "a":
                 self.FALSE[0] = self.FALSE[0] + 1

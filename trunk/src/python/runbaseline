@@ -1,35 +1,35 @@
 #!/bin/bash
 
 # Run Effort Sets
-echo "********** RUNNING EFFORT SETS **********"
-for FILENAME in arff/*.arff;
-do
-    echo $FILENAME
-    echo "10 fold"
-    echo "K = 1"
-    ./baseline.py --xval 10 --data $FILENAME --k 1
-    echo "K = 5"
-    ./baseline.py --xval 10 --data $FILENAME --k 5
-    echo "K = 10"
-    ./baseline.py --xval 10 --data $FILENAME --k 10
-    echo ""
-    echo "5 fold"
-    echo "K = 1"
-    ./baseline.py --xval 5 --data $FILENAME --k 1
-    echo "K = 5"
-    ./baseline.py --xval 5 --data $FILENAME --k 5
-    echo "K = 10"
-    ./baseline.py --xval 5 --data $FILENAME --k 10
-    echo ""
-    echo "3  fold"
-    echo "K = 1"
-    ./baseline.py --xval 3 --data $FILENAME --k 1
-    echo "K = 5"
-    ./baseline.py --xval 3 --data $FILENAME --k 5
-    echo "K = 10"
-    ./baseline.py --xval 3 --data $FILENAME --k 10
-    echo ""
-done
+#echo "********** RUNNING EFFORT SETS **********"
+#for FILENAME in arff/*.arff;
+#do
+#    echo $FILENAME
+#    echo "10 fold"
+#    echo "K = 1"
+#    ./baseline.py --xval 10 --data $FILENAME --k 1
+#    echo "K = 5"
+#    ./baseline.py --xval 10 --data $FILENAME --k 5
+#    echo "K = 10"
+#    ./baseline.py --xval 10 --data $FILENAME --k 10
+#    echo ""
+#    echo "5 fold"
+#    echo "K = 1"
+#    ./baseline.py --xval 5 --data $FILENAME --k 1
+#    echo "K = 5"
+#    ./baseline.py --xval 5 --data $FILENAME --k 5
+#    echo "K = 10"
+#    ./baseline.py --xval 5 --data $FILENAME --k 10
+#    echo ""
+#    echo "3  fold"
+#    echo "K = 1"
+#    ./baseline.py --xval 3 --data $FILENAME --k 1
+#    echo "K = 5"
+#    ./baseline.py --xval 3 --data $FILENAME --k 5
+#    echo "K = 10"
+#    ./baseline.py --xval 3 --data $FILENAME --k 10
+#    echo ""
+#done
 
 
 
@@ -41,13 +41,13 @@ do
     ./baseline.py --loo --data $FILENAME --k 1
     echo "K = 5"
     ./baseline.py --loo --data $FILENAME --k 5
-    echo "K = 10"
-    ./baseline.py --loo --data $FILENAME --k 10
+#    echo "K = 10"
+#    ./baseline.py --loo --data $FILENAME --k 10
 done
 
 
 # Run Defect Sets
-echo "********** RUNNING DEFECT SETS **********"
+#echo "********** RUNNING DEFECT SETS **********"
 #for FILENAME in arff/defect/*.arff;
 #do
 #    echo $FILENAME
