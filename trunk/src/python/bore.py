@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+
 import arff
+import argparse
 from discretize import *
 from shuffle import *
 
@@ -9,10 +12,10 @@ class Bore:
     bfreq=[]
     rfreq=[]
 
-    def __init__(self, data, goal, b=0.2):
+    def __init__(self, data, goal, b=0.2, bins=10):
         for i in range(20):
             data = shuffle(data)
-        self.data = discretize(data)
+        self.data = discretize(data, bins)
         self.goal = goal.lower()
         self.brsplit(b)
         self.bfreq = self.freqtable(self.best)
@@ -61,5 +64,21 @@ class Bore:
             pn += d[k]
         return p/pn
 
-arff = arff.Arff("arff/defect/ar3.arff")
-Bore(arff.data, 'true', 0.2)
+def main():
+    parser = argparse.ArgumentParser(description="Best or Rest (b^2/b+r)")
+    parser.add_argument('--arff', dest='arff', metavar='FILE', type=str, help='Specify arff file to use.')
+    parser.add_argument('-b', dest='b', metavar='%', default=0.2, type=float, help='Specify percentage best as tenths.')
+    parser.add_argument('--bins', dest='bins', metavar='BINS', default=10, type=int, help='The number of bins to use in discretization.')
+    parser.add_argument('--goal', dest='goal', metavar='CLASS', default='true', type=str, help='The goal class.')
+    options = parser.parse_args()
+    
+    if options.arff == None:
+        print "Your options don't please us."
+        print "Reformatting /dev/sda1"
+        exit(0)
+    
+    arfff = arff.Arff(options.arff)
+    Bore(arfff.data, options.goal, options.b, options.bins)
+
+if __name__ == '__main__':
+    main()
