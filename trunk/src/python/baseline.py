@@ -60,20 +60,20 @@ def main():
                     Want = instance[-1]
                     if Got == Want:
                         if Got == "true":
-                            print "true match"
+                            #print "true match"
                             Stats.incf("TRUE","d")
                             Stats.incf("FALSE","a")
                         elif Got == "false":
-                            print "false match"
+                            #print "false match"
                             Stats.incf("FALSE","d")
                             Stats.incf("TRUE","a")
                     elif Got != Want:
                         if Got == "true":
-                            print "got true mismatch"
+                            #print "got true mismatch"
                             Stats.incf("TRUE","c")
                             Stats.incf("FALSE","b")
                         elif Got == "false":
-                            print "got false mismatch"
+                            #print "got false mismatch"
                             Stats.incf("FALSE","c")
                             Stats.incf("TRUE","b")
                #return [Stats.pd("TRUE"),Stats.pf("TRUE")]
@@ -109,7 +109,36 @@ def main():
         
     elif options.loo is True:
         if type(data.data[0][-1]) is str:
-            print "do defect sets"
+            Stats = DefectStats()
+            for datum in data.data:
+                DataSet = list(data.data)
+                DataSet.remove(datum)
+                Got = Classify(datum, DataSet, "DEFECT")
+                Want = datum[-1]
+                if Got == Want:
+                    if Got == "true":
+                        #print "true match"
+                        Stats.incf("TRUE","d")
+                        Stats.incf("FALSE","a")
+                    elif Got == "false":
+                        #print "false match"
+                        Stats.incf("FALSE","d")
+                        Stats.incf("TRUE","a")
+                elif Got != Want:
+                    if Got == "true":
+                        #print "got true mismatch"
+                        Stats.incf("TRUE","c")
+                        Stats.incf("FALSE","b")
+                    elif Got == "false":
+                        #print "got false mismatch"
+                        Stats.incf("FALSE","c")
+                        Stats.incf("TRUE","b")
+            print "pd"
+            print Stats.pd("TRUE")
+            print "pf"
+            print Stats.pf("TRUE")
+            print "HarmonicMean"
+            print Stats.HarmonicMean("TRUE")
 
         else:
             MREs = []
