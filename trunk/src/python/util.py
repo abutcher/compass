@@ -30,7 +30,8 @@ def median(data):
         return Scores[len(Scores) / 2]
 
 def StratifiedCrossVal(data, option):
-    data = SortByClass(data)
+    if type(data[-1]) is str:
+        data = SortByClass(data)
     trainCount = 0
     testCount = 0
     train = []
@@ -119,7 +120,7 @@ def distance(vecone, vectwo, d=0.0):
     for i in range(len(vecone) - 1):
         if isnumeric(vecone[i]):
             d = d + (vectwo[i] - vecone[i])**2
-        elif vecone[i] == vectwo[i]:
+        elif vecone[i] != vectwo[i]:
             d += 1
     return math.sqrt(d)
 
@@ -138,7 +139,7 @@ def mean(values):
     return sum(values) / float(len(values))
 
 def MRE(actual, predicted):
-    return abs(actual - predicted) / actual
+    return abs(actual - predicted) / abs(actual)
 
 def FindMinMax(data,indice):
     maxScore = 0
