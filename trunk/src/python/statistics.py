@@ -54,7 +54,7 @@ class DefectStats:
 
     def pf(self,CLASS):
         try:
-            return float(self.__A__(CLASS)) / float((self.__A__(CLASS) + self.__C__(CLASS)))
+            return float(self.__C__(CLASS)) / float((self.__A__(CLASS) + self.__C__(CLASS)))
         except:
             return 0.0
 

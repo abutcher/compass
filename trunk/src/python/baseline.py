@@ -134,11 +134,11 @@ def main():
                         Stats.incf("FALSE","c")
                         Stats.incf("TRUE","b")
             print "pd"
-            print Stats.pd("TRUE")
+            print Stats.pd("FALSE")
             print "pf"
-            print Stats.pf("TRUE")
+            print Stats.pf("FALSE")
             print "HarmonicMean"
-            print Stats.HarmonicMean("TRUE")
+            print Stats.HarmonicMean("FALSE")
 
         else:
             MREs = []
