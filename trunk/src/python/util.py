@@ -32,7 +32,7 @@ def median(data):
         return Scores[len(Scores) / 2]
 
 def StratifiedCrossVal(data, option):
-    if type(data[-1]) is str:
+    if type(data.data[0][-1]) is str:
         data = SortByClass(data)
     trainCount = 0
     testCount = 0
@@ -53,7 +53,8 @@ def StratifiedCrossVal(data, option):
 def kFoldStratifiedCrossVal(data,k=5):
     Bins = []
     BinCount = []
-    data = SortByClass(data)
+    if not isnumeric(data.data[0][-1]):
+        data = SortByClass(data)
     for i in range(k):
         Bins.append([])
         BinCount.append(0)
@@ -121,9 +122,9 @@ def farthestfrom(this, these, d=0.0):
 def distance(vecone, vectwo, d=0.0):
     for i in range(len(vecone) - 1):
         if isnumeric(vecone[i]):
-            d = d + (vectwo[i] - vecone[i])**2
-        elif vecone[i] != vectwo[i]:
-            d += 1
+            d = d + (vecone[i] - vectwo[i])**2
+        elif vecone[i] is not vectwo[i]:
+            d += 1.0
     return math.sqrt(d)
 
 def isnumeric(s):
@@ -141,7 +142,7 @@ def mean(values):
     return sum(values) / float(len(values))
 
 def MRE(actual, predicted):
-    return abs(actual - predicted) / abs(actual)
+    return math.fabs(actual - predicted) / math.fabs(actual)
 
 def FindMinMax(data,indice):
     maxScore = 0

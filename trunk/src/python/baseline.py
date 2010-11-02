@@ -9,6 +9,7 @@ from statistics import *
 from knn import *
 from util import *
 import random
+import numpy as np
 
 def main():
     ErrorState = "n"
@@ -39,7 +40,10 @@ def main():
 
     if options.xval is not None:
         MDMRE = []
+        probd = []
+        probf = []
         HarmonicMeans = []
+        print len(data.data)
         Sets = kFoldStratifiedCrossVal(data,options.xval)
         for i in range(len(Sets)):
             # Pop the first item on the list off as the test.
@@ -56,47 +60,99 @@ def main():
                     Want = instance[-1]
                     if Got == Want:
                         if Got == "true":
+                            #print "true match"
                             Stats.incf("TRUE","d")
                             Stats.incf("FALSE","a")
                         elif Got == "false":
+                            #print "false match"
                             Stats.incf("FALSE","d")
                             Stats.incf("TRUE","a")
                     elif Got != Want:
                         if Got == "true":
+                            #print "got true mismatch"
                             Stats.incf("TRUE","c")
                             Stats.incf("FALSE","b")
                         elif Got == "false":
-                            Stats.incf("FALSE","b")
-                            Stats.incf("TRUE","c")
+                            #print "got false mismatch"
+                            Stats.incf("FALSE","c")
+                            Stats.incf("TRUE","b")
                #return [Stats.pd("TRUE"),Stats.pf("TRUE")]
+                probd.append(Stats.pd("TRUE"))
+                probf.append(Stats.pf("TRUE"))
                 HarmonicMeans.append(Stats.HarmonicMean("TRUE"))
+                
 
             else:
                 MREs = []                    
                 for datum in test:
-                    predicted = median(kNearestNeighbors(datum, train, options.k))
-                    MREs.append(MRE(datum[-1],predicted))
-                MDMRE.append(median(MREs))
+                    neighbors = kNearestNeighbors(datum,train, options.k)
+                    predicted = np.median(transpose(neighbors)[-1])
+                    MREs.append(MRE(datum[-1],predicted))   
+                MDMRE.append(np.median(MREs))
                 
             
             # Append it back on the end before we continue with the cross-validation.
-            Sets.append(test)
+            Sets.append(train)
+            del train, test
 
         if len(MDMRE) is not 0:
             print MDMRE
             print median(MDMRE)
+        else:
+            print "pd"
+            print probd
+            print "PF"
+            print probf
+            print "Harmonic Means"
+            print HarmonicMeans
             
         
     elif options.loo is True:
         if type(data.data[0][-1]) is str:
-            print "do defect sets"
+            Stats = DefectStats()
+            for datum in data.data:
+                DataSet = list(data.data)
+                DataSet.remove(datum)
+                Got = Classify(datum, DataSet, "DEFECT")
+                Want = datum[-1]
+                if Got == Want:
+                    if Got == "true":
+                        #print "true match"
+                        Stats.incf("TRUE","d")
+                        Stats.incf("FALSE","a")
+                    elif Got == "false":
+                        #print "false match"
+                        Stats.incf("FALSE","d")
+                        Stats.incf("TRUE","a")
+                elif Got != Want:
+                    if Got == "true":
+                        #print "got true mismatch"
+                        Stats.incf("TRUE","c")
+                        Stats.incf("FALSE","b")
+                    elif Got == "false":
+                        #print "got false mismatch"
+                        Stats.incf("FALSE","c")
+                        Stats.incf("TRUE","b")
+            print "pd"
+            print Stats.pd("TRUE")
+            print "pf"
+            print Stats.pf("TRUE")
+            print "HarmonicMean"
+            print Stats.HarmonicMean("TRUE")
 
         else:
             MREs = []
             for datum in data.data:
-                predicted = median(kNearestNeighbors(datum, data.data, options.k))
+                DataSet = list(data.data)
+                while True:
+                    if datum in DataSet:
+                        DataSet.remove(datum)
+                    else:
+                        break
+                neighbors = kNearestNeighbors(datum,DataSet, options.k)
+                predicted = np.median(transpose(neighbors)[-1])
                 MREs.append(MRE(datum[-1],predicted))
-            print median(MREs)
+            print np.median(MREs)
         
     else:
         print "Not really sure what to do now. Aborting."

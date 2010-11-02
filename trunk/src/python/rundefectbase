@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Run Defect Sets
+echo "********** RUNNING DEFECT SETS **********"
+echo "****** 5-fold xval ********"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./baseline.py --data $FILENAME --xval 5
+done
+
+echo "********** 10-fold xval **********"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./baseline.py --data $FILENAME --xval 10
+done
+
+echo "*********** loo *************"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./baseline.py --data $FILENAME --loo
+done

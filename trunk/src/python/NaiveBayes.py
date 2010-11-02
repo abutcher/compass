@@ -48,7 +48,7 @@ def NaiveBayesClassify(instance, data, m=2, k=1):
         # Calculate the prior
         tmp = log( ClassNormal[ClassIndex].n[0] + k ) / ( len(data) + ( k * len(ClassList)))
         for FeatureIndex in range(len(instance)-1):
-            # Gaussian PDF function.  May fix for Discrete values later.
+            # Gaussian PDF fun ction.  May fix for Discrete values later.
             tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
         if Classification[1] < tmp:
             Classification[0] = ClassList[ClassIndex]
@@ -63,12 +63,12 @@ def GenerateNormalForClasses(data):
     for instance in data:
         # Try to add an instance to the Class list
         try:
-            ClassInstances[ClassIndex.index(instance[len(instance)-1])].append(instance)
+            ClassInstances[ClassIndex.index(instance[-1])].append(instance)
         except ValueError:
-            ClassIndex.append(instance[len(instance)-1])
+            ClassIndex.append(instance[-1])
             ClassInstances.append([instance])
     for ClassNorm in ClassInstances:
-        ClassNormal.append(Normal(data))
+        ClassNormal.append(Normal(ClassNorm))
     return ClassIndex, ClassNormal    
 
 
