@@ -8,6 +8,8 @@ import arff
 def variance(data):
     if len(data) == 1:
         return 0
+    elif type(data[0][-1]) is str:
+        return entropy(data)
     else:
         return stddev(transpose(data)[-1], None)
 
@@ -213,5 +215,3 @@ def entropy (population):
             e += (pn/pd) * math.log(pn/pd, 2)
         entropy += e
     return abs(entropy/len(population))
-
-    
