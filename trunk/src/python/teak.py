@@ -3,6 +3,7 @@
 import argparse
 import arff
 from gac import *
+import numpy
 from util import *
 
 def classify(instance, tree):
@@ -15,7 +16,7 @@ def classify(instance, tree):
             if t == "DEFECT":
                 return node.majorityclass()
             else:
-                return median(transpose(node.data)[-1])
+                return numpy.median(transpose(node.data)[-1])
         else:
             if node.right == None or node.left == None:
                 if node.right == None:
@@ -41,6 +42,8 @@ def main ():
 
     arfff = arff.Arff(options.arff)
     gactree = gac(arfff.data)
+    gactree.varianceprune(1.1,1.1)
+#    gactree.describe()
     print arfff.data[0][-1]
     print classify(arfff.data[0], gactree.nodes[0])
 

@@ -59,6 +59,7 @@ class gnode:
 
 class gac:
     nodes=[]
+    maxv = 0
 
     def __init__(self, data):
         for instance in data:
@@ -81,7 +82,6 @@ class gac:
                 combineall(newnodes)
 
         combineall(self.nodes)
-        self.describe()
 
     def combine(self, one, two):
         combined = one.data + two.data
@@ -106,29 +106,27 @@ class gac:
                 walk(node.left, level+1)
         walk(root)
 
-    def maxv(self):
+    def maxva(self):
         root = self.nodes[0]
-        maxv = 0
         def walk(node):
-            if node.variance > maxv:
-                maxv = node.variance
+            if node.variance > self.maxv:
+                self.maxv = node.variance
             if node.right != None:
                 walk(node.right)
             if node.left != None:
                 walk(node.left)
         walk(root)
-        return maxv
         
     def varianceprune(self, alpha, beta):
-        maxv = self.maxv()
+        self.maxva()
         root = self.nodes[0]
         def walk(node, level=0):
             if level > 3:
                 if node.right != None:
-                    if ((alpha*node.variance) < node.right.variance) or ((beta*maxv) < node.right.variance):
+                    if ((alpha * node.variance) < node.right.variance) or ((beta * self.maxv) < node.right.variance):
                         node.right = None
                 if node.left != None:
-                    if ((alpha*node.variance) < node.left.variance) or ((beta*maxv) < node.left.variance):
+                    if ((alpha * node.variance) < node.left.variance) or ((beta * self.maxv) < node.left.variance):
                         node.left = None
             if node.right != None:
                 walk(node.right, level+1)
