@@ -28,7 +28,7 @@ class Arff:
                 for i in range(len(row)):
                     if isnumeric(row[i]):
                         row[i] = float(row[i])
-                self.data.append(row)
+                self.data.append(row[1:-1])
 
     def outputLisp(self, table, path):
         outfile = open(path, "w")
