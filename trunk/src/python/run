@@ -13,6 +13,6 @@ echo "********** RUNNING DEFECT SETS **********"
 for FILENAME in arff/defect/*.arff;
 do
     echo $FILENAME
-    time /opt/local/bin/python2.6 idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --logY --m 1 --n 1 --q 20 --acceptance 0.4
+    time ./idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --logY --m 1 --n 1 --q 20 --acceptance 0.4
 done
 
