@@ -3,6 +3,7 @@
 from arff import *
 import csv
 import numpy
+import matplotlib
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
@@ -190,7 +191,13 @@ class Idea:
 
 			unclustered = len(self.data) - clustered - len(Quadrants)
 							
-			ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'])
+			patches, texts, autotexts = ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'], autopct='%1.1f%%')
+
+			# Shrink the both text chunks' font size
+			proptease = matplotlib.font_manager.FontProperties()
+			proptease.set_size('xx-small') # I don't think it goes smaller than xx
+			plt.setp(autotexts, fontproperties=proptease)
+			plt.setp(texts, fontproperties=proptease)
 
 			# Output clustered data in csv format.
 			if (Parameters.clus2csv):
