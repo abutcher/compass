@@ -67,18 +67,18 @@ def main ():
                     tree.varianceprune(1.1,1.1)
                     Got = classify(instance, tree.nodes[0])
                     Want = instance[-1]
-                    if Got == Want:
-                        if Got == "true":
+                    if Got.lower() == Want.lower():
+                        if Got.lower() == "true" or Got.lower() == "yes":
                             Stats.incf("TRUE","d")
                             Stats.incf("FALSE","a")
-                        elif Got == "false":
+                        elif Got.lower() == "false" or Got.lower() == "no":
                             Stats.incf("FALSE","d")
                             Stats.incf("TRUE","a")
-                    elif Got != Want:
-                        if Got == "true":
+                    elif Got.lower() != Want.lower():
+                        if Got.lower() == "true" or Got.lower() == "yes":
                             Stats.incf("TRUE","c")
                             Stats.incf("FALSE","b")
-                        elif Got == "false":
+                        elif Got.lower() == "false" or Got.lower() == "no":
                             Stats.incf("FALSE","c")
                             Stats.incf("TRUE","b")
                 probd.append(Stats.pd("TRUE"))
@@ -118,18 +118,18 @@ def main ():
                 tree.varianceprune(1.1,1.1)
                 Got = classify(datum, tree.nodes[0])
                 Want = datum[-1]
-                if Got == Want:
-                    if Got == "true":
+                if Got.lower() == Want.lower():
+                    if Got.lower() == "true" or Got.lower() == "yes":
                         Stats.incf("TRUE","d")
                         Stats.incf("FALSE","a")
-                    elif Got == "false":
+                    elif Got.lower() == "false" or Got.lower() == "no":
                         Stats.incf("FALSE","d")
                         Stats.incf("TRUE","a")
-                elif Got != Want:
-                    if Got == "true":
+                elif Got.lower() != Want.lower():
+                    if Got.lower() == "true" or Got.lower() == "yes":
                         Stats.incf("TRUE","c")
                         Stats.incf("FALSE","b")
-                    elif Got == "false":
+                    elif Got.lower() == "false" or Got.lower() == "no":
                         Stats.incf("FALSE","c")
                         Stats.incf("TRUE","b")
             print "pd"

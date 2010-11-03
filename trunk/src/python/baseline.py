@@ -70,7 +70,7 @@ def main():
                             #print "true match"
                             Stats.incf("TRUE","d")
                             Stats.incf("FALSE","a")
-                        elif Got == "false" or Got == "no":
+                        elif Got.lower() == "false" or Got.lower() == "no":
                             #print "false match"
                             Stats.incf("FALSE","d")
                             Stats.incf("TRUE","a")
@@ -79,7 +79,7 @@ def main():
                             #print "got true mismatch"
                             Stats.incf("TRUE","c")
                             Stats.incf("FALSE","b")
-                        elif Got == "false" or Got == "no":
+                        elif Got.lower() == "false" or Got.lower() == "no":
                             #print "got false mismatch"
                             Stats.incf("FALSE","c")
                             Stats.incf("TRUE","b")
