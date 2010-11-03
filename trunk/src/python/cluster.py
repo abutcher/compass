@@ -19,23 +19,23 @@ def PerformanceScore(cluster,Test=None):
         Stats = DefectStats()
         for instance in Test:
             Got = Classify(instance, Data, "DEFECT")
-            Want = instance[-1]
+            Want = instance[len(instance)-1]
             if Got.lower() == Want.lower():
                 if Got.lower() == "true" or Got.lower() == "yes":
-                        #print "true match"
+                    #print "true match"
                     Stats.incf("TRUE","d")
                     Stats.incf("FALSE","a")
                 elif Got == "false" or Got == "no":
-                        #print "false match"
+                    #print "false match"
                     Stats.incf("FALSE","d")
                     Stats.incf("TRUE","a")
             elif Got.lower() != Want.lower():
                 if Got.lower() == "true" or Got.lower() == "yes":
-                        #print "got true mismatch"
+                    #print "got true mismatch"
                     Stats.incf("TRUE","c")
                     Stats.incf("FALSE","b")
                 elif Got == "false" or Got == "no":
-                        #print "got false mismatch"
+                    #print "got false mismatch"
                     Stats.incf("FALSE","c")
                     Stats.incf("TRUE","b")
        #return [Stats.pd("TRUE"),Stats.pf("TRUE")]
