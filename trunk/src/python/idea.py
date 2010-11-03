@@ -3,6 +3,7 @@
 from arff import *
 import csv
 import numpy
+import sys
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
@@ -20,6 +21,8 @@ class Idea:
 	West = None
 	data = []
 	DataCoordinates = []
+	#hack I'm not proud of. --Kel
+	TestCoordinates = []
 	Classes = []
 
 	def __init__(self, InputData,Parameters):
@@ -44,6 +47,8 @@ class Idea:
 				self.East = self.West
 				self.West = tmp
 				(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
+		if Parameters.stratified is not None:
+                        (self.TestCoordinates, Parameters.test) = StratifiedCrossVal(self.TestCoordinates,Parameters.stratified)
 				
 	def GenerateFigure(self, filename, Parameters):
 		self.DataCoordinates = self.DataCoordinates.transpose()
@@ -104,11 +109,50 @@ class Idea:
                                 for Cluster in Clusters:
                                         Scores.append((PerformanceScore(Cluster), Cluster))
                         else:
+                                StatList = []
                                 for Cluster in Clusters:
-                                        #print "cluster go"
-                                        Scores.append((PerformanceScore(Cluster,Parameters.test.data), Cluster))
+                                        StatList.append(DefectStats())
+                                for datum in Parameters.test:
+                                        #print datum
+                                        ClosestCluster = [sys.maxint, None]
+                                        for i in range(len(Clusters)):
+                                                for quad in Clusters[i]:
+                                                        tmpDistance = distance(datum, quad.Center())
+                                                        if tmpDistance < ClosestCluster[0]:
+                                                               ClosestCluster[0] = tmpDistance
+                                                               ClosestCluster[1] = i
+                                        train = []
+                                        for quad in Clusters[ClosestCluster[1]]:
+                                                train.extend(quad.DataCoordsAndClasses())
+                                        Got = Classify(datum, train, "DEFECT")
+                                        #print Got
+                                        Want = datum[-1]
+                                        if Got.lower() == Want.lower():
+                                                if Got.lower() == "true" or Got.lower() == "yes":
+                                                        #print "true match"
+                                                        StatList[ClosestCluster[1]].incf("TRUE","d")
+                                                        StatList[ClosestCluster[1]].incf("FALSE","a")
+                                                elif Got == "false" or Got == "no":
+                                                        #print "false match"
+                                                        StatList[ClosestCluster[1]].incf("FALSE","d")
+                                                        StatList[ClosestCluster[1]].incf("TRUE","a")
+                                        elif Got.lower() != Want.lower():
+                                                if Got.lower() == "true" or Got.lower() == "yes":
+                                                        #print "got true mismatch"
+                                                        StatList[ClosestCluster[1]].incf("TRUE","c")
+                                                        StatList[ClosestCluster[1]].incf("FALSE","b")
+                                                elif Got == "false" or Got == "no":
+                                                        #print "got false mismatch"
+                                                        StatList[ClosestCluster[1]].incf("FALSE","c")
+                                                        StatList[ClosestCluster[1]].incf("TRUE","b")
+
+                                for i in range(len(Clusters)):
+                                        print StatList[i].HarmonicMean("TRUE")
+                                        print StatList[i].Count("TRUE")
+                                        print ""
+                                        Scores.append((StatList[i].HarmonicMean("TRUE"), Cluster))
                                 
-			print "finished performance score"
+			#print "finished performance score"
 			if type(self.data[0][-1]) is str:
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
 				TYPE = "DEFECT"
@@ -216,6 +260,7 @@ class Idea:
 			y = math.sqrt(a**2 - x**2)
 			if y > MaxY:
 				MaxY = y
+			self.TestCoordinates.append([x,y,instance[-1]])
 			if DataCoordinates is None:
 				DataCoordinates = numpy.array([x,y])
 				Classes = numpy.array([instance[len(instance)-1]])
@@ -224,6 +269,14 @@ class Idea:
 				Classes = numpy.vstack((Classes,numpy.array([instance[len(instance)-1]])))
 		# Normalize coordinates
 		for datum in DataCoordinates:
+                        if Parameters.Normalize == True:
+				datum[0] = datum[0] / MaxX
+				datum[1] = datum[1] / MaxY
+			if Parameters.logX == True:
+				datum[0] = math.log(datum[0]+0.0001)
+			if Parameters.logY == True:
+				datum[1] = math.log(datum[1]+0.0001)
+		for datum in self.TestCoordinates:
                         if Parameters.Normalize == True:
 				datum[0] = datum[0] / MaxX
 				datum[1] = datum[1] / MaxY
@@ -272,16 +325,16 @@ class Idea:
 		maxn = maxy
 
 		# Bottom Left
-		Quadrants.append(self.MakeQuadrant(minn, x, minn, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(minn, x, minn, y, self.DataCoordinates, self.data, self.Classes))
 		# Bottom Right
-		Quadrants.append(self.MakeQuadrant(x, maxn, minn, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, maxn, minn, y, self.DataCoordinates, self.data, self.Classes))
 		# Top Left
-		Quadrants.append(self.MakeQuadrant(minn, x, y, maxn, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(minn, x, y, maxn, self.DataCoordinates, self.data, self.Classes))
 		# Top Right
-		Quadrants.append(self.MakeQuadrant(x, maxn, y, maxn, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, maxn, y, maxn, self.DataCoordinates, self.data, self.Classes))
 
 		# Treat quadrants as a tree, where root is the initial block.
-		root = self.MakeQuadrant(minn,maxn,minn,maxn, self.DataCoordinates, self.data)
+		root = self.MakeQuadrant(minn,maxn,minn,maxn, self.DataCoordinates, self.data, self.Classes)
 		root.children = Quadrants
 
 		# Nested functions, how pleasant...
@@ -336,13 +389,13 @@ class Idea:
 
 		return Quadrants
 
-	def MakeQuadrant(self, xmin, xmax, ymin, ymax, DataCoordinates, data):
+	def MakeQuadrant(self, xmin, xmax, ymin, ymax, DataCoordinates, data, Classes):
 		QuadrantData = []
 		for i in range(len(DataCoordinates)):
 			xcoord = DataCoordinates[i][0]
 			ycoord = DataCoordinates[i][1]
 			if ( xcoord > xmin and xcoord < xmax ) and ( ycoord > ymin and ycoord < ymax ):
-				QuadrantData.append(Instance(DataCoordinates[i], data[i]))
+				QuadrantData.append(Instance(DataCoordinates[i], data[i], Classes[i]))
 		return Quadrant(xmin, xmax, ymin, ymax, QuadrantData)
 
 	def SplitQuadrant(self, Quadrant, Parameters):
@@ -362,13 +415,13 @@ class Idea:
 		y = yticks[1]
 		
 		# Bottom Left
-		Quadrants.append(self.MakeQuadrant(xminBorder, x, yminBorder, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(xminBorder, x, yminBorder, y, self.DataCoordinates, self.data, self.Classes))
 		# Bottom Right
-		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, yminBorder, y, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, yminBorder, y, self.DataCoordinates, self.data, self.Classes))
 		# Top Left
-		Quadrants.append(self.MakeQuadrant(xminBorder, x, y, ymaxBorder, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(xminBorder, x, y, ymaxBorder, self.DataCoordinates, self.data, self.Classes))
 		# Top Right
-		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, y, ymaxBorder, self.DataCoordinates, self.data))
+		Quadrants.append(self.MakeQuadrant(x, xmaxBorder, y, ymaxBorder, self.DataCoordinates, self.data, self.Classes))
 
 		return Quadrants
 
@@ -449,8 +502,7 @@ def main():
         else:
                 test = None
 
-        if options.stratified is not None:
-                (arff,test) = StratifiedCrossVal(arff,options.stratified)
+
 
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.

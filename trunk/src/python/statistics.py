@@ -64,6 +64,9 @@ class DefectStats:
         except:
             return 0.0
 
+    def Count(self, CLASS):
+        return self.__A__(CLASS) + self.__B__(CLASS) + self.__C__(CLASS) + self.__D__(CLASS)
+
     # Private classes for grabbing A,B,C, and D
     def __A__(self,CLASS):
         if CLASS is "TRUE":

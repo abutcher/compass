@@ -1,5 +1,6 @@
 from util import *
 from statistics import *
+import numpy
 
 class Quadrant:
 	xmin = None
@@ -7,6 +8,7 @@ class Quadrant:
 	ymin = None
 	ymax = None
 	Data=[] # Collection of instances which have coordinates and data information attached.
+	Stats = None
 	children = []
 
 	def __init__(self, XMin, XMax, YMin, YMax, Data):
@@ -15,6 +17,7 @@ class Quadrant:
 		self.ymin = YMin
 		self.ymax = YMax
 		self.Data = Data
+		self.Stats = DefectStats()
 
 	def NumericMedian(self):
 		classes = []
@@ -22,6 +25,9 @@ class Quadrant:
 			for datum in instance.datum:
 				classes.append(datum[-1])
 		return numpy.median(classes)
+
+	def Center(self):
+                return [ ((self.xmax - self.xmin) / 2) + self.xmin, ((self.ymax - self.ymin) / 2) + self.ymin, "None" ]
 
 	def NumericVariance(self):
 		classes = []
@@ -94,6 +100,14 @@ class Quadrant:
 		for instance in self.Data:
 			coords.append(instance.coords)
 		return coords
+
+	def DataCoordsAndClasses(self):
+                coords = []
+                for instance in self.Data:
+                        value = instance.coords.tolist()
+                        value.extend(instance.Class)
+                        coords.append(value)
+                return coords
 
 	def Datums(self):
 		datums = []

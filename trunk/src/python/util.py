@@ -32,13 +32,13 @@ def median(data):
         return Scores[len(Scores) / 2]
 
 def StratifiedCrossVal(data, option):
-    if type(data.data[0][-1]) is str:
+    if type(data[0][-1]) is str:
         data = SortByClass(data)
     trainCount = 0
     testCount = 0
     train = []
     test = []
-    for datum in data.data:
+    for datum in data:
         if trainCount < option[0]:
             trainCount = trainCount + 1
             train.append(datum)
@@ -48,7 +48,7 @@ def StratifiedCrossVal(data, option):
         if trainCount == option[0] and testCount == option[1]:
             trainCount = 0
             testCount = 0
-    return arff.Arff(train),arff.Arff(test)
+    return train,test
 
 def kFoldStratifiedCrossVal(data,k=5):
     Bins = []
@@ -73,7 +73,7 @@ def kFoldStratifiedCrossVal(data,k=5):
                 
             
 def SortByClass(data):
-    data.data.sort(key=lambda datum: datum[-1])
+    data.sort(key=lambda datum: datum[-1])
     return data
 
 def transpose(lists):
