@@ -96,7 +96,7 @@ class Idea:
 			self.DataCoordinates = self.DataCoordinates.transpose()
 			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
-			Clusters = GRIDCLUS(Quadrants)
+			Clusters = GRIDCLUS(Quadrants, Parameters.acceptance)
 
 			# Gather performance scores for each cluster
 			Scores = []
@@ -164,7 +164,6 @@ class Idea:
 			good = 0
 			okay = 0
 			bad = 0
-			unclustered = 0
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
 					if Scores[i][0] > 0.75:
@@ -176,7 +175,6 @@ class Idea:
 					elif Scores[i][0] < 0.25:
 						for quadrant in Scores[i][1]:
 							bad += len(quadrant.Datums())
-					unclustered = len(self.data) - (good+okay+bad)
 				if TYPE == "EFFORT":
 					if Scores[i][0] < 0.5:
 						for quadrant in Scores[i][1]:
@@ -184,6 +182,14 @@ class Idea:
 					elif Scores[i][0] > 0.5:
 						for quadrant in Scores[i][1]:
 							bad += len(quadrant.Datums())
+			
+			clustered = 0
+			for i in range(len(Scores)):
+				for quadrant in Scores[i][1]:
+					clustered += len(quadrant.Datums())
+
+			unclustered = len(self.data) - clustered - len(Quadrants)
+							
 			ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'])
 
 			# Output clustered data in csv format.
@@ -379,7 +385,7 @@ class CompassGraphParameters:
 	Normalize = False
 	Cluster = False
 	
-	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives, clus2csv):
+	def __init__(self, inputM, inputN, inputlogX, inputlogY, inputMagnetic,inputNormalize,inputEqualWidth,inputEqualFrequency, cluster, q, test,stratified,outputdir,lives, clus2csv, acceptance):
                 self.m = int(inputM)
 		self.n = int(inputN)
 		self.logX = inputlogX
@@ -395,6 +401,7 @@ class CompassGraphParameters:
 		self.outputdir = outputdir
 		self.lives = lives
 		self.clus2csv = clus2csv
+		self.acceptance = acceptance
 	
 def main():
 	ErrorState = "n"
@@ -416,8 +423,10 @@ def main():
 	parser.add_argument('--q', dest='q', default=6, type=int, metavar="Q", help='Minimum Quadrant size')
 	parser.add_argument('--output', dest='output', type=str, metavar='CONCAT', default='', help='Specify an output dir.')
 	parser.add_argument('--lives', dest='lives', default=False, action='store_true', help='Turn on 3 lives stopping policy.')
-	parser.add_argument('--clus2csv', dest='clus2csv', default=False, action='store_true', help='Save the clustered data to csv.')
-	
+ 	parser.add_argument('--clus2csv', dest='clus2csv', default=False, action='store_true', help='Save the clustered data to csv.')
+	parser.add_argument('--acceptance', dest='acceptance', default=0.1, type=float, metavar="%", help='GRIDCLUS acceptance percentage.')
+
+
 	options = parser.parse_args()
 	
 	if options.train == None:
@@ -446,7 +455,7 @@ def main():
 	# Created a data structure CompassGraphParameters we can use to easily carry parameters between functions.  Better ideas are welcome.
 	# Might be better to overload the constructor to accept a sequence.
 	# Also, I'm not a fan of how many arguments this constructor is getting.  Must be a better way.
-	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output, options.lives, options.clus2csv)
+	parameters = CompassGraphParameters(options.m,options.n,options.logX, options.logY, options.magnetic, options.normalize,options.equalwidth,options.equalfrequency, options.cluster, options.q, test, options.stratified, options.output, options.lives, options.clus2csv, options.acceptance)
 
 	filename = options.train[0].split('.')[0]
 	ideaplot = Idea(arff.data,parameters)

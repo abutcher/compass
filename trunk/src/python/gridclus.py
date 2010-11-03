@@ -1,4 +1,4 @@
-def GRIDCLUS (quadrants):
+def GRIDCLUS (quadrants, acceptance=0.1):
     
     tiles = []
 
@@ -10,7 +10,7 @@ def GRIDCLUS (quadrants):
     clusters = []
 
     def grabneighbors(tile):
-        neighbors = neighborsearch(tile, tiles)
+        neighbors = neighborsearch(tile, tiles, acceptance)
         if (neighbors != []):
             for neighbor in neighbors:
                 cluster.append(neighbor)
@@ -46,15 +46,15 @@ def adjacent(A, B):
     else:
         return False        
 
-def shouldmark(A, B):
-    if adjacent(A[1], B[1]) and ((0.12 > (abs(A[0] - B[0])/A[0])) or (0.12 > (abs(A[0]-B[0])/B[0]))):
+def shouldmark(A, B, acceptance):
+    if adjacent(A[1], B[1]) and ((acceptance > (abs(A[0] - B[0])/A[0])) or (acceptance > (abs(A[0]-B[0])/B[0]))):
         return True
     else:
         return False
 
-def neighborsearch(tile, tiles):
+def neighborsearch(tile, tiles, acceptance):
     neighbors = []
     for othertile in tiles:
-        if (othertile != tile) and shouldmark(tile, othertile):
+        if (othertile != tile) and shouldmark(tile, othertile, acceptance):
             neighbors.append(othertile)
     return neighbors
