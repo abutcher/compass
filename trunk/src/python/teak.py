@@ -12,22 +12,22 @@ def classify(instance, tree):
     else:
         t = "EFFORT"
     def walk(node):
-        if node.variance < node.weightedvariance():
+        if (node.variance < node.weightedvariance()) or (node.left == None and node.right == None):
             if t == "DEFECT":
                 return node.majorityclass()
             else:
-                return numpy.median(transpose(node.data)[-1])
+                return numpy.median(transpose(node.data)[-1])                
         else:
             if node.right == None or node.left == None:
                 if node.right == None:
-                    walk(node.left)
+                    return walk(node.left)
                 else:
-                    walk(node.right)
+                    return walk(node.right)
             else:
                 if node.right.weightedvariance() > node.left.weightedvariance():
-                    walk(node.left)
+                    return walk(node.left)
                 else:
-                    walk(node.right)
+                    return walk(node.right)
     return walk(tree)
 
 def main ():
