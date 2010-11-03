@@ -1,4 +1,4 @@
-#!/opt/local/bin/python2.6
+#!/usr/bin/env python
 
 from arff import *
 import csv
@@ -26,7 +26,7 @@ class Idea:
 		self.data = InputData
 		(self.West, self.East) = self.FindPoles(InputData)
 		(self.DataCoordinates, self.Classes) = self.ComputeCoordinates(Parameters)
-		if Parameters.Magnetic is True:
+		if Parameters.Magnetic == True:
 			EastSide = 0
 			WestSide = 0
 			# Check to see if more points are at the other
@@ -218,12 +218,12 @@ class Idea:
 				Classes = numpy.vstack((Classes,numpy.array([instance[len(instance)-1]])))
 		# Normalize coordinates
 		for datum in DataCoordinates:
-                        if Parameters.Normalize is True:
+                        if Parameters.Normalize == True:
 				datum[0] = datum[0] / MaxX
 				datum[1] = datum[1] / MaxY
-			if Parameters.logX is True:
+			if Parameters.logX == True:
 				datum[0] = math.log(datum[0]+0.0001)
-			if Parameters.logY is True:
+			if Parameters.logY == True:
 				datum[1] = math.log(datum[1]+0.0001)
 		return DataCoordinates, Classes
 

@@ -46,33 +46,40 @@ def main():
         print len(data.data)
         Sets = kFoldStratifiedCrossVal(data,options.xval)
         for i in range(len(Sets)):
+            print "tick"
             # Pop the first item on the list off as the test.
-            train = Sets[0]
-            Sets.remove(train)
-            test = []
+            test = Sets[0]
+            Sets.remove(test)
+            train = []
             for i in range(len(Sets)):
-                test.extend(Sets[i])
+                train.extend(Sets[i])
+
+            #print len(train)
+            #print len(test)
                 
             if type(test[0][-1]) is str:
+                #print "desired"
                 Stats = DefectStats()
                 for instance in test:
                     Got = Classify(instance, train, "DEFECT")
                     Want = instance[-1]
-                    if Got == Want:
-                        if Got == "true":
+                    #print Got
+                    #print Want
+                    if Got.lower() == Want.lower():
+                        if Got.lower() == "true" or Got.lower() == "yes":
                             #print "true match"
                             Stats.incf("TRUE","d")
                             Stats.incf("FALSE","a")
-                        elif Got == "false":
+                        elif Got == "false" or Got == "no":
                             #print "false match"
                             Stats.incf("FALSE","d")
                             Stats.incf("TRUE","a")
-                    elif Got != Want:
-                        if Got == "true":
+                    elif Got.lower() != Want.lower():
+                        if Got.lower() == "true" or Got.lower() == "yes":
                             #print "got true mismatch"
                             Stats.incf("TRUE","c")
                             Stats.incf("FALSE","b")
-                        elif Got == "false":
+                        elif Got == "false" or Got == "no":
                             #print "got false mismatch"
                             Stats.incf("FALSE","c")
                             Stats.incf("TRUE","b")
@@ -83,6 +90,7 @@ def main():
                 
 
             else:
+                print "tick2"
                 MREs = []                    
                 for datum in test:
                     neighbors = kNearestNeighbors(datum,train, options.k)
@@ -92,7 +100,7 @@ def main():
                 
             
             # Append it back on the end before we continue with the cross-validation.
-            Sets.append(train)
+            Sets.append(test)
             del train, test
 
         if len(MDMRE) is not 0:
@@ -115,21 +123,21 @@ def main():
                 DataSet.remove(datum)
                 Got = Classify(datum, DataSet, "DEFECT")
                 Want = datum[-1]
-                if Got == Want:
-                    if Got == "true":
+                if Got.lower() == Want.lower():
+                    if Got.lower() == "true" or Got.lower() == "yes":
                         #print "true match"
                         Stats.incf("TRUE","d")
                         Stats.incf("FALSE","a")
-                    elif Got == "false":
+                    elif Got == "false" or Got == "no":
                         #print "false match"
                         Stats.incf("FALSE","d")
                         Stats.incf("TRUE","a")
-                elif Got != Want:
-                    if Got == "true":
+                elif Got.lower() != Want.lower():
+                    if Got.lower() == "true" or Got.lower() == "yes":
                         #print "got true mismatch"
                         Stats.incf("TRUE","c")
                         Stats.incf("FALSE","b")
-                    elif Got == "false":
+                    elif Got == "false" or Got == "no":
                         #print "got false mismatch"
                         Stats.incf("FALSE","c")
                         Stats.incf("TRUE","b")
