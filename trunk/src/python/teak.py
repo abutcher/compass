@@ -63,7 +63,9 @@ def main ():
             if type(test[0][-1]) is str:
                 Stats = DefectStats()
                 for instance in test:
-                    Got = classify(instance, gac(train).nodes[0])
+                    tree = gac(train)
+                    tree.varianceprune(1.1,1.1)
+                    Got = classify(instance, tree.nodes[0])
                     Want = instance[-1]
                     if Got == Want:
                         if Got == "true":
@@ -85,7 +87,9 @@ def main ():
             else:
                 MREs = []
                 for datum in test:
-                    predicted = classify(datum, gac(train).nodes[0])
+                    tree = gac(train)
+                    tree.varianceprune(1.1,1.1)
+                    predicted = classify(datum, tree.nodes[0])
                     MREs.append(MRE(datum[-1], predicted))
                 MDMRE.append(np.median(MREs))
 
@@ -110,7 +114,9 @@ def main ():
             for datum in data.data:
                 DataSet = list(data.data)
                 DataSet.remove(datum)
-                Got = classify(datum, gac(DataSet).nodes[0])
+                tree = gac(DataSet)
+                tree.varianceprune(1.1,1.1)
+                Got = classify(datum, tree.nodes[0])
                 Want = datum[-1]
                 if Got == Want:
                     if Got == "true":
@@ -142,7 +148,9 @@ def main ():
                         DataSet.remove(datum)
                     else:
                         break
-                predicted = classify(datum, gac(train).nodes[0])
+                tree = gac(DataSet)
+                tree.varianceprune(1.1,1.1)
+                predicted = classify(datum, tree.nodes[0])
                 MREs.append(MRE(datum[-1],predicted))
             print np.median(MREs)
         

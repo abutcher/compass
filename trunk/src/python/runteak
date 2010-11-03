@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Run Defect Sets
+echo "********** RUNNING DEFECT SETS **********"
+echo "****** 5-fold xval ********"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./teak.py --arff $FILENAME --xval 5
+    echo ""
+done
+
+echo "********** 10-fold xval **********"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./teak.py --arff $FILENAME --xval 10
+    echo ""
+done
+
+echo "*********** loo *************"
+for FILENAME in arff/defect/*.arff;
+do
+    echo $FILENAME
+    ./teak.py --arff $FILENAME --loo
+    echo ""
+done

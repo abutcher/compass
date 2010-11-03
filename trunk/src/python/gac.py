@@ -119,7 +119,6 @@ class gac:
         
     def varianceprune(self, alpha, beta):
         self.maxva()
-        root = self.nodes[0]
         def walk(node, level=0):
             if level > 3:
                 if node.right != None:
@@ -132,9 +131,4 @@ class gac:
                 walk(node.right, level+1)
             if node.left != None:
                 walk(node.left, level+1)
-        walk(root)
-        self.nodes[0] = root
-    
-    
-                    
-                    
+        walk(self.nodes[0])
