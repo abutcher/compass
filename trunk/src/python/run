@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # Run Effort Sets
-echo "********** RUNNING EFFORT SETS **********"
-for FILENAME in arff/*.arff;
-do
-    echo $FILENAME
-    time ./idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --m 1 --n 1 --q 6 --clus2csv --lives --output lives
-done
+#echo "********** RUNNING EFFORT SETS **********"
+#for FILENAME in arff/*.arff;
+#do
+#    echo $FILENAME
+#    time ./idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --m 1 --n 1 --q 6 --clus2csv --lives --output lives
+#done
 
 # Run Defect Sets
 echo "********** RUNNING DEFECT SETS **********"
 for FILENAME in arff/defect/*.arff;
 do
     echo $FILENAME
-    time ./idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --m 1 --n 1 --q 20 --clus2csv --lives --output lives
+    time ./idea.py --cluster --train $FILENAME --stratified 4 1 --equalfrequency --logX --logY --m 1 --n 1 --q 20 --acceptance 0.4
 done
 
