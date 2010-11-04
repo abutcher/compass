@@ -134,7 +134,7 @@ class Idea:
                                                         #print "true match"
                                                         StatList[ClosestCluster[1]].incf("TRUE","d")
                                                         StatList[ClosestCluster[1]].incf("FALSE","a")
-                                                elif Got == "false" or Got == "no":
+                                                elif Got.lower() == "false" or Got.lower() == "no":
                                                         #print "false match"
                                                         StatList[ClosestCluster[1]].incf("FALSE","d")
                                                         StatList[ClosestCluster[1]].incf("TRUE","a")
@@ -143,7 +143,7 @@ class Idea:
                                                         #print "got true mismatch"
                                                         StatList[ClosestCluster[1]].incf("TRUE","c")
                                                         StatList[ClosestCluster[1]].incf("FALSE","b")
-                                                elif Got == "false" or Got == "no":
+                                                elif Got.lower() == "false" or Got.lower() == "no":
                                                         #print "got false mismatch"
                                                         StatList[ClosestCluster[1]].incf("FALSE","c")
                                                         StatList[ClosestCluster[1]].incf("TRUE","b")
