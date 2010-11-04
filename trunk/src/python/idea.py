@@ -148,12 +148,14 @@ class Idea:
                                                         StatList[ClosestCluster[1]].incf("FALSE","c")
                                                         StatList[ClosestCluster[1]].incf("TRUE","b")
 
+				print filename
+				print "acceptance=%.2f" % (Parameters.acceptance)
+				print "Harmonic Mean, Count" 
                                 for i in range(len(Clusters)):
-                                        print StatList[i].HarmonicMean("TRUE")
-                                        print StatList[i].Count("TRUE")
-                                        print ""
+					print "%.2f, %d" % (StatList[i].HarmonicMean("TRUE"),StatList[i].Count("TRUE"))
                                         Scores.append((StatList[i].HarmonicMean("TRUE"), Clusters[i]))
-
+				print ""
+					
 				"""
 				for i in range(len(Clusters)):
 					size = 0
