@@ -356,7 +356,7 @@ class Idea:
 		root.children = Quadrants
 
 		# Trying this...
-		Parameters.q = math.sqrt(len(self.data)) / 2
+		Parameters.q = math.sqrt(len(self.data))
 
 		# Nested functions, how pleasant...
 		if (Parameters.lives):
