@@ -240,9 +240,13 @@ class Idea:
 			for i in range(len(Scores)):
 				for quadrant in Scores[i][1]:
 					clustered += len(quadrant.Datums())
-
+					
+			
 			unclustered = len(self.data) - clustered - len(Quadrants)
-							
+			if unclustered < 0: # Sometimes quadrant creation doesn't exclude a node per split
+				unclustered = len(self.data) - clustered
+
+
 			patches, texts, autotexts = ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'], autopct='%1.1f%%')
 
 			proptease = fm.FontProperties()
@@ -350,6 +354,9 @@ class Idea:
 		# Treat quadrants as a tree, where root is the initial block.
 		root = self.MakeQuadrant(minn,maxn,minn,maxn, self.DataCoordinates, self.data, self.Classes)
 		root.children = Quadrants
+
+		# Trying this...
+		Parameters.q = math.sqrt(len(self.data)) / 2
 
 		# Nested functions, how pleasant...
 		if (Parameters.lives):
