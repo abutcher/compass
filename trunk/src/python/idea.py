@@ -4,7 +4,7 @@ from arff import *
 import csv
 import numpy
 import sys
-import matplotlib
+import matplotlib.font_manager as fm
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
@@ -103,7 +103,7 @@ class Idea:
 			Quadrants = self.MakeQuadrants(Parameters, xticks, yticks)
 
 			Clusters = GRIDCLUS(Quadrants, Parameters.acceptance)
-
+			
 			# Gather performance scores for each cluster
 			Scores = []
 			if Parameters.test == None:
@@ -114,7 +114,7 @@ class Idea:
                                 for Cluster in Clusters:
                                         StatList.append(DefectStats())
                                 for datum in Parameters.test:
-                                        #print datum
+
                                         ClosestCluster = [sys.maxint, None]
                                         for i in range(len(Clusters)):
                                                 for quad in Clusters[i]:
@@ -122,6 +122,7 @@ class Idea:
                                                         if tmpDistance < ClosestCluster[0]:
                                                                ClosestCluster[0] = tmpDistance
                                                                ClosestCluster[1] = i
+							       
                                         train = []
                                         for quad in Clusters[ClosestCluster[1]]:
                                                 train.extend(quad.DataCoordsAndClasses())
@@ -151,9 +152,16 @@ class Idea:
                                         print StatList[i].HarmonicMean("TRUE")
                                         print StatList[i].Count("TRUE")
                                         print ""
-                                        Scores.append((StatList[i].HarmonicMean("TRUE"), Cluster))
-                                
-			#print "finished performance score"
+                                        Scores.append((StatList[i].HarmonicMean("TRUE"), Clusters[i]))
+
+				"""
+				for i in range(len(Clusters)):
+					size = 0
+					for quadrant in Clusters[i]:
+						size += len(quadrant.Datums())
+					print "Cluster %d, Size %d" % (i, size)
+				"""
+
 			if type(self.data[0][-1]) is str:
 				Scores = sorted(Scores, key=lambda score: score[0], reverse=True)
 				TYPE = "DEFECT"
@@ -175,7 +183,6 @@ class Idea:
 
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
-					#label = "HarMean: %.2f" % Scores[i][0]
 					if (Scores[i][0] > .75):
 						ColorQuadrants(Scores[i][0], Scores[i][1], '#44d241')
 					elif (Scores[i][0] > 0.25):
@@ -183,7 +190,6 @@ class Idea:
 					elif (Scores[i][0] < 0.25):
 						ColorQuadrants(Scores[i][0], Scores[i][1], '#e24d4d')
 				else:
-					#label = "MDMRE: %.2f" % Scores[i][0]
 					if (Scores[i][0] < 0.5):
 						ColorQuadrants(Scores[i][0], Scores[i][1], '#44d241')
 					else:
@@ -237,9 +243,8 @@ class Idea:
 							
 			patches, texts, autotexts = ax3.pie([good,okay,bad,unclustered], colors=['#44d241','#e8f554','#e24d4d','#c6cdc6'], autopct='%1.1f%%')
 
-			# Shrink the both text chunks' font size
-			proptease = matplotlib.font_manager.FontProperties()
-			proptease.set_size('xx-small') # I don't think it goes smaller than xx
+			proptease = fm.FontProperties()
+			proptease.set_size('xx-small')
 			plt.setp(autotexts, fontproperties=proptease)
 			plt.setp(texts, fontproperties=proptease)
 
