@@ -314,6 +314,9 @@ class Idea:
 		data.append(East)
 		return East, West
 
+
+
+
 	def MakeQuadrants(self, Parameters, xticks, yticks):
 		Quadrants = []
 		
