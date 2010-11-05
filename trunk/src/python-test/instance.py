@@ -26,6 +26,7 @@ class InstanceCollection:
 			x = (b**2 - base_d**2 - a**2) / (-2 * base_d)
 			if x > self.max_x:
 				self.max_x = x
+			print a, b
 			y = math.sqrt(a**2 - x**2)
 			if y > self.max_y:
 				self.max_y = y
@@ -75,5 +76,4 @@ class DataCollection:
 		self.datums.append(this)
 		west = farthest_from(east, self.datums)
 		self.datums.append(east)
-		self.datums.append(west)
 		return east, west

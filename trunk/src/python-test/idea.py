@@ -3,6 +3,7 @@
 
 import argparse
 from arff import *
+from gridclus import *
 from instance import *
 from quadrant import *
 
@@ -29,9 +30,11 @@ def main():
 
     # From the train instances, generate quadrants
     quadrants = QuadrantTree(train_ic.instances).leaves()
-    print quadrants
     
     # From the quadrants, generate clusters
+    clusters = GRIDCLUS(quadrants)
+    print clusters
+
     # Use the clusters to classify the test instances
     # Output performance statistics however we want
     # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()

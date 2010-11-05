@@ -1,12 +1,19 @@
-def class cluster:
+class Cluster:
     quadrants = []
     # scoring something something
+
+    def __init__(self, quadrants):
+        self.quadrants = quadrants
+
+    def __init__(self):
+        self.quadrants = []
     
-    def addQuadrant(self, quadrant):
-        quadrants.add(quadrant)
+    def add_quadrant(self, quadrant):
+        self.quadrants.append(quadrant)
         
-    def Datums(self):
-        datums = []
-        for q in quadrants:
-            datums.extend(q.Datums())
-        return datums
+    def datums(self):
+        instances = []
+        for quadrant in self.quadrants:
+            instances.extend(quadrant.instances)
+        return [ inst.datum for inst in instances ]
+        
