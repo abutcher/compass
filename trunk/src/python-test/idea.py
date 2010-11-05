@@ -4,6 +4,7 @@
 import argparse
 from arff import *
 from instance import *
+from quadrant import *
 
 def main():
     """All of the magic happens here"""
@@ -27,7 +28,8 @@ def main():
     train_ic.log_y_coordinates()
 
     # From the train instances, generate quadrants
-    
+    quadrants = QuadrantTree(train_ic.instances).leaves()
+    print quadrants
     
     # From the quadrants, generate clusters
     # Use the clusters to classify the test instances

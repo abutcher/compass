@@ -1,5 +1,45 @@
 from util import *
 import numpy
+import math
+
+class QuadrantTree:
+	root = None
+	minsize = None
+
+	def __init__(self, instances):
+		minx, miny = sys.maxint, sys.maxint
+		maxx, maxy = -sys.maxint, -sys.maxint
+		for instance in instances:
+			if instance.coord.x < minx:
+				minx = instance.coord.x
+			if instance.coord.x > maxx:
+				maxx = instance.coord.x
+			if instance.coord.y < miny:
+				miny = instance.coord.y
+			if instance.coord.y > maxy:
+				maxy = instance.coord.y
+		self.root = Quadrant(minx, maxx, miny, maxy, instances)
+		self.minsize = math.sqrt(len(instances))
+
+		def grow(quadrant):
+			if len(quadrant.instances) > self.minsize:
+				quadrant.children = quadrant.split()
+				for child in quadrant.children:
+					grow(child)
+		
+		grow(self.root)
+
+	def leaves(self):
+		leaves = []
+		def collect_leaves(quadrant):
+			if quadrant.children == []:
+				leaves.append(quadrant)
+			else:
+				for child in quadrant.children:
+					collect_leaves(child)
+		collect_leaves(self.root)
+		return leaves
+
 
 class Quadrant:
 	xmin = None
@@ -27,10 +67,10 @@ class Quadrant:
                 return n/volume
 	
 	def coords(self):
-		return map(self.coord, instances)
+		return [ inst.coord for inst in self.instances ]
 
 	def datums(self):
-		return map(self.datum, instances)
+		return [ inst.datum for inst in self.instances ]
 	
 	def split(self):
 		x_split = equal_frequency_ticks_x(self.coords(), 1)[0]
@@ -42,7 +82,7 @@ class Quadrant:
 		
 	def instances_in_bounds(self, xmin, xmax, ymin, ymax):
 		instances = []
-		for instance in self.instance_collection.instances:
+		for instance in self.instances:
 			x = instance.coord.x
 			y = instance.coord.y
 			if ( x > xmin and x < xmax) and ( y > ymin and y < ymax ):
