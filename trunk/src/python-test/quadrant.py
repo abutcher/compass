@@ -6,56 +6,45 @@ class Quadrant:
 	xmax = None
 	ymin = None
 	ymax = None
-	data = []
-	Stats = None
+	instances = []
 	children = []
 
-	def __init__(self, XMin, XMax, YMin, YMax, Data):
-		self.xmin = XMin
-		self.xmax = XMax
-		self.ymin = YMin
-		self.ymax = YMax
-		self.Data = Data
-		self.Stats = DefectStats()
+	def __init__(self, xmin, xmax, ymin, ymax, instances):
+		self.xmin = xmin
+		self.xmax = xmax
+		self.ymin = ymin
+		self.ymax = ymax
+		self.instances = instances
 
-	def NumericMedian(self):
-		classes = []
-		for instance in self.Data:
-			for datum in instance.datum:
-				classes.append(datum[-1])
-		return numpy.median(classes)
+	def center(self):
+                return [ ((self.xmax - self.xmin) / 2) + self.xmin,
+			 ((self.ymax - self.ymin) / 2) + self.ymin,
+			 "None" ]
 
-	def Center(self):
-                return [ ((self.xmax - self.xmin) / 2) + self.xmin, ((self.ymax - self.ymin) / 2) + self.ymin, "None" ]
-
-	def NumericVariance(self):
-		classes = []
-		for instance in self.Data:
-			for datum in instance.datum:
-				classes.append(datum[-1])
-		return numpy.std(classes)
-
-        def Density(self):
-                N = len(self.Data)
-                Volume = (self.xmax - self.xmin) * (self.ymax - self.ymin)
-                return N/Volume
+        def density(self):
+                n = len(self.instances)
+                volume = (self.xmax - self.xmin) * (self.ymax - self.ymin)
+                return n/volume
 	
-	def DataCoordinates(self):
-		coords = []
-		for instance in self.Data:
-			coords.append(instance.coords)
-		return coords
+	def coords(self):
+		return map(self.coord, instances)
 
-	def DataCoordsAndClasses(self):
-                coords = []
-                for instance in self.Data:
-                        value = instance.coords.tolist()
-                        value.extend(instance.Class)
-                        coords.append(value)
-                return coords
-
-	def Datums(self):
-		datums = []
-		for instance in self.Data:
-			datums.append(instance.datum)
-		return datums
+	def datums(self):
+		return map(self.datum, instances)
+	
+	def split(self):
+		x_split = equal_frequency_ticks_x(self.coords(), 1)[0]
+		y_split = equal_frequency_ticks_y(self.coords(), 1)[0]
+		return [ Quadrant(self.xmin, x_split, self.ymin, y_split, self.instances_in_bounds(self.xmin, x_split, self.ymin, y_split)),
+			 Quadrant(x_split, self.xmax, self.ymin, y_split, self.instances_in_bounds(x_split, self.xmax, self.ymin, y_split)),
+			 Quadrant(self.xmin, x_split, y_split, self.ymax, self.instances_in_bounds(self.xmin, x_split, y_split, self.ymax)),
+			 Quadrant(x_split, self.xmax, y_split, self.ymax, self.instances_in_bounds(x_split, self.xmax, y_split, self.ymax)) ]
+		
+	def instances_in_bounds(self, xmin, xmax, ymin, ymax):
+		instances = []
+		for instance in self.instance_collection.instances:
+			x = instance.coord.x
+			y = instance.coord.y
+			if ( x > xmin and x < xmax) and ( y > ymin and y < ymax ):
+				instances.append(instance)
+		return instances

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-"IDEA is ..."
+"""IDEA is ..."""
 
 import argparse
 from arff import *
 from instance import *
 
 def main():
-    "All of the magic happens here"
+    """All of the magic happens here"""
     args = parse_options()
 
     # Parse arff file

@@ -45,8 +45,14 @@ class InstanceCollection:
 			instance.coord.y = math.log(instance.coord.y + 0.0001)
 
 	def klasses(self):
-		map(self.klass(), instances)
+		map(self.klass(), self.instances)
 	
+	def coords(self):
+		map(self.coords, self.instances)
+
+	def datums(self):
+		map(self.datum, self.instances)
+
 class DataCoordinate:
 	def __init__(self, x, y):
 		self.x = x
