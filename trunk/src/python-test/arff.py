@@ -2,22 +2,23 @@ import csv
 from util import *
 
 class Arff:
+    """ Collect the data from a .arff file. """
     data=[]
 
     def __init__(self, filename=None):
         if type(filename) == list:
             if type(filename[0]) == str:
                 for addthis in filename:
-                    self.Extract(addthis)
+                    self.extract(addthis)
             # If filename is a list of lists, then it's a
             # pre-processed dataset that we can just assign
             # to self.data and move on.
             elif type(filename[0]) == list:
                 self.data = filename
         else:
-            self.Extract(filename)
+            self.extract(filename)
 
-    def Extract(self, path):
+    def extract(self, path):
         try:
             reader = csv.reader(open(path, "r"))
         except IOError:
@@ -30,7 +31,7 @@ class Arff:
                         row[i] = float(row[i])
                 self.data.append(row)
 
-    def outputLisp(self, table, path):
+    def output_lisp(self, table, path):
         outfile = open(path, "w")
         outfile.write("(defun " + table  + " ()\n")
         outfile.write("\t(data\n")
