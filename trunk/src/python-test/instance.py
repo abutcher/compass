@@ -26,8 +26,12 @@ class InstanceCollection:
 			x = (b**2 - base_d**2 - a**2) / (-2 * base_d)
 			if x > self.max_x:
 				self.max_x = x
-			print a, b
-			y = math.sqrt(a**2 - x**2)
+			print a, b, x
+			print a**2 - x**2
+			try:
+                                y = math.sqrt(a**2 - x**2)
+                        except ValueError:
+                                y = 0
 			if y > self.max_y:
 				self.max_y = y
 			self.instances.append(Instance(DataCoordinate(x,y), datum))
