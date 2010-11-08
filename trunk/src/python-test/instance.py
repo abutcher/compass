@@ -56,6 +56,29 @@ class InstanceCollection:
 	def datums(self):
 		return [ inst.datum for inst in self.instances ]
 
+
+	def k_fold_stratified_cross_val(self, k=10):
+		bins = []
+		bin_count = []
+		random.shuffle(self.instances,random.random)
+		if not isnumeric(self.instances[0].datum[-1]):
+			data = sort_by_class(self.instances)
+		for i in range(k):
+			bins.append([])
+			bin_count.append(0)
+		for instance in self.instances:
+			try:
+				index = bin_count.index(0)
+				bins[index].append(instance)
+				bin_count[index] = 1
+			except:
+				for i in range(k):
+					bin_count[i]=0
+				index = bin_count.index(0)
+				bins[index].append(instance)
+				bin_count[index] = 1
+		return bins
+
 class DataCoordinate:
 	def __init__(self, x, y):
 		self.x = x

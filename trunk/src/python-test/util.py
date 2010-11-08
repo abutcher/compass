@@ -13,6 +13,12 @@ def variance(data):
     else:
         return stddev(transpose(data)[-1], None)
 
+def squash(l):
+    big = []
+    for i in range(len(l)):
+        big += l[i]
+    return big
+
 def median(data):
     scores = []
     for i in range(len(data)):
@@ -50,31 +56,11 @@ def stratified_cross_val(data, option):
             test_count = 0
     return train,test
 
-def k_fold_stratified_cross_val(data, k=10):
-    bins = []
-    bin_count = []
-    random.shuffle(data.data,random.random)
-    if not isnumeric(data.data[0][-1]):
-        data = SortByClass(data)
-    for i in range(k):
-        bins.append([])
-        bin_count.append(0)
-    for datum in data.data:
-        try:
-            index = bin_count.index(0)
-            bins[index].append(datum)
-            bin_count[index] = 1
-        except:
-            for i in range(k):
-                bin_count[i]=0
-            index = bin_count.index(0)
-            bins[index].append(datum)
-            bin_count[index] = 1
-    return bins
+
             
-def sort_by_class(data):
-    data.sort(key=lambda datum: datum[-1])
-    return data
+def sort_by_class(instances):
+    instances.sort(key=lambda instance: instance.datum[-1])
+    return instances
 
 def transpose(lists):
    if not lists: 

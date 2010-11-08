@@ -2,7 +2,7 @@
 """IDEA is ..."""
 
 import argparse
-from arffNever import *
+from arff import *
 from gridclus import *
 from instance import *
 from quadrant import *
@@ -11,35 +11,33 @@ def main():
     """All of the magic happens here"""
     args = parse_options()
 
-    # Parse arff file
     arff = Arff(args.train)
 
-    # Separate into train, test using stratified
-    train, test = stratified_cross_val(arff.data, args.stratified)
-    train_dc = DataCollection(train)
-    test_dc = DataCollection(test)
-        
-    # Generate a collection of instances as datums, coordinates, classes for each
-    train_ic = InstanceCollection(train_dc)
-    test_ic = InstanceCollection(test_dc)
+    dc = DataCollection(arff.data)
+    ic = InstanceCollection(dc)
 
-    # Logging and normalizing is much simpler now...
-    train_ic.normalize_coordinates()
-    train_ic.log_x_coordinates()
-    train_ic.log_y_coordinates()
+    ic.normalize_coordinates()
+    ic.log_x_coordinates()
+    ic.log_y_coordinates()
 
-    # From the train instances, generate quadrants
-    quadrants = QuadrantTree(train_ic.instances).leaves()
+    k_fold = ic.k_fold_stratified_cross_val(args.xval)
     
-    # From the quadrants, generate clusters
-    clusters = GRIDCLUS(quadrants)
+    for i in range(args.xval):        
+        test = k_fold[0]
+        k_fold.remove(test)
+        train = squash(k_fold)
 
-    # Use the clusters to classify the test instances
-    # Output performance statistics however we want
-    # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()
-    # Win
+        quadrants = QuadrantTree(train).leaves()
+    
+        # From the quadrants, generate clusters
+        clusters = GRIDCLUS(quadrants)
 
-    # Perform clustered scoring
+        # Use the clusters to classify the test instances
+        # Output performance statistics however we want
+        # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()
+        # Win
+        k_fold.append(test)
+
 
 def parse_options():
     """Place new options that you would like to be parsed here."""
@@ -57,7 +55,11 @@ def parse_options():
                         help='Specify arff files[s] from which to construct a test set.\
                               Not specifying this results in a self-test that\'s only useful\
                               for quick tests of the software.')
-    
+    parser.add_argument('--xval',
+                        dest='xval',
+                        metavar='INT',
+                        type=int,
+                        help='Specify the number of folds for cross validation.')
     parser.add_argument('--stratified',
                         dest='stratified',
                         default=None,

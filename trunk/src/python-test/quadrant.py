@@ -64,7 +64,10 @@ class Quadrant:
         def density(self):
                 n = len(self.instances)
                 volume = (self.xmax - self.xmin) * (self.ymax - self.ymin)
-                return n/volume
+		if volume == 0:
+			return 0
+		else:
+			return n/volume
 	
 	def coords(self):
 		return [ inst.coord for inst in self.instances ]
