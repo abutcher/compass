@@ -110,6 +110,7 @@ class Idea:
                                 for Cluster in Clusters:
                                         Scores.append((PerformanceScore(Cluster), Cluster))
                         else:
+                                GlobalStats = DefectStats()
                                 StatList = []
                                 for Cluster in Clusters:
                                         StatList.append(DefectStats())
@@ -134,19 +135,27 @@ class Idea:
                                                         #print "true match"
                                                         StatList[ClosestCluster[1]].incf("TRUE","d")
                                                         StatList[ClosestCluster[1]].incf("FALSE","a")
+                                                        GlobalStats.incf("TRUE","d")
+                                                        GlobalStats.incf("FALSE","a")
                                                 elif Got.lower() == "false" or Got.lower() == "no":
                                                         #print "false match"
                                                         StatList[ClosestCluster[1]].incf("FALSE","d")
                                                         StatList[ClosestCluster[1]].incf("TRUE","a")
+                                                        GlobalStats.incf("FALSE","d")
+                                                        GlobalStats.incf("TRUE","a")
                                         elif Got.lower() != Want.lower():
                                                 if Got.lower() == "true" or Got.lower() == "yes":
                                                         #print "got true mismatch"
                                                         StatList[ClosestCluster[1]].incf("TRUE","c")
                                                         StatList[ClosestCluster[1]].incf("FALSE","b")
+                                                        GlobalStats.incf("TRUE","c")
+                                                        GlobalStats.incf("FALSE","b")
                                                 elif Got.lower() == "false" or Got.lower() == "no":
                                                         #print "got false mismatch"
                                                         StatList[ClosestCluster[1]].incf("FALSE","c")
                                                         StatList[ClosestCluster[1]].incf("TRUE","b")
+                                                        GlobalStats.incf("FALSE","c")
+                                                        GlobalStats.incf("TRUE","b")
 
 				print filename
 				print "acceptance=%.2f" % (Parameters.acceptance)
@@ -154,6 +163,11 @@ class Idea:
                                 for i in range(len(Clusters)):
 					print "%.2f, %d" % (StatList[i].HarmonicMean("TRUE"),StatList[i].Count("TRUE"))
                                         Scores.append((StatList[i].HarmonicMean("TRUE"), Clusters[i]))
+				print ""
+				print "Global"
+				print "PD: ",GlobalStats.pd("TRUE")
+				print "PF: ", GlobalStats.pf("TRUE")
+				print "Harmonic Mean: ",GlobalStats.HarmonicMean("TRUE")
 				print ""
 					
 				"""
