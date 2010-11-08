@@ -50,9 +50,10 @@ def stratified_cross_val(data, option):
             test_count = 0
     return train,test
 
-def k_fold_stratified_cross_val(data, k=5):
+def k_fold_stratified_cross_val(data, k=10):
     bins = []
     bin_count = []
+    random.shuffle(data.data,random.random)
     if not isnumeric(data.data[0][-1]):
         data = SortByClass(data)
     for i in range(k):

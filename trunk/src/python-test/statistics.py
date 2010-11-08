@@ -1,5 +1,19 @@
+from NaiveBayes import *
+
 # This contains functions for defect prediction statistics.  If you're looking
 # for related functions such as MRE() that aren't in this file, check util.py.
+
+def PerformBaseline(train,test,dataset="Unknown",treatment="None"):
+    Stats = DefectStats()
+    if type(test[0][-1]) is str:
+        for datum in test:
+            Stats.Evaluate(Classify(datum, train, "DEFECT"), datum[-1])
+        Stats.StatsLine(dataset,treatment)
+
+def PrintHeaderLine():
+    print "dataset"," ","treatment"," ","CLASS ","A"," ","B"," ","C"," ","D"," ","pd"," ","pf"," ","precision"," ","accuracy"," ","HarmonicMean"
+
+            
 
 class DefectStats:
     # [a,b,c,d]
@@ -9,6 +23,26 @@ class DefectStats:
     def __init__(self):
         self.TRUE = [0,0,0,0]
         self.FALSE = [0,0,0,0]
+
+    def Evaluate(Got, Want):
+        if Got.lower() == Want.lower():
+            if Got.lower() == "true" or Got.lower() == "yes":
+                #print "true match"
+                self.incf("TRUE","d")
+                self.incf("FALSE","a")
+            elif Got.lower() == "false" or Got.lower() == "no":
+                #print "false match"
+                self.incf("FALSE","d")
+                self.incf("TRUE","a")
+        elif Got.lower() != Want.lower():
+            if Got.lower() == "true" or Got.lower() == "yes":
+                #print "got true mismatch"
+                self.incf("TRUE","c")
+                self.incf("FALSE","b")
+            elif Got.lower() == "false" or Got.lower() == "no":
+                #print "got false mismatch"
+                self.incf("FALSE","c")
+                self.incf("TRUE","b")
 
     def incf(self,CLASS, pos):
         if CLASS is "TRUE":
@@ -66,6 +100,11 @@ class DefectStats:
 
     def Count(self, CLASS):
         return self.__A__(CLASS) + self.__B__(CLASS) + self.__C__(CLASS) + self.__D__(CLASS)
+
+    def StatsLine(dataset,treatment):
+        print dataset," ",treatment," ","TRUE ",self.__A__("TRUE")," ",self.__B__("TRUE")," ",self.__C__("TRUE")," ", self.__D__("TRUE")," ", self.pd("TRUE")," ",self.pf("TRUE")," ",self.precision("TRUE")," ",self.accuracy("TRUE")," ",self.HarmonicMean("TRUE")
+        print dataset," ",treatment," ","FALSE ",self.__A__("FALSE")," ",self.__B__("FALSE")," ",self.__C__("FALSE")," ", self.__D__("FALSE")," ", self.pd("FALSE")," ",self.pf("FALSE")," ",self.precision("FALSE")," ",self.accuracy("FALSE")," ",self.HarmonicMean("FALSE")
+
 
     # Private classes for grabbing A,B,C, and D
     def __A__(self,CLASS):

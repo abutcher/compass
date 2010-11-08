@@ -2,7 +2,7 @@
 """IDEA is ..."""
 
 import argparse
-from arff import *
+from arffNever import *
 from gridclus import *
 from instance import *
 from quadrant import *
@@ -33,12 +33,13 @@ def main():
     
     # From the quadrants, generate clusters
     clusters = GRIDCLUS(quadrants)
-    print clusters
 
     # Use the clusters to classify the test instances
     # Output performance statistics however we want
     # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()
     # Win
+
+    # Perform clustered scoring
 
 def parse_options():
     """Place new options that you would like to be parsed here."""
