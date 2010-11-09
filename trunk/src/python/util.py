@@ -73,7 +73,7 @@ def kFoldStratifiedCrossVal(data,k=5):
                 
             
 def SortByClass(data):
-    data.sort(key=lambda datum: datum[-1])
+    data.data.sort(key=lambda datum: datum[-1])
     return data
 
 def transpose(lists):

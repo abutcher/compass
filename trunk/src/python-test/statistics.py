@@ -1,4 +1,5 @@
 from NaiveBayes import *
+from knn import *
 from util import distance
 import sys
 

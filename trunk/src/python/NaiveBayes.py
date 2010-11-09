@@ -1,14 +1,15 @@
 from math import *
 
 class Normal:
-    largest = []
-    smallest = []
-    n = []
-    Sum = []
-    SumSquared = []
+
     
     def __init__(self,data):
-        for i in range(len(data[0])):
+        self.largest = []
+        self.smallest = []
+        self.n = []
+        self.Sum = []
+        self.SumSquared = []
+        for i in range(len(data[0])-1):
             self.largest.append(0)
             self.smallest.append(99999999)
             self.n.append(len(data))
@@ -35,7 +36,7 @@ class Normal:
 
     def GaussianPDF(self,Index,x):
         try:
-            return ( 1 / sqrt(2 * pi * pow(self.stdev(Index),2) )) * pow(e,-1 * ( pow( x - self.stdev(Index),2) / (2 * pow(self.stdev(Index),2))))
+            return ( 1 / sqrt(2 * pi * pow(self.stdev(Index),2) )) * pow(e,-1 * ( pow( x - self.mean(Index),2) / (2 * pow(self.stdev(Index),2))))
         except:
             return 0.0
             

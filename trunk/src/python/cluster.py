@@ -56,8 +56,8 @@ def Classify(instance, Data, InputType=None):
         else:
             InputType="EFFORT"
     if InputType == "DEFECT":
-        Neighbors = kNearestNeighbors(instance,Data)
-        return NaiveBayesClassify(instance,Neighbors)
+        #Neighbors = kNearestNeighbors(instance,Data)
+        return NaiveBayesClassify(instance,Data)
     elif InputType == "EFFORT":
         Neighbors = kNearestNeighbors(instance,Data)
         return median(Neighbors)
