@@ -7,6 +7,7 @@ from statistics import *
 from gridclus import *
 from instance import *
 from quadrant import *
+from figure import *
 
 def main():
     """All of the magic happens here"""
@@ -18,8 +19,8 @@ def main():
     ic = InstanceCollection(dc)
 
     ic.normalize_coordinates()
-    ic.log_x_coordinates()
     ic.log_y_coordinates()
+    ic.log_x_coordinates()
 
     k_fold = ic.k_fold_stratified_cross_val(args.xval)
 
@@ -30,22 +31,15 @@ def main():
         test = k_fold[0]
         k_fold.remove(test)
         train = squash(k_fold)
-
+        k_fold.append(test)
+        
         quadrants = QuadrantTree(train).leaves()
-    
-        # From the quadrants, generate clusters
         clusters = GRIDCLUS(quadrants)
 
-        # Use the clusters to classify the test instances
-        # Output performance statistics however we want
-        # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()
-        # Win
-        k_fold.append(test)
+        #Figure(args.train[0], train, quadrants, clusters).write_png()
 
-        # Perform IDEA Clustering
-        PerformIDEACluster(clusters, test,args.train)
-        PerformBaseline(train,test,args.train)
-
+        PerformIDEACluster(clusters, test, args.train)
+        PerformBaseline(train, test, args.train)
 
 def parse_options():
     """Place new options that you would like to be parsed here."""

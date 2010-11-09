@@ -196,7 +196,7 @@ class Idea:
 					ymin = quadrants[i].ymin
 					ymax = quadrants[i].ymax
 					ax1.bar(xmin, (ymax-ymin), width=(xmax-xmin), bottom=ymin, facecolor=color, visible=True, linewidth=0.2)
-
+				
 			for i in range(len(Scores)):
 				if TYPE == "DEFECT":
 					if (Scores[i][0] > .75):

@@ -24,8 +24,8 @@ class InstanceCollection:
 		base_d = distance(east, west)
 
 		for datum in data_collection.datums:
-			a = distance(east, datum)
-			b = distance(west, datum)
+			a = distance(west, datum)
+			b = distance(east, datum)
 			x = (b**2 - base_d**2 - a**2) / (-2 * base_d)
 			if x > self.max_x:
 				self.max_x = x

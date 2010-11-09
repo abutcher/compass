@@ -40,7 +40,6 @@ class QuadrantTree:
 		collect_leaves(self.root)
 		return leaves
 
-
 class Quadrant:
 	xmin = None
 	xmax = None
@@ -97,3 +96,7 @@ class Quadrant:
 			if ( x > xmin and x < xmax) and ( y > ymin and y < ymax ):
 				instances.append(instance)
 		return instances
+
+	def describe(self):
+		print "Quadrant:"
+		print "\tSize: %d" % (len(self.instances))

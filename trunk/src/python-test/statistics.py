@@ -7,35 +7,33 @@ import sys
 
 def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER"):
     Stats = DefectStats()
-    if type(test[0].Coord()[-1]) is str:
-        for datum in test:
+    if type(test[0].klass()) is str:
+        for instance in test:
             Closest = [sys.maxint, None]
             for cluster in clusters:
                 for quadrant in cluster.quadrants:
-                    if distance(datum.Coord(), quadrant.center()) < Closest[0]:
-                        Closest[0] = distance(datum.Coord(), quadrant.center())
+                    if distance(instance.Coord(), quadrant.center()) < Closest[0]:
+                        Closest[0] = distance(instance.Coord(), quadrant.center())
                         Closest[1] = cluster
             train = []
             for quadrant in Closest[1].quadrants:
                 train.extend(quadrant.ClassCoords())
-            Stats.Evaluate(NaiveBayesClassify(datum.Coord(),train,"DEFECT"), datum.klass())
+            Stats.Evaluate(NaiveBayesClassify(instance.Coord(),train,"DEFECT"), instance.klass())
         Stats.StatsLine(dataset, treatment)
                 
 
 def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
     Stats = DefectStats()
-    if type(test[0].Coord()[-1]) is str:
+    if type(test[0].klass()) is str:
         train = []
         for instance in data:
             train.append(instance.Coord())
-        for datum in test:
-            Stats.Evaluate(NaiveBayesClassify(datum.Coord(), train, "DEFECT"), datum.klass())
+        for instance in test:
+            Stats.Evaluate(NaiveBayesClassify(instance.Coord(), train, "DEFECT"), instance.klass())
         Stats.StatsLine(dataset,treatment)
 
 def PrintHeaderLine():
     print "dataset"," ","treatment"," ","CLASS ","A"," ","B"," ","C"," ","D"," ","pd"," ","pf"," ","precision"," ","accuracy"," ","HarmonicMean"
-
-            
 
 class DefectStats:
     # [a,b,c,d]

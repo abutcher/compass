@@ -55,8 +55,6 @@ def stratified_cross_val(data, option):
             train_count = 0
             test_count = 0
     return train,test
-
-
             
 def sort_by_class(instances):
     instances.sort(key=lambda instance: instance.datum[-1])
@@ -173,6 +171,7 @@ def equal_frequency_ticks_x(coords, n):
     num_per_grid = int(round(len(coords)) / (n + 1.0))
     for i in range(n):
         ticks.append(coords[num_per_grid*i].x)
+    ticks.append(coords[-1].x)
     return ticks
 
 def equal_frequency_ticks_y(coords, n):
@@ -181,6 +180,7 @@ def equal_frequency_ticks_y(coords, n):
     num_per_grid = int(round(len(coords)) / (n + 1.0))
     for i in range(n):
         ticks.append(coords[num_per_grid*i].y)
+    ticks.append(coords[-1].y)
     return ticks
     
 def EqualWidthTicks(data, indice, n):
