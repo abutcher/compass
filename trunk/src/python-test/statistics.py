@@ -1,13 +1,35 @@
 from NaiveBayes import *
+from util import distance
+import sys
 
 # This contains functions for defect prediction statistics.  If you're looking
 # for related functions such as MRE() that aren't in this file, check util.py.
 
-def PerformBaseline(train,test,dataset="Unknown",treatment="None"):
+def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER"):
     Stats = DefectStats()
-    if type(test[0][-1]) is str:
+    if type(test[0].Coord()[-1]) is str:
         for datum in test:
-            Stats.Evaluate(Classify(datum, train, "DEFECT"), datum[-1])
+            Closest = [sys.maxint, None]
+            for cluster in clusters:
+                for quadrant in cluster.quadrants:
+                    if distance(datum.Coord(), quadrant.center()) < Closest[0]:
+                        Closest[0] = distance(datum.Coord(), quadrant.center())
+                        Closest[1] = cluster
+            train = []
+            for quadrant in Closest[1].quadrants:
+                train.extend(quadrant.ClassCoords())
+            Stats.Evaluate(NaiveBayesClassify(datum.Coord(),train,"DEFECT"), datum.klass())
+        Stats.StatsLine(dataset, treatment)
+                
+
+def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
+    Stats = DefectStats()
+    if type(test[0].Coord()[-1]) is str:
+        train = []
+        for instance in data:
+            train.append(instance.Coord())
+        for datum in test:
+            Stats.Evaluate(NaiveBayesClassify(datum.Coord(), train, "DEFECT"), datum.klass())
         Stats.StatsLine(dataset,treatment)
 
 def PrintHeaderLine():
@@ -24,7 +46,7 @@ class DefectStats:
         self.TRUE = [0,0,0,0]
         self.FALSE = [0,0,0,0]
 
-    def Evaluate(Got, Want):
+    def Evaluate(self,Got, Want):
         if Got.lower() == Want.lower():
             if Got.lower() == "true" or Got.lower() == "yes":
                 #print "true match"
@@ -101,7 +123,7 @@ class DefectStats:
     def Count(self, CLASS):
         return self.__A__(CLASS) + self.__B__(CLASS) + self.__C__(CLASS) + self.__D__(CLASS)
 
-    def StatsLine(dataset,treatment):
+    def StatsLine(self, dataset,treatment):
         print dataset," ",treatment," ","TRUE ",self.__A__("TRUE")," ",self.__B__("TRUE")," ",self.__C__("TRUE")," ", self.__D__("TRUE")," ", self.pd("TRUE")," ",self.pf("TRUE")," ",self.precision("TRUE")," ",self.accuracy("TRUE")," ",self.HarmonicMean("TRUE")
         print dataset," ",treatment," ","FALSE ",self.__A__("FALSE")," ",self.__B__("FALSE")," ",self.__C__("FALSE")," ", self.__D__("FALSE")," ", self.pd("FALSE")," ",self.pf("FALSE")," ",self.precision("FALSE")," ",self.accuracy("FALSE")," ",self.HarmonicMean("FALSE")
 

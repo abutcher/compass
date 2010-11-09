@@ -3,6 +3,7 @@
 
 import argparse
 from arff import *
+from statistics import *
 from gridclus import *
 from instance import *
 from quadrant import *
@@ -21,6 +22,9 @@ def main():
     ic.log_y_coordinates()
 
     k_fold = ic.k_fold_stratified_cross_val(args.xval)
+
+    print ""
+    PrintHeaderLine()
     
     for i in range(args.xval):        
         test = k_fold[0]
@@ -37,6 +41,10 @@ def main():
         # Optionally generate a figure Figure(filename, instances, clusters), Figure.draw()
         # Win
         k_fold.append(test)
+
+        # Perform IDEA Clustering
+        PerformIDEACluster(clusters, test,args.train)
+        PerformBaseline(train,test,args.train)
 
 
 def parse_options():

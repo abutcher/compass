@@ -72,6 +72,12 @@ class Quadrant:
 	def coords(self):
 		return [ inst.coord for inst in self.instances ]
 
+	def ClassCoords(self):
+                returnset = []
+                for instance in self.instances:
+                        returnset.append([instance.coord.x, instance.coord.y,instance.klass()])
+                return returnset
+
 	def datums(self):
 		return [ inst.datum for inst in self.instances ]
 	

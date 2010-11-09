@@ -7,6 +7,9 @@ class Instance:
 	def __init__(self, coord, datum):
 		self.coord = coord
 		self.datum = datum
+
+	def Coord(self):
+                return [self.coord.x, self.coord.y, self.klass()]
 	
 	def klass(self):
 		return self.datum[-1]
