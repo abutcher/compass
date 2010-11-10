@@ -31,6 +31,7 @@ class Figure:
         plt.title('Distribution')
         plt.setp(self.ax3, xticks=[], yticks=[])
 
+        """
         if type(instances[0].klass()) is str:
             for instance in instances:
                 if instance.klass().lower() == "true":
@@ -40,12 +41,18 @@ class Figure:
         else:
             for instance in instances:
                 ax1.plot(instance.coord.x, instance.coord.y, 'o', markersize=2, alpha=0.5)
-
+        """
         colors = self.make_n_colors(cm.hot, len(clusters)*30)
         
         for i in range(len(clusters)):
             self.color_quadrants(clusters[i].quadrants, colors[i*30])
-        
+            for quadrant in clusters[i].quadrants:
+                for instance in quadrant.instances:
+                    if instance.klass().lower() == "true":
+                        self.ax1.plot(instance.coord.x, instance.coord.y, "bo", markersize=2, alpha=0.5)
+                    else:
+                        self.ax1.plot(instance.coord.x, instance.coord.y, "ro", markersize=2, alpha=0.5)
+
     def color_quadrants(self, quadrants, color):
         for i in range(len(quadrants)):
             xmin = quadrants[i].xmin

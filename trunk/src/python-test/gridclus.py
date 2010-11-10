@@ -1,6 +1,6 @@
 from cluster import *
 
-def GRIDCLUS (quadrants, acceptance=0.3):
+def GRIDCLUS (quadrants, acceptance=0.4):
     
     tiles = []
 

@@ -36,10 +36,11 @@ def main():
         quadrants = QuadrantTree(train).leaves()
         clusters = GRIDCLUS(quadrants)
 
-        #Figure(args.train[0], train, quadrants, clusters).write_png()
+        Figure(args.train[0], train, quadrants, clusters).write_png()
 
         PerformIDEACluster(clusters, test, args.train)
         PerformBaseline(train, test, args.train)
+        del train, test
 
 def parse_options():
     """Place new options that you would like to be parsed here."""

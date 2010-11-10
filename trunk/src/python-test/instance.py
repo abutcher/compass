@@ -64,7 +64,7 @@ class InstanceCollection:
 		bins = []
 		bin_count = []
 		random.shuffle(self.instances,random.random)
-		if not isnumeric(self.instances[0].datum[-1]):
+		if not isnumeric(self.instances[0].klass()):
 			data = sort_by_class(self.instances)
 		for i in range(k):
 			bins.append([])
