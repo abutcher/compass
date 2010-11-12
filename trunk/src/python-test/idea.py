@@ -13,6 +13,7 @@ def main():
     """All of the magic happens here"""
     args = parse_options()
 
+    title = args.train[0].split("/")[-1].split(".")[0]
     arff = Arff(args.train)
 
     dc = DataCollection(arff.data)
@@ -27,7 +28,7 @@ def main():
     print ""
     PrintHeaderLine()
     
-    for i in range(args.xval):        
+    for i in range(args.xval):
         test = k_fold[0]
         k_fold.remove(test)
         train = squash(k_fold)
@@ -36,10 +37,10 @@ def main():
         quadrants = QuadrantTree(train).leaves()
         clusters = GRIDCLUS(quadrants)
 
-        Figure(args.train[0], train, quadrants, clusters).write_png()
+        # Figure(args.train[0], train, quadrants, clusters).write_png()
 
-        PerformIDEACluster(clusters, test, args.train)
-        PerformBaseline(train, test, args.train)
+        PerformIDEACluster(clusters, test, title)
+        PerformBaseline(train, test, title)
         del train, test
 
 def parse_options():
