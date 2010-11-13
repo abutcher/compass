@@ -33,7 +33,7 @@ def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
     del Stats
 
 def PrintHeaderLine():
-    print "dataset,treatment,CLASS,A,B,C,D,pd,pf,precision,accuracy,HarmonicMean"
+    print "dataset,treatment,CLASS,TotalNumOfClass,A,B,C,D,pd,pf,precision,accuracy,HarmonicMean"
 
 class DefectStats:
     # TRUE && FALSE is [a,b,c,d]
@@ -110,6 +110,12 @@ class DefectStats:
         except:
             return 0.0
 
+    def ClassCount(self,CLASS):
+        try:
+            return float(self.__B__(CLASS) + self.__D__(CLASS))
+        except:
+            return 0.0
+
     def HarmonicMean(self,CLASS):
         try:
             return float((2 * (1 - self.pf(CLASS)) * self.pd(CLASS))) / float(((1 - self.pf(CLASS)) + self.pd(CLASS)))
@@ -120,8 +126,8 @@ class DefectStats:
         return self.__A__(CLASS) + self.__B__(CLASS) + self.__C__(CLASS) + self.__D__(CLASS)
 
     def StatsLine(self, dataset,treatment):
-        print "%s,%s,%s,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset,treatment,"TRUE",self.__A__("TRUE"),self.__B__("TRUE"),self.__C__("TRUE"), self.__D__("TRUE"), self.pd("TRUE"), self.pf("TRUE"), self.precision("TRUE"), self.accuracy("TRUE"), self.HarmonicMean("TRUE"))
-        print "%s,%s,%s,%d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset, treatment, "FALSE",self.__A__("FALSE"),self.__B__("FALSE"), self.__C__("FALSE"), self.__D__("FALSE"), self.pd("FALSE"), self.pf("FALSE"), self.precision("FALSE"), self.accuracy("FALSE"), self.HarmonicMean("FALSE"))
+        print "%s,%s,%s,%d, %d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset,treatment,"TRUE",self.ClassCount("TRUE"),self.__A__("TRUE"),self.__B__("TRUE"),self.__C__("TRUE"), self.__D__("TRUE"), self.pd("TRUE"), self.pf("TRUE"), self.precision("TRUE"), self.accuracy("TRUE"), self.HarmonicMean("TRUE"))
+        print "%s,%s,%s,%d,%d, %d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset, treatment, "FALSE",self.ClassCount("FALSE"),self.__A__("FALSE"),self.__B__("FALSE"), self.__C__("FALSE"), self.__D__("FALSE"), self.pd("FALSE"), self.pf("FALSE"), self.precision("FALSE"), self.accuracy("FALSE"), self.HarmonicMean("FALSE"))
 
 
     # Private classes for grabbing A,B,C, and D
