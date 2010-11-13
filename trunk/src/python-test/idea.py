@@ -9,6 +9,7 @@ from instance import *
 from quadrant import *
 from figure import *
 from util import *
+from copy import deepcopy
 
 def main():
     """All of the magic happens here"""
@@ -27,24 +28,50 @@ def main():
 
         k_fold = ic.k_fold_stratified_cross_val(args.xval)
 
-        print ""
-
-    
         for by in range(args.xval):
             test = k_fold[0]
             k_fold.remove(test)
             train = squash(k_fold)
             k_fold.append(test)
-        
+
+            trainLogX = log_x(deepcopy(train))
+            trainLogY = log_y(deepcopy(train))
+            trainLogXY = log_x(log_y(deepcopy(train)))
+
+            testLogX = log_x(deepcopy(test))
+            testLogY = log_y(deepcopy(test))
+            testLogXY = log_x(log_y(deepcopy(test)))
+
             quadrants = QuadrantTree(train).leaves()
+            quadrantsX = QuadrantTree(trainLogX).leaves()
+            quadrantsY = QuadrantTree(trainLogY).leaves()
+            quadrantsXY = QuadrantTree(trainLogXY).leaves()
+            
             acceptance = [0.1,0.25,0.4,0.5]
+           
             for accept in acceptance:
                 
                 clusters = GRIDCLUS(quadrants, accept)
-
                 # Figure(args.train[0], train, quadrants, clusters).write_png()
                 PerformIDEACluster(clusters, test, title, "IDEACLUSTER-"+str(accept))
                 del clusters
+
+                clustersX = GRIDCLUS(quadrantsX,accept)
+                PerformIDEACluster(clustersX, testLogX,title,"IDEACLUSTER-"+str(accept)+"-logX")
+                del clustersX
+                              
+                clustersY = GRIDCLUS(quadrantsY,accept)
+                PerformIDEACluster(clustersY, testLogY,title,"IDEACLUSTER-"+str(accept)+"-logY")
+                del clustersY
+
+                clustersXY = GRIDCLUS(quadrantsXY,accept)
+                PerformIDEACluster(clustersXY, testLogXY,title,"IDEACLUSTER-"+str(accept)+"-logXY")
+                del clustersXY
+
+            del quadrants
+            del trainLogX, testLogX, quadrantsX
+            del trainLogY, testLogY, quadrantsY
+            del trainLogXY, testLogXY, quadrantsXY
                 
             PerformBaseline(train, test, title)
             PerformBaseline(log_datum(train), log_datum(test), title,"log")

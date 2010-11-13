@@ -66,16 +66,14 @@ def log_datum(data):
     return data
 
 def log_x(data):
-    ResultSet = []
-    for instance in data:
-        instance.coord[0] = math.log(instance.coord[0] + 0.0001)
-    return ResultSet
+    for i in range(len(data)):
+        data[i].coord.x = math.log(data[i].coord.x + 0.0001)
+    return data
 
 def log_y(data):
-    ResultSet = []
-    for instance in data:
-        instance.coord[1] = math.log(instance.coord[1] + 0.0001)
-    return ResultSet
+    for i in range(len(data)):
+        data[i].coord.y = math.log(data[i].coord.y + 0.0001)
+    return data
             
 def sort_by_class(instances):
     instances.sort(key=lambda instance: instance.datum[-1])
