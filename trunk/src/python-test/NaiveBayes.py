@@ -1,8 +1,6 @@
 from math import *
 
 class Normal:
-
-    
     def __init__(self,data):
         self.largest = []
         self.smallest = []

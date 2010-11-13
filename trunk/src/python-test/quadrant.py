@@ -3,8 +3,6 @@ import numpy
 import math
 
 class QuadrantTree:
-	root = None
-	minsize = None
 
 	def __init__(self, instances):
 		minx, miny = sys.maxint, sys.maxint
@@ -41,12 +39,6 @@ class QuadrantTree:
 		return leaves
 
 class Quadrant:
-	xmin = None
-	xmax = None
-	ymin = None
-	ymax = None
-	instances = []
-	children = []
 
 	def __init__(self, xmin, xmax, ymin, ymax, instances):
 		self.xmin = xmin
@@ -54,6 +46,7 @@ class Quadrant:
 		self.ymin = ymin
 		self.ymax = ymax
 		self.instances = instances
+		self.children = []
 
 	def center(self):
                 return [ ((self.xmax - self.xmin) / 2) + self.xmin,
