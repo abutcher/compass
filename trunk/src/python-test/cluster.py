@@ -1,7 +1,6 @@
 from util import *
 
 class Cluster:
-    quadrants = []
     # scoring something something
 
     def __init__(self, quadrants):

@@ -3,9 +3,9 @@ from util import *
 
 class Arff:
     """ Collect the data from a .arff file. """
-    data=[]
 
     def __init__(self, filename=None):
+        self.data = []
         if type(filename) == list:
             if type(filename[0]) == str:
                 for addthis in filename:
