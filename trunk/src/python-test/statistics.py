@@ -21,6 +21,7 @@ def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER")
                 train.extend(quadrant.ClassCoords())
             Stats.Evaluate(NaiveBayesClassify(instance.Coord(),train,"DEFECT"), instance.klass())
         Stats.StatsLine(dataset, treatment)
+    del Stats
 
 def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
     Stats = DefectStats()
@@ -29,12 +30,13 @@ def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
         for instance in test:
             Stats.Evaluate(NaiveBayesClassify(instance.datum, train, "DEFECT"), instance.klass())
         Stats.StatsLine(dataset,treatment)
+    del Stats
 
 def PrintHeaderLine():
     print "dataset,treatment,CLASS,A,B,C,D,pd,pf,precision,accuracy,HarmonicMean"
 
 class DefectStats:
-    # [a,b,c,d]
+    # TRUE && FALSE is [a,b,c,d]
 
     def __init__(self):
         self.TRUE = [0,0,0,0]

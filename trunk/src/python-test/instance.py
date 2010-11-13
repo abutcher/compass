@@ -13,11 +13,11 @@ class Instance:
 		return self.datum[-1]
 	
 class InstanceCollection:
-	instances = []
-	max_x = 0
-	max_y = 0
 	
 	def __init__(self, data_collection):
+                self.instances = []
+                self.max_x = 0
+                self.max_y = 0
 		east, west = data_collection.find_poles()
 		base_d = distance(east, west)
 
@@ -86,8 +86,6 @@ class DataCoordinate:
 		self.y = y
 	
 class DataCollection:
-	datums = []
-
 	def __init__(self, datums):
 		self.datums = datums
 	
