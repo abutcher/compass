@@ -27,6 +27,7 @@ def main():
         ic.normalize_coordinates()
 
         k_fold = ic.k_fold_stratified_cross_val(args.xval)
+        print ""
 
         for by in range(args.xval):
             test = k_fold[0]
