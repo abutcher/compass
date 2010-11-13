@@ -1,3 +1,5 @@
+from util import *
+
 class Cluster:
     quadrants = []
     # scoring something something
@@ -17,3 +19,9 @@ class Cluster:
             instances.extend(quadrant.instances)
         return [ inst.datum for inst in instances ]
         
+def cluster_prune(clusters, pct):
+    cvars = []
+    for cluster in clusters:
+        cvars.append((entropy(cluster.datums()), cluster))
+    cvars = sorted(cvars, key=lambda cluster: cluster[0])
+    return [ cvar[1] for cvar in cvars[0: int(round(len(cvars)-1)-((len(cvars)-1)*pct)) ] ]
