@@ -8,6 +8,7 @@ from gridclus import *
 from instance import *
 from quadrant import *
 from figure import *
+from util import *
 
 def main():
     """All of the magic happens here"""
@@ -19,29 +20,36 @@ def main():
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
 
-    ic.normalize_coordinates()
-    ic.log_y_coordinates()
-    ic.log_x_coordinates()
-
-    k_fold = ic.k_fold_stratified_cross_val(args.xval)
-
-    print ""
     PrintHeaderLine()
-    
     for i in range(args.xval):
-        test = k_fold[0]
-        k_fold.remove(test)
-        train = squash(k_fold)
-        k_fold.append(test)
         
-        quadrants = QuadrantTree(train).leaves()
-        clusters = GRIDCLUS(quadrants)
+        ic.normalize_coordinates()
 
-        # Figure(args.train[0], train, quadrants, clusters).write_png()
+        k_fold = ic.k_fold_stratified_cross_val(args.xval)
 
-        PerformIDEACluster(clusters, test, title)
-        PerformBaseline(train, test, title)
-        del train, test
+        print ""
+
+    
+        for by in range(args.xval):
+            test = k_fold[0]
+            k_fold.remove(test)
+            train = squash(k_fold)
+            k_fold.append(test)
+        
+            quadrants = QuadrantTree(train).leaves()
+            acceptance = [0.1,0.25,0.4,0.5]
+            for accept in acceptance:
+                
+                clusters = GRIDCLUS(quadrants, accept)
+
+                # Figure(args.train[0], train, quadrants, clusters).write_png()
+                PerformIDEACluster(clusters, test, title, "IDEACLUSTER-"+str(accept))
+                del clusters
+                
+            PerformBaseline(train, test, title)
+            PerformBaseline(log_datum(train), log_datum(test), title,"log")
+                
+            del train, test
 
 def parse_options():
     """Place new options that you would like to be parsed here."""

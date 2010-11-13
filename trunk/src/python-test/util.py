@@ -55,6 +55,27 @@ def stratified_cross_val(data, option):
             train_count = 0
             test_count = 0
     return train,test
+
+def log_datum(data):
+    for x in range(len(data)):
+        for y in range(len(data[x].datum)-1):
+            try:
+                data[x].datum[y] = math.log(data[x].datum[y] + 0.0001)
+            except:
+                data[x].datum[y] = math.log(0.0001)
+    return data
+
+def log_x(data):
+    ResultSet = []
+    for instance in data:
+        instance.coord[0] = math.log(instance.coord[0] + 0.0001)
+    return ResultSet
+
+def log_y(data):
+    ResultSet = []
+    for instance in data:
+        instance.coord[1] = math.log(instance.coord[1] + 0.0001)
+    return ResultSet
             
 def sort_by_class(instances):
     instances.sort(key=lambda instance: instance.datum[-1])

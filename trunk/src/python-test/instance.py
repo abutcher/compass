@@ -1,8 +1,6 @@
 from util import *
 
 class Instance:
-	coord = None
-	datum = None
 
 	def __init__(self, coord, datum):
 		self.coord = coord
