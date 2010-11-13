@@ -35,8 +35,6 @@ def PrintHeaderLine():
 
 class DefectStats:
     # [a,b,c,d]
-    TRUE = [0,0,0,0]
-    FALSE = [0,0,0,0]
 
     def __init__(self):
         self.TRUE = [0,0,0,0]
