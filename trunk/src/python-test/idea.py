@@ -75,7 +75,7 @@ def main():
             del trainLogXY, testLogXY, quadrantsXY
                 
             PerformBaseline(train, test, title)
-            PerformBaseline(log_datum(train), log_datum(test), title,"log")
+            PerformBaseline(log_datum(deepcopy(train)), log_datum(deepcopy(test)), title,"log")
                 
             del train, test
 
