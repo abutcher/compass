@@ -27,7 +27,6 @@ def main():
         ic.normalize_coordinates()
 
         k_fold = ic.k_fold_stratified_cross_val(args.xval)
-        print ""
 
         for by in range(args.xval):
             test = k_fold[0]
@@ -53,21 +52,44 @@ def main():
             for accept in acceptance:
                 
                 clusters = GRIDCLUS(quadrants, accept)
-                # Figure(args.train[0], train, quadrants, clusters).write_png()
+                pruned10 = cluster_prune(clusters,.1)
+                pruned20 = cluster_prune(clusters,.2)
+                pruned30 = cluster_prune(clusters, .3)
                 PerformIDEACluster(clusters, test, title, "IDEACLUSTER-"+str(accept))
-                del clusters
+                PerformIDEACluster(pruned10, test, title, "IDEACLUSTER-PRUNED10%-"+str(accept))
+                PerformIDEACluster(pruned20, test, title, "IDEACLUSTER-PRUNED20%-"+str(accept))
+                PerformIDEACluster(pruned30, test, title, "IDEACLUSTER-PRUNED30%-"+str(accept))
+                del clusters, pruned10, pruned20, pruned30
 
                 clustersX = GRIDCLUS(quadrantsX,accept)
+                prunedX10 = cluster_prune(clustersX,.1)
+                prunedX20 = cluster_prune(clustersX,.2)
+                prunedX30 = cluster_prune(clustersX,.3)
                 PerformIDEACluster(clustersX, testLogX,title,"IDEACLUSTER-"+str(accept)+"-logX")
-                del clustersX
+                PerformIDEACluster(prunedX10, testLogX,title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logX")
+                PerformIDEACluster(prunedX20, testLogX,title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logX")
+                PerformIDEACluster(prunedX30, testLogX,title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logX")
+                del clustersX, prunedX10, prunedX20, prunedX30
                               
                 clustersY = GRIDCLUS(quadrantsY,accept)
+                prunedY10 = cluster_prune(clustersY,.1)
+                prunedY20 = cluster_prune(clustersY,.2)
+                prunedY30 = cluster_prune(clustersY,.3)
                 PerformIDEACluster(clustersY, testLogY,title,"IDEACLUSTER-"+str(accept)+"-logY")
-                del clustersY
+                PerformIDEACluster(prunedY10, testLogY,title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logY")
+                PerformIDEACluster(prunedY20, testLogY,title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logY")
+                PerformIDEACluster(prunedY30, testLogY,title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logY")
+                del clustersY, prunedY10, prunedY20, prunedY30
 
                 clustersXY = GRIDCLUS(quadrantsXY,accept)
+                prunedXY10 = cluster_prune(clustersXY,.1)
+                prunedXY20 = cluster_prune(clustersXY,.2)
+                prunedXY30 = cluster_prune(clustersXY,.3)
                 PerformIDEACluster(clustersXY, testLogXY,title,"IDEACLUSTER-"+str(accept)+"-logXY")
-                del clustersXY
+                PerformIDEACluster(prunedXY10, testLogXY,title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logXY")
+                PerformIDEACluster(prunedXY20, testLogXY,title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logXY")
+                PerformIDEACluster(prunedXY30, testLogXY,title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logXY")
+                del clustersXY, prunedXY10, prunedXY20, prunedXY30
 
             del quadrants
             del trainLogX, testLogX, quadrantsX
