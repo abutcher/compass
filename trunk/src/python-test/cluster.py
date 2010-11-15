@@ -20,7 +20,6 @@ class Cluster:
         
 def cluster_prune(clusters, pct):
     if len(clusters) == 1:
-        print "Length is 1 returning them!"
         return clusters
     cvars = []
     for cluster in clusters:

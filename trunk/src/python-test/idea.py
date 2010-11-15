@@ -20,22 +20,19 @@ def main():
 
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
+    ic.normalize_coordinates()
 
     PrintHeaderLine()
     for i in range(args.xval):
-        
-        ic.normalize_coordinates()
+        print "************************************* Run %d ***********************************" % (i) 
 
         k_fold = ic.k_fold_stratified_cross_val(args.xval)
 
         for by in range(args.xval):
             test = k_fold[0]
             k_fold.remove(test)
-            train = squash(k_fold)
+            train = squash(deepcopy(k_fold))
             k_fold.append(test)
-
-            print "Train: %d" % (len(train))
-            print "Test: %d" % (len(test))
 
             trainLogX = log_x(deepcopy(train))
             trainLogY = log_y(deepcopy(train))
@@ -50,7 +47,7 @@ def main():
             quadrantsY = QuadrantTree(deepcopy(trainLogY)).leaves()
             quadrantsXY = QuadrantTree(deepcopy(trainLogXY)).leaves()
             
-            acceptance = [0.3, 0.4, 0.5]
+            acceptance = [0.1, 0.2, 0.4, 0.5]
            
             for accept in acceptance:
                 
@@ -68,30 +65,30 @@ def main():
                 prunedX10 = cluster_prune(deepcopy(clustersX),.1)
                 prunedX20 = cluster_prune(deepcopy(clustersX),.2)
                 prunedX30 = cluster_prune(deepcopy(clustersX),.3)
-                PerformIDEACluster(deepcopy(clustersX), deepcopy(testLogX),title,"IDEACLUSTER-"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(prunedX10), deepcopy(testLogX),title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(prunedX20), deepcopy(testLogX),title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(prunedX30), deepcopy(testLogX),title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logX")
+                PerformIDEACluster(deepcopy(clustersX), deepcopy(testLogX), title,"IDEACLUSTER-"+str(accept)+"-logX")
+                PerformIDEACluster(deepcopy(prunedX10), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logX")
+                PerformIDEACluster(deepcopy(prunedX20), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logX")
+                PerformIDEACluster(deepcopy(prunedX30), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logX")
                 del clustersX, prunedX10, prunedX20, prunedX30
                               
                 clustersY = GRIDCLUS(deepcopy(quadrantsY),accept)
                 prunedY10 = cluster_prune(deepcopy(clustersY),.1)
                 prunedY20 = cluster_prune(deepcopy(clustersY),.2)
                 prunedY30 = cluster_prune(deepcopy(clustersY),.3)
-                PerformIDEACluster(deepcopy(clustersY), deepcopy(testLogY),title,"IDEACLUSTER-"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(prunedY10), deepcopy(testLogY),title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(prunedY20), deepcopy(testLogY),title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(prunedY30), deepcopy(testLogY),title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logY")
+                PerformIDEACluster(deepcopy(clustersY), deepcopy(testLogY), title,"IDEACLUSTER-"+str(accept)+"-logY")
+                PerformIDEACluster(deepcopy(prunedY10), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logY")
+                PerformIDEACluster(deepcopy(prunedY20), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logY")
+                PerformIDEACluster(deepcopy(prunedY30), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logY")
                 del clustersY, prunedY10, prunedY20, prunedY30
 
                 clustersXY = GRIDCLUS(deepcopy(quadrantsXY),accept)
                 prunedXY10 = cluster_prune(deepcopy(clustersXY),.1)
                 prunedXY20 = cluster_prune(deepcopy(clustersXY),.2)
                 prunedXY30 = cluster_prune(deepcopy(clustersXY),.3)
-                PerformIDEACluster(deepcopy(clustersXY), deepcopy(testLogXY),title,"IDEACLUSTER-"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(prunedXY10), deepcopy(testLogXY),title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(prunedXY20), deepcopy(testLogXY),title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(prunedXY30), deepcopy(testLogXY),title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logXY")
+                PerformIDEACluster(deepcopy(clustersXY), deepcopy(testLogXY), title,"IDEACLUSTER-"+str(accept)+"-logXY")
+                PerformIDEACluster(deepcopy(prunedXY10), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logXY")
+                PerformIDEACluster(deepcopy(prunedXY20), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logXY")
+                PerformIDEACluster(deepcopy(prunedXY30), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logXY")
                 del clustersXY, prunedXY10, prunedXY20, prunedXY30
 
             del quadrants
