@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 sets="kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
 
 for file in $sets
