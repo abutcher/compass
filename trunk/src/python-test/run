@@ -1,10 +1,14 @@
 #!/bin/bash
 
 
-sets="kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
+sets="cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
+jm1="jm1.arff"
+
 
 for file in $sets
 do
     echo "Running ../python/arff/defect/$file"
     /opt/local/bin/python2.6 idea.py --train ../python/arff/defect/$file --xval 5 > $file.csv
+#    grep Perform $file.csv > $file.perform.csv;
+#    grep __init__ $file.csv > $file.quadrants.csv
 done

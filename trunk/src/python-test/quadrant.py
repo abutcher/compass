@@ -1,9 +1,11 @@
 from util import *
 import numpy
 import math
+from runtime import *
 
 class QuadrantTree:
-
+	
+	#@print_timing
 	def __init__(self, instances):
 		minx, miny = sys.maxint, sys.maxint
 		maxx, maxy = -sys.maxint, -sys.maxint

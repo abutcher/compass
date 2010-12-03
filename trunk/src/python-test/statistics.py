@@ -2,10 +2,12 @@ from NaiveBayes import *
 from knn import *
 from util import distance
 import sys
+from runtime import *
 
 # This contains functions for defect prediction statistics.  If you're looking
 # for related functions such as MRE() that aren't in this file, check util.py.
 
+#@print_timing
 def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER"):
     Stats = DefectStats()
     if type(test[0].klass()) is str:
@@ -23,6 +25,7 @@ def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER")
         Stats.StatsLine(dataset, treatment)
     del Stats
 
+#@print_timing
 def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
     Stats = DefectStats()
     if type(test[0].klass()) is str:

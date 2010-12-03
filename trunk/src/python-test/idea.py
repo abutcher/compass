@@ -8,6 +8,7 @@ from gridclus import *
 from instance import *
 from quadrant import *
 from figure import *
+import time
 from util import *
 from copy import deepcopy
 
@@ -24,8 +25,6 @@ def main():
 
     PrintHeaderLine()
     for i in range(args.xval):
-        print "************************************* Run %d ***********************************" % (i) 
-
         k_fold = ic.k_fold_stratified_cross_val(args.xval)
 
         for by in range(args.xval):
