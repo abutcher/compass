@@ -258,15 +258,11 @@ def wilcoxon(pop1, pop2, critical = 95):
 
         for i in range(1,len(data)):
             skipping = (old == starter) or (data[i] == old)
-            print skipping
             if (skipping):
                 summation = summation + 1
             else:
                 r = summation / ( i - start)
                 for j in range(start,i):
-                    print i
-                    print j
-                    print max(data)
                     ranks[data[j]] = r
                 start = i
                 summation = i
