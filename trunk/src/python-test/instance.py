@@ -80,6 +80,26 @@ class InstanceCollection:
 				bin_count[index] = 1
 		return bins
 
+	def stratified_cross_val(self, option):
+		random.shuffle(self.instances, random.random)
+		if not isnumeric(self.instances[0].klass()):
+			data = sort_by_class(self.instances)
+		train_count = 0
+		test_count = 0
+		train = []
+		test = []
+		for instance in self.instances:
+			if train_count < option[0]:
+				train_count = train_count + 1
+				train.append(instance)
+			elif test_count < option[1]:
+				test_count = test_count + 1
+				test.append(instance)
+				if train_count == option[0] and test_count == option[1]:
+					train_count = 0
+					test_count = 0
+		return train, test
+
 class DataCoordinate:
 	def __init__(self, x, y):
 		self.x = x
