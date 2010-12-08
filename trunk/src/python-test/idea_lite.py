@@ -31,9 +31,7 @@ def main():
     quadrants = QuadrantTree(trainXY).leaves()
     clusters = GRIDCLUS(quadrants, args.accept)
 
-    stats = []
-    for cluster in clusters:
-        stats.append(DefectStats())
+    stats = list(DefectStats() for cluster in clusters)
 
     for instance in testXY:
 
