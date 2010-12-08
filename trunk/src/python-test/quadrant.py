@@ -39,9 +39,9 @@ class QuadrantTree:
 					else:
 						grow_lives(child, numlives)
 		if lives:			
-			grow(self.root)
-		else:
 			grow_lives(self.root, numlives)
+		else:
+			grow(self.root)
 
 	def leaves(self):
 		leaves = []
