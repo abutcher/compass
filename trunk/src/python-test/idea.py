@@ -41,31 +41,16 @@ def main():
             testLogY = log_y(deepcopy(test))
             testLogXY = log_x(log_y(deepcopy(test)))
 
-            quadrantsL3 = QuadrantTree(deepcopy(train), True, 3).leaves()
-            quadrantsL6 = QuadrantTree(deepcopy(train), True, 6).leaves()
-            quadrantsL12 = QuadrantTree(deepcopy(train), True, 12).leaves()
             quadrants = QuadrantTree(deepcopy(train)).leaves()
-            quadrantsXL3 = QuadrantTree(deepcopy(trainLogX), True, 3).leaves()
-            quadrantsXL6 = QuadrantTree(deepcopy(trainLogX), True, 6).leaves()
-            quadrantsXL12 = QuadrantTree(deepcopy(trainLogX), True, 12).leaves()
             quadrantsX = QuadrantTree(deepcopy(trainLogX)).leaves()
-            quadrantsYL3 = QuadrantTree(deepcopy(trainLogY), True, 3).leaves()
-            quadrantsYL6 = QuadrantTree(deepcopy(trainLogY), True, 6).leaves()
-            quadrantsYL12 = QuadrantTree(deepcopy(trainLogY), True, 12).leaves()
             quadrantsY = QuadrantTree(deepcopy(trainLogY)).leaves()
-            quadrantsXYL3 = QuadrantTree(deepcopy(trainLogXY), True, 3).leaves()
-            quadrantsXYL6 = QuadrantTree(deepcopy(trainLogXY), True, 6).leaves()
-            quadrantsXYL12 = QuadrantTree(deepcopy(trainLogXY), True, 12).leaves()
             quadrantsXY = QuadrantTree(deepcopy(trainLogXY)).leaves()
             
-            acceptance = [0.3, 0.4, 0.5]
+            acceptance = [0.1, 0.2, 0.4, 0.5]
            
             for accept in acceptance:
                 
                 clusters = GRIDCLUS(deepcopy(quadrants), accept)
-                clustersL3 = GRIDCLUS(deepcopy(quadrantsL3), accept)
-                clustersL6 = GRIDCLUS(deepcopy(quadrantsL6), accept)
-                clustersL12 = GRIDCLUS(deepcopy(quadrantsL12), accept)
                 pruned10 = cluster_prune(deepcopy(clusters),.1)
                 pruned20 = cluster_prune(deepcopy(clusters),.2)
                 pruned30 = cluster_prune(deepcopy(clusters),.3)
@@ -73,16 +58,9 @@ def main():
                 PerformIDEACluster(deepcopy(pruned10), deepcopy(test), title, "IDEACLUSTER-PRUNED10%-"+str(accept))
                 PerformIDEACluster(deepcopy(pruned20), deepcopy(test), title, "IDEACLUSTER-PRUNED20%-"+str(accept))
                 PerformIDEACluster(deepcopy(pruned30), deepcopy(test), title, "IDEACLUSTER-PRUNED30%-"+str(accept))
-                PerformIDEACluster(deepcopy(clustersL3), deepcopy(test), title, "IDEACLUSTER-3LIVES"+str(accept))
-                PerformIDEACluster(deepcopy(clustersL6), deepcopy(test), title, "IDEACLUSTER-6LIVES"+str(accept))
-                PerformIDEACluster(deepcopy(clustersL12), deepcopy(test), title, "IDEACLUSTER-12LIVES"+str(accept))                
-                del clusters, clustersL3, clustersL6, clustersL12, pruned10, pruned20, pruned30
+                del clusters, pruned10, pruned20, pruned30
 
-                """
                 clustersX = GRIDCLUS(deepcopy(quadrantsX),accept)
-                clustersXL3 = GRIDCLUS(deepcopy(quadrantsXL3), accept)
-                clustersXL6 = GRIDCLUS(deepcopy(quadrantsXL6), accept)
-                clustersXL12 = GRIDCLUS(deepcopy(quadrantsXL12), accept)
                 prunedX10 = cluster_prune(deepcopy(clustersX),.1)
                 prunedX20 = cluster_prune(deepcopy(clustersX),.2)
                 prunedX30 = cluster_prune(deepcopy(clustersX),.3)
@@ -90,49 +68,32 @@ def main():
                 PerformIDEACluster(deepcopy(prunedX10), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logX")
                 PerformIDEACluster(deepcopy(prunedX20), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logX")
                 PerformIDEACluster(deepcopy(prunedX30), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(clustersXL3), deepcopy(testLogX), title, "IDEACLUSTER-3LIVES"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(clustersXL6), deepcopy(testLogX), title, "IDEACLUSTER-6LIVES"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(clustersXL12), deepcopy(testLogX), title, "IDEACLUSTER-12LIVES"+str(accept)+"-logX")
-                del clustersX, clustersXL3, clustersXL6, clustersXL12, prunedX10, prunedX20, prunedX30
-                """
-                """           
+                del clustersX, prunedX10, prunedX20, prunedX30
+                              
                 clustersY = GRIDCLUS(deepcopy(quadrantsY),accept)
                 prunedY10 = cluster_prune(deepcopy(clustersY),.1)
                 prunedY20 = cluster_prune(deepcopy(clustersY),.2)
                 prunedY30 = cluster_prune(deepcopy(clustersY),.3)
-                clustersYL3 = GRIDCLUS(deepcopy(quadrantsYL3), accept)
-                clustersYL6 = GRIDCLUS(deepcopy(quadrantsYL6), accept)
-                clustersYL12 = GRIDCLUS(deepcopy(quadrantsYL12), accept)
                 PerformIDEACluster(deepcopy(clustersY), deepcopy(testLogY), title,"IDEACLUSTER-"+str(accept)+"-logY")
                 PerformIDEACluster(deepcopy(prunedY10), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logY")
                 PerformIDEACluster(deepcopy(prunedY20), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logY")
                 PerformIDEACluster(deepcopy(prunedY30), deepcopy(testLogY), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(clustersYL3), deepcopy(testLogY), title, "IDEACLUSTER-3LIVES"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(clustersYL6), deepcopy(testLogY), title, "IDEACLUSTER-6LIVES"+str(accept)+"-logY")
-                PerformIDEACluster(deepcopy(clustersYL12), deepcopy(testLogY), title, "IDEACLUSTER-12LIVES"+str(accept)+"-logY")
-                del clustersY, clustersYL3, clustersYL6, clustersYL12, prunedY10, prunedY20, prunedY30
-                """
+                del clustersY, prunedY10, prunedY20, prunedY30
 
                 clustersXY = GRIDCLUS(deepcopy(quadrantsXY),accept)
                 prunedXY10 = cluster_prune(deepcopy(clustersXY),.1)
                 prunedXY20 = cluster_prune(deepcopy(clustersXY),.2)
                 prunedXY30 = cluster_prune(deepcopy(clustersXY),.3)
-                clustersXYL3 = GRIDCLUS(deepcopy(quadrantsXYL3), accept)
-                clustersXYL6 = GRIDCLUS(deepcopy(quadrantsXYL6), accept)
-                clustersXYL12 = GRIDCLUS(deepcopy(quadrantsXYL12), accept)                
                 PerformIDEACluster(deepcopy(clustersXY), deepcopy(testLogXY), title,"IDEACLUSTER-"+str(accept)+"-logXY")
                 PerformIDEACluster(deepcopy(prunedXY10), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logXY")
                 PerformIDEACluster(deepcopy(prunedXY20), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logXY")
                 PerformIDEACluster(deepcopy(prunedXY30), deepcopy(testLogXY), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(clustersXYL3), deepcopy(testLogXY), title, "IDEACLUSTER-3LIVES"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(clustersXYL6), deepcopy(testLogXY), title, "IDEACLUSTER-6LIVES"+str(accept)+"-logXY")
-                PerformIDEACluster(deepcopy(clustersXYL12), deepcopy(testLogXY), title, "IDEACLUSTER-12LIVES"+str(accept)+"-logXY")                
                 del clustersXY, prunedXY10, prunedXY20, prunedXY30
 
-            del quadrants, quadrantsL3, quadrantsL6, quadrantsL12
-            del trainLogX, testLogX, quadrantsX, quadrantsXL3, quadrantsXL6, quadrantsXL12
-            del trainLogY, testLogY, quadrantsY, quadrantsYL3, quadrantsYL6, quadrantsYL12
-            del trainLogXY, testLogXY, quadrantsXY, quadrantsXYL3, quadrantsXYL6, quadrantsXYL12
+            del quadrants
+            del trainLogX, testLogX, quadrantsX
+            del trainLogY, testLogY, quadrantsY
+            del trainLogXY, testLogXY, quadrantsXY
                 
             PerformBaseline(deepcopy(train), deepcopy(test), title)
             PerformBaseline(log_datum(deepcopy(train)), log_datum(deepcopy(test)), title,"log")

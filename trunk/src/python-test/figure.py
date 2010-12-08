@@ -45,7 +45,10 @@ class Figure:
         colors = self.make_n_colors(cm.hot, len(clusters)*30)
         
         for i in range(len(clusters)):
-            self.color_quadrants(clusters[i].quadrants, colors[i*30])
+            if clusters[i].mark:
+                self.color_quadrants(clusters[i].quadrants, 'purple')
+            else:
+                self.color_quadrants(clusters[i].quadrants, colors[i*30])
             for quadrant in clusters[i].quadrants:
                 for instance in quadrant.instances:
                     if instance.klass().lower() == "true":

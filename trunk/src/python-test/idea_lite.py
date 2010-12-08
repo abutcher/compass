@@ -3,7 +3,7 @@
 import argparse
 from arff import *
 from statistics import *
-from gridclus import *
+from gridclus2 import *
 from instance import *
 from quadrant import *
 from figure import *
@@ -29,7 +29,7 @@ def main():
     testXY = log_y(log_x(deepcopy(test)))
 
     quadrants = QuadrantTree(trainXY).leaves()
-    clusters = GRIDCLUS(quadrants, args.accept)
+    clusters = GRIDCLUS(quadrants, args.accept[0])
 
     stats = list(DefectStats() for cluster in clusters)
 
@@ -50,15 +50,18 @@ def main():
             modified_train.extend(quadrant.ClassCoords())
         
         # Classify the test instance
-        got = classify(instance.datum, modified_train, "DEFECT")
+        got = classify(instance.Coord(), modified_train, "DEFECT")
         want = instance.datum[-1]
         
         # Increment the stat object appropriately using Evaluate
         stats[closest_cluster[1]].Evaluate(got, want)
         
     # Win the game.
-    for stat in stats:
-        print stat.HarmonicMean("TRUE")
+    for i in range(len(stats)):
+        print "Size: %d, HM: %.2f" % (len(clusters[i].datums()),stats[i].HarmonicMean("TRUE"))
+
+    fig = Figure(title, trainXY, quadrants, clusters)
+    fig.write_png()
 
 def parse_options():
     """Place new options that you would like to be parsed here."""
