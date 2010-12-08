@@ -50,7 +50,7 @@ def main():
             maxs = max(treatment[i][3])*100
             print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (truesRank, treatment[i][0], treatment[i][1].replace("%","\\%"), treatment[i][2], mins, meds - mins, meds, maxs - meds, maxs)
             if (trues[i] != trues[-1]):
-                if (wilcoxon(sorted(treatment[trues[i]][3]),sorted(treatment[trues[i+1][3]))) != 0):
+                if (wilcoxon(sorted(treatment[trues[i]][3]),sorted(treatment[trues[i+1]][3])) != 0):
                     truesRank = truesRank + 1
 
     for i in range(len(falses)):
