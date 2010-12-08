@@ -14,6 +14,8 @@ from copy import deepcopy
 def main():
     args = parse_options()
 
+    print args.accept
+
     title = args.train[0].split("/")[-1].split(".")[0]
     arff = Arff(args.train)
 
@@ -23,29 +25,31 @@ def main():
 
     train, test = ic.stratified_cross_val(args.stratified)
 
-    quadrants = QuadrantTree(deepcopy(train)).leaves()
-    clusters = GRIDCLUS(deepcopy(quadrants), args.accept)
+    trainXY = log_y(log_x(deepcopy(train)))
+    testXY = log_y(log_x(deepcopy(test)))
+
+    quadrants = QuadrantTree(trainXY).leaves()
+    clusters = GRIDCLUS(quadrants, args.accept)
 
     stats = []
     for cluster in clusters:
         stats.append(DefectStats())
 
-    for instance in test:
+    for instance in testXY:
 
         # Find closest cluster to test instance.
         closest_cluster = [sys.maxint, None]
         for i in range(len(clusters)):
-            for quadrant in clusters[i]:
-                tmp_distance = distance(instance.datum, quadrant.center())
+            for quadrant in clusters[i].quadrants:
+                tmp_distance = distance(instance.Coord(), quadrant.center())
                 if tmp_distance < closest_cluster[0]:
                     closest_cluster[0] = tmp_distance
                     closest_cluster[1] = i
 
         # Points and associated classes for the closest cluster's quadrants.
         modified_train = []
-        for quadrant in clusters[closest_cluster[1]]:
+        for quadrant in clusters[closest_cluster[1]].quadrants:
             modified_train.extend(quadrant.ClassCoords())
-
         
         # Classify the test instance
         got = classify(instance.datum, modified_train, "DEFECT")
@@ -54,8 +58,9 @@ def main():
         # Increment the stat object appropriately using Evaluate
         stats[closest_cluster[1]].Evaluate(got, want)
         
-        # Win the game.
-
+    # Win the game.
+    for stat in stats:
+        print stat.HarmonicMean("TRUE")
 
 def parse_options():
     """Place new options that you would like to be parsed here."""
