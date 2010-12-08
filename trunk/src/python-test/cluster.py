@@ -1,4 +1,5 @@
 from util import *
+from NaiveBayes import *
 
 class Cluster:
 
@@ -7,6 +8,7 @@ class Cluster:
 
     def __init__(self):
         self.quadrants = []
+        self.mark = False
     
     def add_quadrant(self, quadrant):
         self.quadrants.append(quadrant)
@@ -19,6 +21,16 @@ class Cluster:
         for quadrant in self.quadrants:
             instances.extend(quadrant.instances)
         return [ inst.datum for inst in instances ]
+
+    def is_neighbor(self, other_cluster):
+        result = False
+        for i in range(len(self.quadrants)):
+            for j in range(len(other_cluster.quadrants)):
+                a = self.quadrants[i]
+                b = other_quadrant
+                if ((a.xmin == b.xmax) or (a.xmax == b.xmin)) or ((a.ymin == b.ymax) or (a.ymax == b.ymin)):
+                    result = True
+        return result
         
 def cluster_prune(clusters, pct):
     if len(clusters) == 1:
