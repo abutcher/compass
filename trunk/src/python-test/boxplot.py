@@ -38,29 +38,29 @@ def main():
     truesRank = 1
     falsesRank = 1
     for i in range(len(treatments)):
-        if treatment[2] == "TRUE":
+        if treatments[i][2] == 'TRUE':
             trues.append(i)
-        elif treatment[2] == "FALSE":
+        elif treatments[i][2] == 'FALSE':
             falses.append(i)
     
     for i in range(len(trues)):
-        if treatment[i][2] == "TRUE":
-            mins = min(treatment[i][3])*100
-            meds = np.median(treatment[i][3])*100
-            maxs = max(treatment[i][3])*100
-            print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (truesRank, treatment[i][0], treatment[i][1].replace("%","\\%"), treatment[i][2], mins, meds - mins, meds, maxs - meds, maxs)
+        if treatments[i][2] == "TRUE":
+            mins = min(treatments[i][3])*100
+            meds = np.median(treatments[i][3])*100
+            maxs = max(treatments[i][3])*100
+            print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (truesRank, treatments[i][0], treatments[i][1].replace("%","\\%"), treatments[i][2], mins, meds - mins, meds, maxs - meds, maxs)
             if (trues[i] != trues[-1]):
-                if (wilcoxon(sorted(treatment[trues[i]][3]),sorted(treatment[trues[i+1]][3])) != 0):
+                if (wilcoxon(sorted(treatments[trues[i]][3]),sorted(treatments[trues[i+1]][3])) != 0):
                     truesRank = truesRank + 1
 
     for i in range(len(falses)):
-        if treatment[i][2] == "FALSE":
-            mins = min(treatment[i][3])*100
-            meds = np.median(treatment[i][3])*100
-            maxs = max(treatment[i][3])*100
-            print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (falsesRank, treatment[i][0], treatment[i][1].replace("%","\\%"), treatment[i][2], mins, meds - mins, meds, maxs - meds, maxs)
+        if treatments[i][2] == "FALSE":
+            mins = min(treatments[i][3])*100
+            meds = np.median(treatments[i][3])*100
+            maxs = max(treatments[i][3])*100
+            print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (falsesRank, treatments[i][0], treatments[i][1].replace("%","\\%"), treatments[i][2], mins, meds - mins, meds, maxs - meds, maxs)
             if (falses[i] != falses[-1]):
-                if (wilcoxon(sorted(treatment[falses[i]][3]),sorted(treatment[falses[i+1]][3])) != 0):
+                if (wilcoxon(sorted(treatments[falses[i]][3]),sorted(treatments[falses[i+1]][3])) != 0):
                     falsesRank = falsesRank + 1
 
 def parse_options():
