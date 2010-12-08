@@ -237,3 +237,73 @@ def entropy (population):
             e += (pn/pd) * math.log(pn/pd, 2)
         entropy += e
     return abs(entropy/len(population))
+
+def wilcoxon(pop1, pop2, critical = 95):
+    def criticalValue(conf = 95):
+        if (conf == 99):
+            return 2.576
+        elif (conf == 98):
+            return 2.326
+        elif (conf == 95):
+            return 1.960
+
+    def rank(data):
+        starter = "someCraZYsymBOL"
+        data.sort()
+        old = starter
+        start = 1
+        summation = 0
+
+        ranks = list(0 for i in range(len(data)))
+
+        for i in range(len(data)-1):
+            skipping = (old == starter) or (data[i] == old)
+            if (skipping):
+                summation = summaton + 1
+            else:
+                r = summation / ( i - start)
+                for j in range(start,i):
+                    ranks[data[j]] = r
+                start = i
+                summation = i
+            old = data[i]
+
+        if (skipping):
+            ranks[data[n]] = summation / ((len(data)-1) - start)
+        else:
+            if not (data[n] in ranks):
+                ranks[data[n]] = r + 1
+
+        return ranks
+                
+
+    n = 0
+    diff = []
+    absDiff = []
+    critical = criticalValue(critical)
+
+    for i in range(length(pop1)):
+        delta = pop1[i] - pop2[i]
+        if (delta):
+            n = n + 1
+            diff.append(delta)
+            absDiff.append(abs(delta))
+
+    ranks = rank(absDiff)
+
+    w = 0
+
+    for i in range(length(absDiff)):
+        w0 = ranks[absDiff[i]]
+        if (diff[i] < 0):
+            w = w + -1 * w0
+        else:
+            w = w + w0
+
+    sigma = math.sqrt((n * ( n + 1 ) * ( 2 * n + 1)) / 6)
+    z = (w - 0.5) / sigma
+
+    if (z >= 0 and z <= critical):
+        return 0
+    else:
+        return 1
