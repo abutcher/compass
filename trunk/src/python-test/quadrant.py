@@ -6,7 +6,7 @@ from runtime import *
 class QuadrantTree:
 	
 	#@print_timing
-	def __init__(self, instances):
+	def __init__(self, instances, lives=False, numlives=3):
 		minx, miny = sys.maxint, sys.maxint
 		maxx, maxy = -sys.maxint, -sys.maxint
 		for instance in instances:
@@ -26,8 +26,22 @@ class QuadrantTree:
 				quadrant.children = quadrant.split()
 				for child in quadrant.children:
 					grow(child)
-		
-		grow(self.root)
+
+		def grow_lives(quadrant, numlives):
+			if len(quadrant.instances) > self.minsize and numlives > 0:
+				quadrant.children = quadrant.split()
+				for child in quadrant.children:
+					if len(child.datums()) == 0:
+						quadrant.children.remove(child)
+						continue
+					if variance(child.datums()) > variance(quadrant.datums()):
+						grow_lives(child, numlives-1)
+					else:
+						grow_lives(child, numlives)
+		if lives:			
+			grow(self.root)
+		else:
+			grow_lives(self.root, numlives)
 
 	def leaves(self):
 		leaves = []

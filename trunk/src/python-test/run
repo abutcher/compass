@@ -1,9 +1,10 @@
 #!/bin/bash
 
 
-sets="cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
+sets="kc2.arff kc3.arff mw1.arff pc1.arff"
 jm1="jm1.arff"
-
+cm1="cm1.arff"
+kc1="kc1.arff"
 
 for file in $sets
 do

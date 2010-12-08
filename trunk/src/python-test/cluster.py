@@ -1,7 +1,6 @@
 from util import *
 
 class Cluster:
-    # scoring something something
 
     def __init__(self, quadrants):
         self.quadrants = quadrants
@@ -11,6 +10,9 @@ class Cluster:
     
     def add_quadrant(self, quadrant):
         self.quadrants.append(quadrant)
+
+    def mark(self):
+        self.mark = True
         
     def datums(self):
         instances = []
@@ -26,3 +28,15 @@ def cluster_prune(clusters, pct):
         cvars.append((entropy(cluster.datums()), cluster))
     cvars = sorted(cvars, key=lambda cluster: cluster[0])
     return [ cvar[1] for cvar in cvars[0:(len(cvars))-int(round((len(cvars))*pct))] ]
+
+def classify(datum, datums, input_type=None):
+    if input_type is None:
+        if type(datums[0][-1]) is str:
+            input_type="DEFECT"
+        else:
+            input_type="EFFORT"
+    if input_type == "DEFECT":
+        return NaiveBayesClassify(datum,datums)
+    elif InputType == "EFFORT":
+        neighbors = kNearestNeighbors(datum,datums)
+        return median(neighbors)

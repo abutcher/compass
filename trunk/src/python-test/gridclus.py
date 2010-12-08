@@ -40,6 +40,10 @@ def GRIDCLUS (quadrants, acceptance=0.4):
             newcluster.add_quadrant(item[1])
         newclusters.append(newcluster)
 
+    for newcluster in newclusters:
+        if len(newcluster.quadrants) == 0:
+            newclusters.remove(newcluster)
+
     return newclusters
 
 def adjacent(a, b):
