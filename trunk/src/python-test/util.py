@@ -254,25 +254,29 @@ def wilcoxon(pop1, pop2, critical = 95):
         start = 1
         summation = 0
 
-        ranks = list(0 for i in range(len(data)))
+        ranks = list(0 for i in range(max(data)+1))
 
-        for i in range(len(data)-1):
+        for i in range(1,len(data)):
             skipping = (old == starter) or (data[i] == old)
+            print skipping
             if (skipping):
-                summation = summaton + 1
+                summation = summation + 1
             else:
                 r = summation / ( i - start)
                 for j in range(start,i):
+                    print i
+                    print j
+                    print max(data)
                     ranks[data[j]] = r
                 start = i
                 summation = i
             old = data[i]
 
         if (skipping):
-            ranks[data[n]] = summation / ((len(data)-1) - start)
+            ranks[data[-1]] = summation / ((len(data)-1) - start)
         else:
-            if not (data[n] in ranks):
-                ranks[data[n]] = r + 1
+            if not (data[-1] in ranks):
+                ranks[data[-1]] = r + 1
 
         return ranks
                 
@@ -282,7 +286,7 @@ def wilcoxon(pop1, pop2, critical = 95):
     absDiff = []
     critical = criticalValue(critical)
 
-    for i in range(length(pop1)):
+    for i in range(len(pop1)):
         delta = pop1[i] - pop2[i]
         if (delta):
             n = n + 1
@@ -293,7 +297,7 @@ def wilcoxon(pop1, pop2, critical = 95):
 
     w = 0
 
-    for i in range(length(absDiff)):
+    for i in range(len(absDiff)):
         w0 = ranks[absDiff[i]]
         if (diff[i] < 0):
             w = w + -1 * w0
