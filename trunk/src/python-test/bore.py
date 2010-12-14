@@ -3,19 +3,21 @@
 import arff
 import argparse
 from discretize import *
-from shuffle import *
 
 class Bore:
 
-    def __init__(self, data, goal, b=0.2, bins=10):
-        for i in range(20):
-            data = shuffle(data)
+    def __init__(self, data, headers, goal, b=0.2, bins=10):
+        random.shuffle(data, random.random)
         self.data = discretize(data, bins)
+        self.headers = headers
         self.goal = goal.lower()
+        self.best = []
+        self.rest = []
         self.brsplit(b)
         self.bfreq = self.freqtable(self.best)
         self.rfreq = self.freqtable(self.rest)
         self.score()
+        
 
     def brsplit(self, x):
         for i in range(len(self.data)):
@@ -48,7 +50,7 @@ class Bore:
         print "Top X columns:"
         for sortedcol in sorted(colscores, key=lambda score: score[1], reverse=True):
             if sortedcol[1] != 0:
-                print "\tColumn: %d, Score: %.2f" % (sortedcol[0], sortedcol[1])
+                print "\tAttribute: %s, Score: %.2f" % (self.headers[sortedcol[0]], sortedcol[1])
             
     def like(self, item, d):
         if item not in d.keys():

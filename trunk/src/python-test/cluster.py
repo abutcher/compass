@@ -13,7 +13,7 @@ class Cluster:
     def add_quadrant(self, quadrant):
         self.quadrants.append(quadrant)
 
-    def mark(self):
+    def set_mark(self):
         self.mark = True
         
     def datums(self):

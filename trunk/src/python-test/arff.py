@@ -6,6 +6,7 @@ class Arff:
 
     def __init__(self, filename=None):
         self.data = []
+        self.headers = []
         if type(filename) == list:
             if type(filename[0]) == str:
                 for addthis in filename:
@@ -17,6 +18,7 @@ class Arff:
                 self.data = filename
         else:
             self.extract(filename)
+            self.extract_headers(filename)
 
     def extract(self, path):
         try:
@@ -30,6 +32,12 @@ class Arff:
                     if isnumeric(row[i]):
                         row[i] = float(row[i])
                 self.data.append(row)
+
+    def extract_headers(self, path):
+        infile = open(path, "r")
+        for line in infile:
+            if "@attribute" in line:
+                self.headers.append(line.split(" ")[1])
 
     def output_lisp(self, table, path):
         outfile = open(path, "w")
