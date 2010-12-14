@@ -84,7 +84,7 @@ def main():
     for cluster in clusters:
         kept_datums.extend(cluster.datums())
 
-    pct = 100-(float(len(culled_datums))/float((len(culled_datums)+len(kept_datums))))*100
+    pct = 100-(float(len(kept_datums)) / (float(len(culled_datums)) + float(len(kept_datums))))*100
 
     print "Culled %.2f pct of the data." % (pct)
 
@@ -124,9 +124,13 @@ def main():
     #fig = Figure(title, trainXY, quadrants, clusters)
     #fig.write_png()
 
+    print "Kept"
     Bore(kept_datums, arff.headers, "true")
+    print ""
+    print "Culled"
     Bore(culled_datums, arff.headers, "true")
-
+    print ""
+    
 def parse_options():
     """Place new options that you would like to be parsed here."""
     parser = argparse.ArgumentParser(description='Perform IDEA on given train and test sets.')
