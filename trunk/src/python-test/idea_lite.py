@@ -60,13 +60,48 @@ def main():
         # Increment the stat object appropriately using Evaluate
         train_stats[closest_cluster[1]][0].Evaluate(got, want)
 
+
+# Removing the train print -- useless atm.
+#    print "size, hm, count"
+
+#    for i in range(len(train_stats)):
+#        print "%d, %.2f, %d" % (len(clusters[i].datums()),train_stats[i][0].HarmonicMean("TRUE"), train_stats[i][0].Count("TRUE"))
+
+#    print ""
+
+    pre_test_stats = list(DefectStats() for cluster in clusters)
+
+    for instance in testXY:
+        # Find closest cluster to test instance.
+        closest_cluster = [sys.maxint, None]
+        for i in range(len(clusters)):
+            for quadrant in clusters[i].quadrants:
+                tmp_distance = distance(instance.Coord(), quadrant.center())
+                if tmp_distance < closest_cluster[0]:
+                    closest_cluster[0] = tmp_distance
+                    closest_cluster[1] = i
+
+        # Points and associated classes for the closest cluster's quadrants.
+        modified_train = []
+        for quadrant in clusters[closest_cluster[1]].quadrants:
+            modified_train.extend(quadrant.ClassCoords())
+        
+        # Classify the test instance
+        got = classify(instance.Coord(), modified_train, "DEFECT")
+        want = instance.datum[-1]
+        
+        # Increment the stat object appropriately using Evaluate
+        pre_test_stats[closest_cluster[1]].Evaluate(got, want)
+
+
     print "size, hm, count"
 
-    for i in range(len(train_stats)):
-        print "%d, %.2f, %d" % (len(clusters[i].datums()),train_stats[i][0].HarmonicMean("TRUE"), train_stats[i][0].Count("TRUE"))
+    for i in range(len(pre_test_stats)):
+        print "%d, %.2f, %d" % (len(clusters[i].datums()),pre_test_stats[i].HarmonicMean("TRUE"), pre_test_stats[i].Count("TRUE"))
 
     print ""
-
+    
+    # CHOPPING HAPPENS AFTER THIS...
     train_stats = sorted(train_stats, key=lambda stat: stat[0].HarmonicMean("TRUE"))
 
     culled_clusters = []
@@ -118,7 +153,7 @@ def main():
 
     print "size, hm, count"
     for i in range(len(test_stats)):
-        print "%d, %.2f, %d" % (len(clusters[i].datums()),test_stats[i].HarmonicMean("TRUE"), train_stats[i][0].Count("TRUE"))
+        print "%d, %.2f, %d" % (len(clusters[i].datums()),test_stats[i].HarmonicMean("TRUE"), test_stats[i].Count("TRUE"))
 
     print ""
     #fig = Figure(title, trainXY, quadrants, clusters)
