@@ -60,10 +60,10 @@ def main():
         # Increment the stat object appropriately using Evaluate
         train_stats[closest_cluster[1]][0].Evaluate(got, want)
 
-    print "size, hm"
+    print "size, hm, count"
 
     for i in range(len(train_stats)):
-        print "%d, %.2f" % (len(clusters[i].datums()),train_stats[i][0].HarmonicMean("TRUE"))
+        print "%d, %.2f, %d" % (len(clusters[i].datums()),train_stats[i][0].HarmonicMean("TRUE"), train_stats[i][0].Count("TRUE"))
 
     print ""
 
@@ -116,9 +116,9 @@ def main():
         test_stats[closest_cluster[1]].Evaluate(got, want)
         
 
-    print "size, hm"
+    print "size, hm, count"
     for i in range(len(test_stats)):
-        print "%d, %.2f" % (len(clusters[i].datums()),test_stats[i].HarmonicMean("TRUE"))
+        print "%d, %.2f, %d" % (len(clusters[i].datums()),test_stats[i].HarmonicMean("TRUE"), train_stats[i][0].Count("TRUE"))
 
     print ""
     #fig = Figure(title, trainXY, quadrants, clusters)
