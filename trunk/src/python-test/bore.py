@@ -14,14 +14,17 @@ class Bore:
         self.best = []
         self.rest = []
         self.brsplit(b)
+#        print len(self.best)
+#        print len(self.rest)
         self.bfreq = self.freqtable(self.best)
+#        print self.bfreq
         self.rfreq = self.freqtable(self.rest)
+#        print self.rfreq
         self.score()
-        
 
     def brsplit(self, x):
         for i in range(len(self.data)):
-            if (self.data[i][-1].lower() == self.goal) and (len(self.best) < round((x*len(self.data)))):
+            if (self.data[i][-1].lower() in self.goal.lower()) and (len(self.best) < round((x*len(self.data)))):
                 self.best.append(self.data[i])
             else:
                 self.rest.append(self.data[i])
@@ -47,7 +50,7 @@ class Bore:
             for j in range(len(trans[i])):
                 scores.append(self.like(trans[i][j], self.bfreq[i])**2/(self.like(trans[i][j],self.bfreq[i])+self.like(trans[i][j], self.rfreq[i])))
             colscores.append((i, median(scores)))
-        print "Top X columns:"
+        print "Attributes:"
         for sortedcol in sorted(colscores, key=lambda score: score[1], reverse=True):
             if sortedcol[1] != 0:
                 print "\tAttribute: %s, Score: %.2f" % (self.headers[sortedcol[0]], sortedcol[1])
