@@ -125,10 +125,10 @@ def main():
     #fig.write_png()
 
     print "Kept"
-    Bore(kept_datums, arff.headers, "true")
+    Bore(kept_datums, arff.headers, "trueyes")
     print ""
     print "Culled"
-    Bore(culled_datums, arff.headers, "true")
+    Bore(culled_datums, arff.headers, "trueyes")
     print ""
     
 def parse_options():
