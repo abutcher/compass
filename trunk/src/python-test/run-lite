@@ -1,14 +1,9 @@
 #!/bin/bash
 
 sets="cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
-cull="0.6 0.5 0.3"
-
 
 for file in $sets;
 do
-    for chop in $cull;
-    do
-	echo "Running $file with $chop cull";
-	/opt/local/bin/python2.6 idea_lite.py --train ../python/arff/defect/$file --stratified 5 1 --accept 0.5 --cull $chop >> $file-$chop.csv;
-    done
+    echo "Running $file";
+    /opt/local/bin/python2.6 idea_lite.py --train ../python/arff/defect/$file --stratified 5 1 --accept 0.5 --xval 5 >> $file.csv;
 done
