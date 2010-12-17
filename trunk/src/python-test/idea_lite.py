@@ -28,104 +28,26 @@ def main():
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
-
-    k_fold = ic.k_fold_stratified_cross_val(args.xval)
-
     for i in range(args.xval):
-        test = k_fold[0]
-        k_fold.remove(test)
-        train = squash(deepcopy(k_fold))
-        k_fold.append(test)
+        k_fold = ic.k_fold_stratified_cross_val(args.xval)
+
+        for by in range(args.xval):
+            test = k_fold[0]
+            k_fold.remove(test)
+            train = squash(deepcopy(k_fold))
+            k_fold.append(test)
     
-        #train, test = ic.stratified_cross_val(args.stratified)
+            #train, test = ic.stratified_cross_val(args.stratified)
 
-        trainXY = log_y(log_x(deepcopy(train)))
-        testXY = log_y(log_x(deepcopy(test)))
+            trainXY = log_y(log_x(deepcopy(train)))
+            testXY = log_y(log_x(deepcopy(test)))
 
-        quadrants = QuadrantTree(trainXY).leaves()
-        clusters = GRIDCLUS(quadrants, args.accept[0])
+            quadrants = QuadrantTree(trainXY).leaves()
+            clusters = GRIDCLUS(quadrants, args.accept[0])
 
-        train_stats = list((DefectStats(), cluster) for cluster in clusters)
+            train_stats = list((DefectStats(), cluster) for cluster in clusters)
         
-        for instance in trainXY:
-
-            # Find closest cluster to test instance.
-            closest_cluster = [sys.maxint, None]
-            for i in range(len(clusters)):
-                for quadrant in clusters[i].quadrants:
-                    tmp_distance = distance(instance.Coord(), quadrant.center())
-                    if tmp_distance < closest_cluster[0]:
-                        closest_cluster[0] = tmp_distance
-                        closest_cluster[1] = i
-
-            # Points and associated classes for the closest cluster's quadrants.
-            modified_train = []
-            for quadrant in clusters[closest_cluster[1]].quadrants:
-                modified_train.extend(quadrant.ClassCoords())
-        
-            # Classify the test instance
-            got = classify(instance.Coord(), modified_train, "DEFECT")
-            want = instance.datum[-1]
-        
-            # Increment the stat object appropriately using Evaluate
-            train_stats[closest_cluster[1]][0].Evaluate(got, want)
-
-        global_pre_test = DefectStats()
-        pre_test_stats = list(DefectStats() for cluster in clusters)
-
-        for instance in testXY:
-            # Find closest cluster to test instance.
-            closest_cluster = [sys.maxint, None]
-            for i in range(len(clusters)):
-                for quadrant in clusters[i].quadrants:
-                    tmp_distance = distance(instance.Coord(), quadrant.center())
-                    if tmp_distance < closest_cluster[0]:
-                        closest_cluster[0] = tmp_distance
-                        closest_cluster[1] = i
-
-            # Points and associated classes for the closest cluster's quadrants.
-            modified_train = []
-            for quadrant in clusters[closest_cluster[1]].quadrants:
-                modified_train.extend(quadrant.ClassCoords())
-        
-            # Classify the test instance
-            got = classify(instance.Coord(), modified_train, "DEFECT")
-            want = instance.datum[-1]
-        
-            # Increment the stat object appropriately using Evaluate
-            pre_test_stats[closest_cluster[1]].Evaluate(got, want)
-            global_pre_test.Evaluate(got, want)
-
-        print "0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
-    
-        # CHOPPING HAPPENS AFTER THIS...
-        train_stats = sorted(train_stats, key=lambda stat: stat[0].HarmonicMean("TRUE"))
-        
-        culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-        
-        for cull in culls:
-            culled_clusters = []
-            for i in range(len(train_stats)):
-                # Cull X % of the poorest performing clusters.
-                if i < int(math.ceil(len(train_stats) * cull)) and len(clusters) > 1:
-                    culled_clusters.append(clusters[clusters.index(train_stats[i][1])])
-                    clusters.remove(clusters[clusters.index(train_stats[i][1])])
-
-            culled_datums = []
-            for cluster in culled_clusters:
-                culled_datums.extend(cluster.datums())
-
-            kept_datums = []
-            for cluster in clusters:
-                kept_datums.extend(cluster.datums())
-
-            pct = 100-(float(len(kept_datums)) / (float(len(culled_datums)) + float(len(kept_datums))))*100
-
-
-            global_test = DefectStats()
-            test_stats = list(DefectStats() for cluster in clusters)
-    
-            for instance in testXY:
+            for instance in trainXY:
 
                 # Find closest cluster to test instance.
                 closest_cluster = [sys.maxint, None]
@@ -140,19 +62,97 @@ def main():
                 modified_train = []
                 for quadrant in clusters[closest_cluster[1]].quadrants:
                     modified_train.extend(quadrant.ClassCoords())
-                
+        
                 # Classify the test instance
                 got = classify(instance.Coord(), modified_train, "DEFECT")
                 want = instance.datum[-1]
         
                 # Increment the stat object appropriately using Evaluate
-                test_stats[closest_cluster[1]].Evaluate(got, want)
-                global_test.Evaluate(got, want)
+                train_stats[closest_cluster[1]][0].Evaluate(got, want)
 
-            print "%.2f, %.2f, %.2f" % (cull, pct, global_test.HarmonicMean("TRUE"))
+            global_pre_test = DefectStats()
+            pre_test_stats = list(DefectStats() for cluster in clusters)
 
-            for cluster in culled_clusters:
-                clusters.append(cluster)
+            for instance in testXY:
+                # Find closest cluster to test instance.
+                closest_cluster = [sys.maxint, None]
+                for i in range(len(clusters)):
+                    for quadrant in clusters[i].quadrants:
+                        tmp_distance = distance(instance.Coord(), quadrant.center())
+                        if tmp_distance < closest_cluster[0]:
+                            closest_cluster[0] = tmp_distance
+                            closest_cluster[1] = i
+
+                # Points and associated classes for the closest cluster's quadrants.
+                modified_train = []
+                for quadrant in clusters[closest_cluster[1]].quadrants:
+                    modified_train.extend(quadrant.ClassCoords())
+        
+                # Classify the test instance
+                got = classify(instance.Coord(), modified_train, "DEFECT")
+                want = instance.datum[-1]
+        
+                # Increment the stat object appropriately using Evaluate
+                pre_test_stats[closest_cluster[1]].Evaluate(got, want)
+                global_pre_test.Evaluate(got, want)
+
+            print "0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
+    
+            # CHOPPING HAPPENS AFTER THIS...
+            train_stats = sorted(train_stats, key=lambda stat: stat[0].HarmonicMean("TRUE"))
+        
+            culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+        
+            for cull in culls:
+                culled_clusters = []
+                for i in range(len(train_stats)):
+                    # Cull X % of the poorest performing clusters.
+                    if i < int(math.ceil(len(train_stats) * cull)) and len(clusters) > 1:
+                        culled_clusters.append(clusters[clusters.index(train_stats[i][1])])
+                        clusters.remove(clusters[clusters.index(train_stats[i][1])])
+
+                culled_datums = []
+                for cluster in culled_clusters:
+                    culled_datums.extend(cluster.datums())
+
+                kept_datums = []
+                for cluster in clusters:
+                    kept_datums.extend(cluster.datums())
+
+                pct = 100-(float(len(kept_datums)) / (float(len(culled_datums)) + float(len(kept_datums))))*100
+
+
+                global_test = DefectStats()
+                test_stats = list(DefectStats() for cluster in clusters)
+    
+                for instance in testXY:
+
+                    # Find closest cluster to test instance.
+                    closest_cluster = [sys.maxint, None]
+                    for i in range(len(clusters)):
+                        for quadrant in clusters[i].quadrants:
+                            tmp_distance = distance(instance.Coord(), quadrant.center())
+                            if tmp_distance < closest_cluster[0]:
+                                closest_cluster[0] = tmp_distance
+                                closest_cluster[1] = i
+
+                    # Points and associated classes for the closest cluster's quadrants.
+                    modified_train = []
+                    for quadrant in clusters[closest_cluster[1]].quadrants:
+                        modified_train.extend(quadrant.ClassCoords())
+                        
+                    # Classify the test instance
+                    got = classify(instance.Coord(), modified_train, "DEFECT")
+                    want = instance.datum[-1]
+        
+                    # Increment the stat object appropriately using Evaluate
+                    test_stats[closest_cluster[1]].Evaluate(got, want)
+                    global_test.Evaluate(got, want)
+
+                print "%.2f, %.2f, %.2f" % (cull, pct, global_test.HarmonicMean("TRUE"))
+
+                for cluster in culled_clusters:
+                    clusters.append(cluster)
 
     #fig = Figure(title, trainXY, quadrants, clusters)
     #fig.write_png()

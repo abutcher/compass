@@ -20,7 +20,7 @@ def main():
                 row[i] = float(row[i])
         data.append(row)
 
-    num_treatments = (len(data) - 2)/(args.xval)
+    num_treatments = (len(data) - 2)/(args.xval*args.xval)
 
     treatments = []
     for i in range(num_treatments):
