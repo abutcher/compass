@@ -3,6 +3,7 @@
 import argparse
 import csv
 from util import *
+from scipy import stats
 import numpy as np
 
 def main():
@@ -34,11 +35,20 @@ def main():
 
     treatments = sorted(treatments, key=lambda treatment: np.median(treatment[2]), reverse=True)
 
+    ranks = [0]
+    current = 0
+    for i in range(len(treatments) - 1):
+        if stats.mannwhitneyu(treatments[i][2], treatments[i+1][2])[1] < 0.5:
+            ranks.append(current)
+        else:
+            current += 1
+            ranks.append(current)
+    
     for treatment in treatments:
         minn = min(treatment[2])*100
         maxn = max(treatment[2])*100
         medn = np.median(treatment[2])*100
-        print "%.2f & %.2f &\\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (treatment[0]*100, np.average(treatment[1]), minn, medn - minn, medn, maxn-medn, maxn)
+        print "%d & %.2f & %.2f &\\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (ranks[treatments.index(treatment)]+1, treatment[0]*100, np.average(treatment[1]), minn, medn - minn, medn, maxn-medn, maxn)
 
         
 def parse_options():
