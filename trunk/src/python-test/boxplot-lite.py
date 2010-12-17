@@ -40,9 +40,9 @@ def main():
     last = 0
     for i in range(len(treatments) - 1):
         if stats.mannwhitneyu(treatments[i][2], treatments[i+1][2])[1] < 0.5:
-            current += 1
             ranks.append(current)
         else:
+            current += 1
             ranks.append(current)
     
     for treatment in treatments:
