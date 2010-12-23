@@ -37,15 +37,11 @@ def main():
             train = squash(deepcopy(k_fold))
             k_fold.append(test)
     
-            #train, test = ic.stratified_cross_val(args.stratified)
-
             trainXY = log_y(log_x(deepcopy(train)))
             testXY = log_y(log_x(deepcopy(test)))
 
             quadrants = QuadrantTree(trainXY).leaves()
             clusters = GRIDCLUS(quadrants, args.accept[0])
-
-            train_stats = list((DefectStats(), cluster) for cluster in clusters)
         
             for instance in trainXY:
 
@@ -68,7 +64,7 @@ def main():
                 want = instance.datum[-1]
         
                 # Increment the stat object appropriately using Evaluate
-                train_stats[closest_cluster[1]][0].Evaluate(got, want)
+                clusters[closest_cluster[1]].stats.Evaluate(got, want)
 
             global_pre_test = DefectStats()
             pre_test_stats = list(DefectStats() for cluster in clusters)
@@ -98,18 +94,17 @@ def main():
 
             print "0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
     
-            # CHOPPING HAPPENS AFTER THIS...
-            train_stats = sorted(train_stats, key=lambda stat: stat[0].HarmonicMean("TRUE"))
+            clusters = sorted(clusters, key=lambda cluster: cluster.stats.HarmonicMean("TRUE"))
         
             culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         
             for cull in culls:
                 culled_clusters = []
-                for i in range(len(train_stats)):
+                for i in range(len(clusters)):
                     # Cull X % of the poorest performing clusters.
-                    if i < int(math.ceil(len(train_stats) * cull)) and len(clusters) > 1:
-                        culled_clusters.append(clusters[clusters.index(train_stats[i][1])])
-                        clusters.remove(clusters[clusters.index(train_stats[i][1])])
+                    if i < int(math.ceil(len(clusters) * cull)) and len(clusters) > 1:
+                        culled_clusters.append(clusters[i])
+                        clusters.remove(clusters[i])
 
                 culled_datums = []
                 for cluster in culled_clusters:
@@ -120,7 +115,6 @@ def main():
                     kept_datums.extend(cluster.datums())
 
                 pct = 100-(float(len(kept_datums)) / (float(len(culled_datums)) + float(len(kept_datums))))*100
-
 
                 global_test = DefectStats()
                 test_stats = list(DefectStats() for cluster in clusters)

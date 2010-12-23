@@ -1,14 +1,17 @@
 from util import *
 from NaiveBayes import *
+from statistics import *
 
 class Cluster:
 
     def __init__(self, quadrants):
         self.quadrants = quadrants
+        self.stats = DefectStats()
 
     def __init__(self):
         self.quadrants = []
         self.mark = False
+        self.stats = DefectStats()        
     
     def add_quadrant(self, quadrant):
         self.quadrants.append(quadrant)
