@@ -23,7 +23,6 @@ def main():
     #print "accept: %.2f" % (args.accept[0])
     print "pct_clus_culled, pct_data_culled, hm_true"
 
-
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
@@ -94,17 +93,18 @@ def main():
 
             print "0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
     
-            clusters = sorted(clusters, key=lambda cluster: cluster.stats.HarmonicMean("TRUE"))
-        
-            culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+            culls = [0.1, 0.2, 0.3] #, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         
             for cull in culls:
+                """
                 culled_clusters = []
                 for i in range(len(clusters)):
                     # Cull X % of the poorest performing clusters.
                     if i < int(math.ceil(len(clusters) * cull)) and len(clusters) > 1:
                         culled_clusters.append(clusters[i])
                         clusters.remove(clusters[i])
+                """
+                clusters, culled_clusters = prune_rogue_clusters(deepcopy(clusters), cull)
 
                 culled_datums = []
                 for cluster in culled_clusters:

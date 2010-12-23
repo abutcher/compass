@@ -1,3 +1,4 @@
+from copy import deepcopy
 from util import *
 from NaiveBayes import *
 from statistics import *
@@ -30,8 +31,8 @@ class Cluster:
         for i in range(len(self.quadrants)):
             for j in range(len(other_cluster.quadrants)):
                 a = self.quadrants[i]
-                b = other_quadrant
-                if ((a.xmin == b.xmax) or (a.xmax == b.xmin)) or ((a.ymin == b.ymax) or (a.ymax == b.ymin)):
+                b = other_cluster.quadrants[j]
+                if (((a.xmin == b.xmax) or (a.xmax == b.xmin)) or ((a.ymin == b.ymax) or (a.ymax == b.ymin))) and not self == other_cluster:
                     result = True
         return result
         
@@ -55,3 +56,31 @@ def classify(datum, datums, input_type=None):
     elif InputType == "EFFORT":
         neighbors = kNearestNeighbors(datum,datums)
         return median(neighbors)
+
+def prune_rogue_clusters(clusters, cull):
+    clusters_copy = deepcopy(clusters)
+    culled_clusters = []
+    neighbors = []
+
+    clusters_copy = sorted(clusters_copy, key=lambda cluster: cluster.stats.HarmonicMean("TRUE"))
+
+    for i in range(len(clusters_copy)):
+        neighbor_list = []
+        for j in range(len(clusters_copy)):
+            if clusters[i].is_neighbor(clusters_copy[j]):
+                neighbor_list.append(clusters_copy[j])
+        neighbors.append(neighbor_list)
+
+    # Loop through and delete the lowest X% and all of their immediate
+    # neighbors, as they may be lying to us...
+    for i in range(len(clusters_copy)):
+        if i < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) > 1:
+            culled_clusters.append(clusters_copy[i])
+            clusters_copy.remove(clusters_copy[i])
+            for neighbor in neighbors[i]:
+                if len(clusters_copy) > 2:
+                    culled_clusters.append(neighbor)
+                    if neighbor in clusters_copy:
+                        clusters_copy.remove(neighbor)
+
+    return clusters_copy, culled_clusters
