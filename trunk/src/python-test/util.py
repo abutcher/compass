@@ -311,3 +311,10 @@ def wilcoxon(pop1, pop2, critical = 95):
         return 0
     else:
         return 1
+
+def chopInTwo(data):
+    random.shuffle(data, random.random)
+    g1 = data[0:int(len(data)/2)]
+    g2 = data[int(len(data)/2):-1]
+    return g1, g2
+    
