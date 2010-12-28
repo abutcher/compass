@@ -57,6 +57,21 @@ def classify(datum, datums, input_type=None):
         neighbors = kNearestNeighbors(datum,datums)
         return median(neighbors)
 
+def prune_clusters_classic(clusters, cull):
+    clusters_copy = deepcopy(clusters)
+    culled_clusters = []
+
+    for cluster in clusters:
+        print len(cluster.datums())
+
+    clusters_copy = sorted(clusters_copy, key=lambda cluster: cluster.stats.HarmonicMean("TRUE"))
+    for i in range(len(clusters_copy)):
+        if i < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) > 1:
+            culled_clusters.append(clusters_copy[i])
+            clusters_copy.remove(clusters_copy[i])
+
+    return clusters_copy, culled_clusters
+
 def prune_rogue_clusters(clusters, cull):
     clusters_copy = deepcopy(clusters)
     culled_clusters = []

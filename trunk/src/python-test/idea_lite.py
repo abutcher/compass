@@ -11,7 +11,7 @@ import time
 from util import *
 from copy import deepcopy
 from bore import *
-
+from NaiveBayes import *
 
 def main():
     args = parse_options()
@@ -21,7 +21,7 @@ def main():
 
     print "dataset, %s" % (title)
     #print "accept: %.2f" % (args.accept[0])
-    print "pct_clus_culled, pct_data_culled, hm_true"
+    print "treatment, pct_clus_culled, pct_data_culled, hm_true"
 
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
@@ -67,6 +67,7 @@ def main():
 
             global_pre_test = DefectStats()
             pre_test_stats = list(DefectStats() for cluster in clusters)
+            global_nb = DefectStats()
 
             for instance in testXY:
                 # Find closest cluster to test instance.
@@ -85,15 +86,17 @@ def main():
         
                 # Classify the test instance
                 got = classify(instance.Coord(), modified_train, "DEFECT")
-                want = instance.datum[-1]
         
                 # Increment the stat object appropriately using Evaluate
                 pre_test_stats[closest_cluster[1]].Evaluate(got, want)
-                global_pre_test.Evaluate(got, want)
+                global_pre_test.Evaluate(got, instance.klass())
 
-            print "0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
+                global_nb.Evaluate(NaiveBayesClassify(instance.datum, [inst.datum for inst in trainXY], "DEFECT"), instance.klass())
+                
+            print "IDEA, 0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
+            print "NONE, 0, 0, %.2f" % (global_nb.HarmonicMean("TRUE"))
     
-            culls = [0.1, 0.2, 0.3] #, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+            culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         
             for cull in culls:
                 """
@@ -104,7 +107,8 @@ def main():
                         culled_clusters.append(clusters[i])
                         clusters.remove(clusters[i])
                 """
-                clusters, culled_clusters = prune_rogue_clusters(deepcopy(clusters), cull)
+                #clusters, culled_clusters = prune_rogue_clusters(deepcopy(clusters), cull)
+                clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), cull)
 
                 culled_datums = []
                 for cluster in culled_clusters:
@@ -143,7 +147,7 @@ def main():
                     test_stats[closest_cluster[1]].Evaluate(got, want)
                     global_test.Evaluate(got, want)
 
-                print "%.2f, %.2f, %.2f" % (cull, pct, global_test.HarmonicMean("TRUE"))
+                print "IDEA-%.2f, %.2f, %.2f, %.2f" % (cull, cull, pct, global_test.HarmonicMean("TRUE"))
 
                 for cluster in culled_clusters:
                     clusters.append(cluster)
