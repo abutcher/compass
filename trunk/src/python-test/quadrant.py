@@ -102,7 +102,7 @@ class Quadrant:
 		for instance in self.instances:
 			x = instance.coord.x
 			y = instance.coord.y
-			if ( x > xmin and x < xmax) and ( y > ymin and y < ymax ):
+			if ( x >= xmin and x <= xmax) and ( y > ymin and y < ymax ):
 				instances.append(instance)
 		return instances
 

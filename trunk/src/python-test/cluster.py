@@ -57,18 +57,23 @@ def classify(datum, datums, input_type=None):
         neighbors = kNearestNeighbors(datum,datums)
         return median(neighbors)
 
-def prune_clusters_classic(clusters, cull):
+def prune_clusters_classic(clusters, cull, type="SCORE"):
     clusters_copy = deepcopy(clusters)
     culled_clusters = []
 
-    for cluster in clusters:
-        print len(cluster.datums())
+    if type == "VARIANCE":
+        clusters_copy = sorted(clusters_copy, key=lambda clus: entropy(clus.datums()), reverse=True)
+    elif type == "SCORE":
+        clusters_copy = sorted(clusters_copy, key=lambda clus: clus.stats.HarmonicMean("TRUE"))
+    else:
+        print "You're a towel!"
+            
+    for cluster in clusters_copy:
+        if len(culled_clusters) < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) > 1:
+            culled_clusters.append(cluster)
 
-    clusters_copy = sorted(clusters_copy, key=lambda cluster: cluster.stats.HarmonicMean("TRUE"))
-    for i in range(len(clusters_copy)):
-        if i < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) > 1:
-            culled_clusters.append(clusters_copy[i])
-            clusters_copy.remove(clusters_copy[i])
+    for cluster in culled_clusters:
+        clusters_copy.remove(cluster)
 
     return clusters_copy, culled_clusters
 

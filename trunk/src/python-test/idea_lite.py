@@ -108,7 +108,7 @@ def main():
                         clusters.remove(clusters[i])
                 """
                 #clusters, culled_clusters = prune_rogue_clusters(deepcopy(clusters), cull)
-                clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), cull)
+                clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), cull, "VARIANCE")
 
                 culled_datums = []
                 for cluster in culled_clusters:

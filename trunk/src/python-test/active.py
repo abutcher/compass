@@ -13,7 +13,7 @@ from NaiveBayes import *
 
 def main():
     args = parse_options()
-
+    
     title = args.train.split("/")[-1].split(".")[0]
     arff = Arff(args.train)
 
@@ -23,28 +23,27 @@ def main():
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
-    train, test = chopInTwo(ic.instances)
+    train, test = ic.two_bins()
 
     trainXY = log_y(log_x(deepcopy(train)))
     testXY = log_y(log_x(deepcopy(test)))
 
     quadrants = QuadrantTree(trainXY).leaves()
-    clusters = GRIDCLUS(quadrants, args.accept)
+    clusters = GRIDCLUS(quadrants, args.accept[0])
 
-    clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
+    print "quads: %d" % len(quadrants)
+    print "clus: %d" % len(clusters)
 
-    print len(clusters)
-    print len(culled_clusters)
+    for cluster in clusters:
+        print "%d size: %d" % (clusters.index(cluster), len(cluster.datums()))
 
-    print len(squash([clus.datums() for clus in clusters]))
-    print len(squash([clus.datums() for clus in culled_clusters]))
+    clusters, culled_clusters = prune_clusters_classic(clusters, args.cull)
 
     print "Kept"
     Bore(squash([clus.datums() for clus in clusters]), arff.headers, "trueyes")
     print ""
     print "Culled"
     Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes")
-
     
 def parse_options():
     """Place new options that you would like to be parsed here."""
