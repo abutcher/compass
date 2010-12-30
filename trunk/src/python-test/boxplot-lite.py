@@ -49,7 +49,7 @@ def main():
         minn = min(treatment[2])*100
         maxn = max(treatment[2])*100
         medn = np.median(treatment[2])*100
-        print "%d & %s & %.2f &\\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (ranks[treatments.index(treatment)]+1, treatment[0], np.average(treatment[1]), minn, medn - minn, medn, maxn-medn, maxn)
+        print "%d & %s & %.2f & %.2f &\\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (ranks[treatments.index(treatment)]+1, treatment[0], np.average(treatment[1]), medn, minn, medn - minn, medn, maxn-medn, maxn)
         
 def parse_options():
     parser = argparse.ArgumentParser(description="Nasty script to make latex boxplots")

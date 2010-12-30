@@ -57,6 +57,31 @@ def classify(datum, datums, input_type=None):
         neighbors = kNearestNeighbors(datum,datums)
         return median(neighbors)
 
+
+def prune_clusters_classic_within_max(clusters, cull, t="SCORE"):
+    clusters_copy = deepcopy(clusters)
+    culled_clusters = []
+
+    if t == "VARIANCE":
+        clusters_copy = sorted(clusters_copy, key=lambda clus: entropy(clus.datums()), reverse=True)
+        maxn = entropy(clusters_copy[0].datums())
+    elif t == "SCORE":
+        clusters_copy = sorted(clusters_copy, key=lambda clus: clus.stats.HarmonicMean("TRUE"))
+        maxn = clusters_copy[0].stats.HarmonicMean("TRUE")
+    else:
+        print "You're a towel!"
+            
+    for cluster in clusters_copy:
+        if t == "SCORE" and (maxn+(maxn*cull)) > cluster.stats.HarmonicMean("TRUE") and (maxn-(maxn*cull)) < cluster.stats.HarmonicMean("TRUE") and len(clusters_copy) - len(culled_clusters) > 1:
+            culled_clusters.append(cluster)
+        elif t == "VARIANCE" and (maxn+(maxn*cull)) > entropy(cluster.datums()) and (maxn-(maxn*cull)) < entropy(cluster.datums()) and len(clusters_copy) - len(culled_clusters) > 1:
+            culled_clusters.append(cluster)
+
+    for cluster in culled_clusters:
+        clusters_copy.remove(cluster)
+
+    return clusters_copy, culled_clusters
+
 def prune_clusters_classic(clusters, cull, type="SCORE"):
     clusters_copy = deepcopy(clusters)
     culled_clusters = []
@@ -69,7 +94,7 @@ def prune_clusters_classic(clusters, cull, type="SCORE"):
         print "You're a towel!"
             
     for cluster in clusters_copy:
-        if len(culled_clusters) < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) > 1:
+        if len(culled_clusters) < int(math.ceil(len(clusters_copy) * cull)) and len(clusters_copy) - len(culled_clusters) > 1:
             culled_clusters.append(cluster)
 
     for cluster in culled_clusters:
