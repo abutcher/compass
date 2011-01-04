@@ -1,28 +1,30 @@
-def GRIDCLUS (quadrants, acceptance=0.1):
+from cluster import *
+
+def GRIDCLUS (quadrants, acceptance=0.4):
     
     tiles = []
 
     for quadrant in quadrants:
-        tiles.append((quadrant.Density(), quadrant))
+        tiles.append((quadrant.density(), quadrant))
     
     tiles = sorted(tiles, key=lambda tile: tile[0], reverse=True)
     
     clusters = []
 
-    def grabneighbors(tile):
-        neighbors = neighborsearch(tile, tiles, acceptance)
+    def grab_neighbors(tile):
+        neighbors = neighbor_search(tile, tiles, acceptance)
         if (neighbors != []):
             for neighbor in neighbors:
                 cluster.append(neighbor)
                 if neighbor in tiles:
                     tiles.remove(neighbor)
-                grabneighbors(neighbor)
+                grab_neighbors(neighbor)
 
     for tile in tiles:
         cluster = []
         
         active = tile
-        grabneighbors(tile)
+        grab_neighbors(tile)
 
         if (cluster != []):
             cluster.append(active)
@@ -33,28 +35,32 @@ def GRIDCLUS (quadrants, acceptance=0.1):
 
     newclusters = []
     for cluster in clusters:
-        newcluster = []
+        newcluster = Cluster()
         for item in cluster:
-            newcluster.append(item[1])
+            newcluster.add_quadrant(item[1])
         newclusters.append(newcluster)
+
+    for newcluster in newclusters:
+        if len(newcluster.quadrants) == 0:
+            newclusters.remove(newcluster)
 
     return newclusters
 
-def adjacent(A, B):
-    if ((A.xmin == B.xmax) or (A.xmax == B.xmin)) or ((A.ymin == B.ymax) or (A.ymax == B.ymin)):
+def adjacent(a, b):
+    if ((a.xmin == b.xmax) or (a.xmax == b.xmin)) or ((a.ymin == b.ymax) or (a.ymax == b.ymin)):
         return True
     else:
         return False        
 
-def shouldmark(A, B, acceptance):
-    if adjacent(A[1], B[1]) and ((acceptance > (abs(A[0] - B[0])/A[0])) or (acceptance > (abs(A[0]-B[0])/B[0]))):
+def should_mark(a, b, acceptance):
+    if a[0] != 0 and b[0] != 0 and adjacent(a[1], b[1]) and ((acceptance > (abs(a[0] - b[0])/a[0])) or (acceptance > (abs(a[0]-b[0])/b[0]))):
         return True
     else:
         return False
 
-def neighborsearch(tile, tiles, acceptance):
+def neighbor_search(tile, tiles, acceptance):
     neighbors = []
     for othertile in tiles:
-        if (othertile != tile) and shouldmark(tile, othertile, acceptance):
+        if (othertile != tile) and should_mark(tile, othertile, acceptance):
             neighbors.append(othertile)
     return neighbors
