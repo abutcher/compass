@@ -11,7 +11,7 @@ mc2="mc2.arff"
 
 for file in $mc2
 do
-    echo "Running ../python/arff/defect/$file"
+    echo "Running arff/defect/$file"
     /opt/local/bin/python2.6 idea.py --train ../python/arff/defect/$file --xval 5 > $file.csv
 #    grep Perform $file.csv > $file.perform.csv;
 #    grep __init__ $file.csv > $file.quadrants.csv
