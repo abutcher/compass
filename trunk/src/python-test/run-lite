@@ -5,5 +5,6 @@ sets="cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
 for file in $sets;
 do
     echo "Running $file";
-    /opt/local/bin/python2.6 idea_lite.py --train ../python/arff/defect/$file --stratified 5 1 --accept 0.5 --xval 5 >> $file-score.csv;
+    /opt/local/bin/python2.6 idea_lite.py --train ../python/arff/defect/$file --stratified 5 1 --accept 0.5 --xval 5 >> $file-variance.csv;
+    /opt/local/bin/python2.6 boxplot-lite.py -i $file-variance.csv -x 5
 done

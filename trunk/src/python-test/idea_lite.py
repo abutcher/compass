@@ -96,7 +96,7 @@ def main():
             print "IDEA, 0, 0, %.2f" % (global_pre_test.HarmonicMean("TRUE"))
             print "NONE, 0, 0, %.2f" % (global_nb.HarmonicMean("TRUE"))
     
-            culls = [0.1, 0.2, 0.3, 0.4]#, 0.5, 0.6, 0.7, 0.8, 0.9]
+            culls = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
         
             for cull in culls:
                 """
@@ -108,7 +108,7 @@ def main():
                         clusters.remove(clusters[i])
                 """
                 #clusters, culled_clusters = prune_rogue_clusters(deepcopy(clusters), cull)
-                clusters, culled_clusters = prune_clusters_classic_within_max(deepcopy(clusters), cull, "SCORE")
+                clusters, culled_clusters = prune_clusters_classic_within_max(deepcopy(clusters), cull, "VARIANCE")
 
 
                 culled_datums = []
