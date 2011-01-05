@@ -2,7 +2,6 @@ import matplotlib.font_manager as fm
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 import matplotlib.collections as collections
-import matplotlib.gridspec as gridspec
 from matplotlib import cm, colors
 import numpy as np
 
