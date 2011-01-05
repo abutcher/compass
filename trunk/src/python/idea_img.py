@@ -12,8 +12,10 @@ from util import *
 from copy import deepcopy
 from bore import *
 from NaiveBayes import *
+import random
 
 def main():
+    random.seed(5)
     args = parse_options()
 
     title = args.train[0].split("/")[-1].split(".")[0]
@@ -25,7 +27,7 @@ def main():
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
-    k_fold = ic.k_fold_stratified_cross_val(args.xval[0])
+    k_fold = ic.k_fold_stratified_cross_val(args.stratified[0])
 
     test = k_fold[0]
     k_fold.remove(test)
@@ -33,10 +35,13 @@ def main():
 
     trainXY = log_y(log_x(deepcopy(train)))
     testXY = log_y(log_x(deepcopy(test)))
+
+    print "Building clusters (with IDEA 1.0)..."
     
     quadrants = QuadrantTree(trainXY).leaves()
     clusters = GRIDCLUS(quadrants, args.accept[0])
 
+    print "Scoring clusters (with IDEA 1.0)..."
     for instance in trainXY:
 
         # Find closest cluster to test instance.
@@ -64,6 +69,8 @@ def main():
         pre_test_stats = list(DefectStats() for cluster in clusters)
         global_nb = DefectStats()
 
+        
+    print "Running standard learner (Naive Bayes)..."
     for instance in testXY:
         # Find closest cluster to test instance.
         closest_cluster = [sys.maxint, None]
@@ -88,11 +95,13 @@ def main():
 
         global_nb.Evaluate(NaiveBayesClassify(instance.datum, [inst.datum for inst in trainXY], "DEFECT"), instance.klass())
 
+    print "Culling clusters (with IDEA 1.0)..."
     clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull[0], "SCORE")
     
     global_test = DefectStats()
     test_stats = list(DefectStats() for cluster in clusters)
-                
+
+    print "Testing remaining clusters (with IDEA 1.0)..."
     for instance in testXY:
         
         # Find closest cluster to test instance.
@@ -119,7 +128,8 @@ def main():
 
     global_test_culled = DefectStats()
     test_stats_culled = list(DefectStats() for cluster in culled_clusters)
-                
+
+    print "Testing removed clusters (with IDEA 1.0)..."
     for instance in testXY:
         
         # Find closest cluster to test instance.
@@ -143,7 +153,8 @@ def main():
         # Increment the stat object appropriately using Evaluate
         test_stats_culled[closest_cluster[1]].Evaluate(got, want)
         global_test_culled.Evaluate(got, want)
-
+        
+    print "Writing figure %s.png ..." % (title)
     fig = Figure(title, trainXY, quadrants, clusters, culled_clusters, global_test, global_pre_test, global_test_culled, global_nb)
     fig.write_png()
 
@@ -156,14 +167,14 @@ def parse_options():
                         type=str,
                         nargs='+',
                         help='Specify arff file[s] from which to construct the training set.')
-    parser.add_argument('--xval',
-                        dest='xval',
+    parser.add_argument('--stratified',
+                        dest='stratified',
                         default=None,
-                        metavar='Train to test ratio, XVAL on 1',
+                        metavar='Train to test ratio, STRATIFIED on 1',
                         type=int,
                         nargs=1,
-                        help='Specify a ratio for a stratified cross-validation scheme.\
-                              Takes an integer to define ratio, XVAL on 1')
+                        help='Specify a ratio for a stratified split scheme.\
+                              Takes an integer to define ratio, STRATIFIED on 1, train to test ratio.')
     parser.add_argument('--accept',
                         dest='accept',
                         default=None,
