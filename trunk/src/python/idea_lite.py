@@ -123,7 +123,7 @@ def main():
 
                 global_test = DefectStats()
                 test_stats = list(DefectStats() for cluster in clusters)
-    
+                
                 for instance in testXY:
 
                     # Find closest cluster to test instance.

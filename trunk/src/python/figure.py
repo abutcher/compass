@@ -12,7 +12,7 @@ class Figure:
     ax2 = None
     ax3 = None
 
-    def __init__(self, title, instances, quadrants, clusters, culled_clusters):
+    def __init__(self, title, instances, quadrants, clusters, culled_clusters, cluster_stats, clusters_pre_stats, clusters_test_culled_stats, nb_stats):
         self.fig = plt.figure()
         self.title = title
         # Set up separate axes
@@ -27,8 +27,16 @@ class Figure:
 
         # Legend stuff
 
-        self.ax1.bar(0,0, width=0, bottom=0, facecolor='green', label="Good")
-        self.ax1.bar(0,0, width=0, bottom=0, facecolor='gray', label="Bad")
+        good_label = "Good, HM %.2f" % (cluster_stats.HarmonicMean("TRUE"))
+        nb_label = "NB, HM %.2f" % (nb_stats.HarmonicMean("TRUE"))
+        idea_label = "No Cull %.2f" % (clusters_pre_stats.HarmonicMean("TRUE"))
+        bad_label = "Bad %.2f" % (clusters_test_culled_stats.HarmonicMean("TRUE"))
+        
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='green', label=good_label)
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='gray', label=bad_label)
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='white', label=nb_label)
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='white', label=idea_label)        
+
 
         handles, labels = self.ax1.get_legend_handles_labels()
         l = self.ax2.legend(handles, labels, loc='center', prop=dict(family='sans-serif',size=8))

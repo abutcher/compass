@@ -89,8 +89,62 @@ def main():
         global_nb.Evaluate(NaiveBayesClassify(instance.datum, [inst.datum for inst in trainXY], "DEFECT"), instance.klass())
 
     clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull[0], "SCORE")
+    
+    global_test = DefectStats()
+    test_stats = list(DefectStats() for cluster in clusters)
+                
+    for instance in testXY:
+        
+        # Find closest cluster to test instance.
+        closest_cluster = [sys.maxint, None]
+        for i in range(len(clusters)):
+            for quadrant in clusters[i].quadrants:
+                tmp_distance = distance(instance.Coord(), quadrant.center())
+                if tmp_distance < closest_cluster[0]:
+                    closest_cluster[0] = tmp_distance
+                    closest_cluster[1] = i
 
-    fig = Figure(title, trainXY, quadrants, clusters, culled_clusters)
+        # Points and associated classes for the closest cluster's quadrants.
+        modified_train = []
+        for quadrant in clusters[closest_cluster[1]].quadrants:
+            modified_train.extend(quadrant.ClassCoords())
+                
+        # Classify the test instance
+        got = classify(instance.Coord(), modified_train, "DEFECT")
+        want = instance.datum[-1]
+        
+        # Increment the stat object appropriately using Evaluate
+        test_stats[closest_cluster[1]].Evaluate(got, want)
+        global_test.Evaluate(got, want)
+
+    global_test_culled = DefectStats()
+    test_stats_culled = list(DefectStats() for cluster in culled_clusters)
+                
+    for instance in testXY:
+        
+        # Find closest cluster to test instance.
+        closest_cluster = [sys.maxint, None]
+        for i in range(len(clusters)):
+            for quadrant in culled_clusters[i].quadrants:
+                tmp_distance = distance(instance.Coord(), quadrant.center())
+                if tmp_distance < closest_cluster[0]:
+                    closest_cluster[0] = tmp_distance
+                    closest_cluster[1] = i
+
+        # Points and associated classes for the closest cluster's quadrants.
+        modified_train = []
+        for quadrant in culled_clusters[closest_cluster[1]].quadrants:
+            modified_train.extend(quadrant.ClassCoords())
+                
+        # Classify the test instance
+        got = classify(instance.Coord(), modified_train, "DEFECT")
+        want = instance.datum[-1]
+        
+        # Increment the stat object appropriately using Evaluate
+        test_stats_culled[closest_cluster[1]].Evaluate(got, want)
+        global_test_culled.Evaluate(got, want)
+
+    fig = Figure(title, trainXY, quadrants, clusters, culled_clusters, global_test, global_pre_test, global_test_culled, global_nb)
     fig.write_png()
 
 def parse_options():
