@@ -49,6 +49,7 @@ class Bore:
             scores = []
             for j in range(len(trans[i])):
                 scores.append(self.like(trans[i][j], self.bfreq[i])**2/(self.like(trans[i][j],self.bfreq[i])+self.like(trans[i][j], self.rfreq[i])))
+            print scores
             colscores.append((i, median(scores)))
         print "Attributes:"
         for sortedcol in sorted(colscores, key=lambda score: score[1], reverse=True):
