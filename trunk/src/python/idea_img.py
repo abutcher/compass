@@ -19,13 +19,13 @@ def main():
     title = args.train[0].split("/")[-1].split(".")[0]
     arff = Arff(args.train[0])
     
-    print "dataset, %s" % (title)
+    print "Running dataset %s, outputting to %s.png" % (title, title)
 
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
-    k_fold = ic.k_fold_stratified_cross_val(args.xval)
+    k_fold = ic.k_fold_stratified_cross_val(args.xval[0])
 
     test = k_fold[0]
     k_fold.remove(test)
@@ -36,7 +36,6 @@ def main():
     
     quadrants = QuadrantTree(trainXY).leaves()
     clusters = GRIDCLUS(quadrants, args.accept[0])
-
 
     for instance in trainXY:
 
@@ -89,7 +88,7 @@ def main():
 
         global_nb.Evaluate(NaiveBayesClassify(instance.datum, [inst.datum for inst in trainXY], "DEFECT"), instance.klass())
 
-    clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), 0.5, "SCORE")
+    clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull[0], "SCORE")
 
     fig = Figure(title, trainXY, quadrants, clusters, culled_clusters)
     fig.write_png()
@@ -103,23 +102,14 @@ def parse_options():
                         type=str,
                         nargs='+',
                         help='Specify arff file[s] from which to construct the training set.')
-    parser.add_argument('--test',
-                        dest='test',
-                        metavar='FILE',
-                        type=str,
-                        nargs='+',
-                        help='Specify arff files[s] from which to construct a test set.\
-                              Not specifying this results in a self-test that\'s only useful\
-                              for quick tests of the software.')
-    parser.add_argument('--stratified',
-                        dest='stratified',
+    parser.add_argument('--xval',
+                        dest='xval',
                         default=None,
-                        metavar='RATIO',
+                        metavar='Train to test ratio, XVAL on 1',
                         type=int,
-                        nargs=2,
+                        nargs=1,
                         help='Specify a ratio for a stratified cross-validation scheme.\
-                              This takes two arguments for a x train to x test ratio.\
-                              Do not include a test set with this flag.)')
+                              Takes an integer to define ratio, XVAL on 1')
     parser.add_argument('--accept',
                         dest='accept',
                         default=None,
@@ -127,12 +117,6 @@ def parse_options():
                         type=float,
                         nargs=1,
                         help='Specify the acceptance rate to use when generating clusters.')
-    parser.add_argument('--output',
-                        dest='output',
-                        type=str,
-                        metavar='CONCAT',
-                        default='',
-                        help='Specify an output dir.')
     parser.add_argument('--cull',
                         dest='cull',
                         default=None,
@@ -140,11 +124,6 @@ def parse_options():
                         type=float,
                         nargs=1,
                         help='Specify the percentage of clusters to cull.')
-    parser.add_argument('--xval',
-                        dest='xval',
-                        metavar='INT',
-                        type=int,
-                        help='Specify the number of folds for cross validation.')
     args = parser.parse_args()
     return args
 

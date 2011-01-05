@@ -26,10 +26,32 @@ class Figure:
         plt.title('Legend')
         plt.setp(self.ax2, xticks=[], yticks=[])
 
+        # Legend stuff
+
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='green', label="Good")
+        self.ax1.bar(0,0, width=0, bottom=0, facecolor='gray', label="Bad")
+
+        handles, labels = self.ax1.get_legend_handles_labels()
+        l = self.ax2.legend(handles, labels, loc='center', prop=dict(family='sans-serif',size=8))
+        l.get_frame().set_linewidth(0)
 
         self.ax3 = self.fig.add_axes([0.75,0.3,0.2,0.3])
         plt.title('Distribution')
         plt.setp(self.ax3, xticks=[], yticks=[])
+        
+        # Pie chart stuff
+        good = 0
+        for cluster in clusters:
+            good += len(cluster.datums())
+        bad = 0
+        for cluster in culled_clusters:
+            bad += len(cluster.datums())
+
+        patches, texts, autotexts = self.ax3.pie([good, bad], colors=['green', 'gray'], autopct='%1.1f%%')
+        proptease = fm.FontProperties()
+        proptease.set_size('xx-small')
+        plt.setp(autotexts, fontproperties=proptease)
+        plt.setp(texts, fontproperties=proptease)
 
         """
         if type(instances[0].klass()) is str:
@@ -63,7 +85,9 @@ class Figure:
                 self.ax1.plot(instance.coord.x, instance.coord.y, "ro", markersize=2, alpha=0.5)
 
         for cluster in clusters:
-            self.color_quadrants(cluster.quadrants, colors[clusters.index(cluster)*30])
+            self.color_quadrants(cluster.quadrants, 'green')
+        for cluster in culled_clusters:
+            self.color_quadrants(cluster.quadrants, 'gray')
 
     def color_quadrants(self, quadrants, color):
         for i in range(len(quadrants)):
