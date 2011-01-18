@@ -253,6 +253,7 @@ def wilcoxon(pop1, pop2, critical = 95):
         old = starter
         start = 1
         summation = 0
+        r = 0
 
         ranks = {}
         skipping = False

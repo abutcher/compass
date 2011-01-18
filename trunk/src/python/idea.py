@@ -73,7 +73,7 @@ def main():
                 #PerformIDEACluster(deepcopy(prunedX10), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED10%-"+str(accept)+"-logX")
                 #PerformIDEACluster(deepcopy(prunedX20), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED20%-"+str(accept)+"-logX")
                 #PerformIDEACluster(deepcopy(prunedX30), deepcopy(testLogX), title,"IDEACLUSTER-PRUNED30%-"+str(accept)+"-logX")
-                PerformIDEACluster(deepcopy(clustersX), deepcopy(testLogX), title,"IDEACLUSTER-XOnly"+str(accept)+"-logX",True)
+                PerformIDEACluster(deepcopy(clustersX), deepcopy(testLogX), title,"IDEACLUSTER-XOnly-"+str(accept)+"-logX",True)
                 #PerformIDEACluster(deepcopy(prunedX10), deepcopy(testLogX), title,"IDEACLUSTER-XOnly-PRUNED10%-"+str(accept)+"-logX",True)
                 #PerformIDEACluster(deepcopy(prunedX20), deepcopy(testLogX), title,"IDEACLUSTER-XOnly-PRUNED20%-"+str(accept)+"-logX",True)
                 #PerformIDEACluster(deepcopy(prunedX30), deepcopy(testLogX), title,"IDEACLUSTER-XOnly-PRUNED30%-"+str(accept)+"-logX",True)
