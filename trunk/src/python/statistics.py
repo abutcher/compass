@@ -8,7 +8,7 @@ from runtime import *
 # for related functions such as MRE() that aren't in this file, check util.py.
 
 #@print_timing
-def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER"):
+def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER", disregardY=False):
     Stats = DefectStats()
     if type(test[0].klass()) is str:
         for instance in test:
@@ -21,7 +21,7 @@ def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER")
             train = []
             for quadrant in Closest[1].quadrants:
                 train.extend(quadrant.ClassCoords())
-            Stats.Evaluate(NaiveBayesClassify(instance.Coord(),train,"DEFECT"), instance.klass())
+            Stats.Evaluate(NaiveBayesClassify(instance.Coord(),train, disregardY), instance.klass())
         Stats.StatsLine(dataset, treatment)
     del Stats
 
@@ -31,7 +31,7 @@ def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
     if type(test[0].klass()) is str:
         train = [ inst.datum for inst in data ]
         for instance in test:
-            Stats.Evaluate(NaiveBayesClassify(instance.datum, train, "DEFECT"), instance.klass())
+            Stats.Evaluate(NaiveBayesClassify(instance.datum, train), instance.klass())
         Stats.StatsLine(dataset,treatment)
     del Stats
 

@@ -40,13 +40,17 @@ class Normal:
             
         
 
-def NaiveBayesClassify(instance, data, m=2, k=1):
+def NaiveBayesClassify(instance, data, disregardY=False, m=2, k=1):
     Classification = ["blank", -100]
     (ClassList,ClassNormal) = GenerateNormalForClasses(data)
+    if disregardY:
+        FeatureRange = range(len(instance) - 2)
+    else:
+        FeatureRange = range(len(instance) - 1)
     for ClassIndex in range(len(ClassList)):
         # Calculate the prior
         tmp = log( ClassNormal[ClassIndex].n[0] + k ) / ( len(data) + ( k * len(ClassList)))
-        for FeatureIndex in range(len(instance)-1):
+        for FeatureIndex in FeatureRange:
             # Gaussian PDF fun ction.  May fix for Discrete values later.
             tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
         if Classification[1] < tmp:
