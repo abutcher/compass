@@ -40,12 +40,12 @@ class Bore:
         scores = []
         for header in self.headers[0:-2]:
             for item in trans[self.headers.index(header)]:
-                if "%s %s" % (header,str(item)) not in [score[0] for score in scores]:
-                    scores.append(("%s %s" % (header,str(item)), [self.like(item, self.bfreq[self.headers.index(header)])**2/
+                if "%s %s %s" % (self.headers.index(header), header,str(item)) not in [score[0] for score in scores]:
+                    scores.append(("%s %s %s" % (self.headers.index(header), header,str(item)), [self.like(item, self.bfreq[self.headers.index(header)])**2/
                                    (self.like(item, self.bfreq[self.headers.index(header)]) +
                                     self.like(item, self.rfreq[self.headers.index(header)]))]))
                 else:
-                    scores[[score[0] for score in scores].index("%s %s" % (header,str(item)))][1].append(
+                    scores[[score[0] for score in scores].index("%s %s %s" % (self.headers.index(header),header,str(item)))][1].append(
                         self.like(item, self.bfreq[self.headers.index(header)])**2 /
                         (self.like(item, self.bfreq[self.headers.index(header)]) +
                          self.like(item, self.rfreq[self.headers.index(header)])))
