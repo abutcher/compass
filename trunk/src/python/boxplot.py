@@ -44,27 +44,46 @@ def main():
         elif treatments[i][2] == 'FALSE':
             falses.append(i)
 
-    print len(treatments)
-    
+    for i in range(0,len(treatments),2):
+        if treatments[i][3] == treatments[i+1][3]:
+            print "true"
+        else:
+            print treatments[i][3]
+            print treatments[i+1][3]
+            print len(treatments[i][3])
+            print len(treatments[i+1][3])
+
+    populations=[]
     for i in trues:
         mins = min(treatments[i][3])*100
         meds = np.median(treatments[i][3])*100
         maxs = max(treatments[i][3])*100
         print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (truesRank, treatments[i][0], treatments[i][1].replace("%","\\%"), treatments[i][2], mins, meds - mins, meds, maxs - meds, maxs)
         if (treatments[i] != treatments[trues[-1]]):
-            if (sci.wilcoxon(sorted(treatments[i][3]),sorted(treatments[i+1][3]))[1] > 1.960):
-                truesRank = truesRank + 1
+            populations.append(sorted(treatments[i][3]))
+            for population in populations:
+                if (sci.wilcoxon(sorted(population),sorted(treatments[i+1][3]))):
+                    truesRank = truesRank + 1
+                    del populations
+                    populations = []
+                    break;
 
     print ""
 
+    populations=[]
     for i in falses:
         mins = min(treatments[i][3])*100
         meds = np.median(treatments[i][3])*100
         maxs = max(treatments[i][3])*100
         print "%s & %s & %s & %s & \\boxplot{%.2f}{%.2f}{%.2f}{%.2f}{%.2f} \\\\" % (falsesRank, treatments[i][0], treatments[i][1].replace("%","\\%"), treatments[i][2], mins, meds - mins, meds, maxs - meds, maxs)
         if (treatments[i] != treatments[falses[-1]]):
-            if ( sci.wilcoxon(sorted(treatments[i][3]),sorted(treatments[i+1][3]))[1] > 1.960):
-                falsesRank = falsesRank + 1
+            populations.append(sorted(treatments[i][3]))
+            for population in populations:
+                if (sci.wilcoxon(sorted(population),sorted(treatments[i+1][3]))):
+                    falsesRank = falsesRank + 1
+                    del populations
+                    populations = []
+                    break;
 
 def parse_options():
     parser = argparse.ArgumentParser(description="Nasty script to make latex boxplots")
