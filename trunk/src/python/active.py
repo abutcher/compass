@@ -11,6 +11,7 @@ from copy import deepcopy
 from bore2 import *
 from NaiveBayes import *
 import random
+from discretize import *
 
 def main():
     random.seed(1)
@@ -22,7 +23,7 @@ def main():
 
     print "dataset, %s" % (title)
 
-    dc = DataCollection(arff.data)
+    dc = DataCollection(discretize(arff.data)) # Discretize data.
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
@@ -36,15 +37,16 @@ def main():
 
     clusters, culled_clusters = prune_clusters_classic(clusters, args.cull)
 
-    print "Kept"
-    kept_rules =  Bore(squash([clus.datums() for clus in clusters]), arff.headers, "trueyes").top_rules(5)
-    print kept_rules
-    print ""
-    print "Culled"
-    culled_rules = Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes").top_rules(5)
+#    print "KEPT"
+#    kept_rules =  Bore(squash([clus.datums() for clus in clusters]), arff.headers, "trueyes").top_rules(5)
+#    print kept_rules
+#    print ""
+    print "Top %d collected from CULLED" % (args.rules)
+    culled_rules = Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes").top_rules(args.rules)
     print culled_rules
+    print ""
     
-    print [inst.datum for inst in data_matching_rules(testXY, culled_rules)]
+    print "Collected %d instances that resembled CULLED out of the %d remaining instances."  % (len([inst.datum for inst in data_matching_rules(testXY, culled_rules)]), len(testXY))
 
 def data_matching_rules(data, rules):
     matching_instances = []
@@ -93,11 +95,13 @@ def parse_options():
                         metavar='FLOAT 0-1',
                         type=float,
                         help='Specify the percentage of clusters to cull.')
-    parser.add_argument('--xval',
-                        dest='xval',
+    parser.add_argument('--rules',
+                        dest='rules',
                         metavar='INT',
                         type=int,
-                        help='Specify the number of folds for cross validation.')
+                        help='Specify the number of rules to generate from CULLED.')
+
+
     args = parser.parse_args()
     return args
 

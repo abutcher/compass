@@ -104,8 +104,6 @@ class InstanceCollection:
 		random.shuffle(self.instances, random.random)
 		g1 = self.instances[0:len(self.instances)/2]
 		g2 = self.instances[(len(self.instances)/2)+1:-1]
-		print "g1: %d" % len(g1)
-		print "g2: %d" % len(g2)
 		return g1, g2
 
 class DataCoordinate:
