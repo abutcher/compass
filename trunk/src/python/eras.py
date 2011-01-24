@@ -1,7 +1,7 @@
 import math
 
 def eras(data, n):
-    buckets = [[] for i in range(math.ceil(len(data)/n))]
+    buckets = [[] for i in range(int(math.ceil(len(data)/n)))]
     for i in range(len(buckets)):
         while len(buckets[i]) < n:
             buckets[i].append(data[0])

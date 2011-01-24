@@ -5,7 +5,7 @@ from discretize import *
 class Bore:
     def __init__(self, data, headers, goal, b=0.2, bins=10):
         random.shuffle(data, random.random)
-        self.data = discretize(data, bins)
+        self.data = data #discretize(data, bins)
         self.headers = headers
         self.goal = goal.lower()
         self.best = []

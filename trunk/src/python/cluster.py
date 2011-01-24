@@ -26,6 +26,12 @@ class Cluster:
             instances.extend(quadrant.instances)
         return [ inst.datum for inst in instances ]
 
+    def instances(self):
+        instances = []
+        for quadrant in self.quadrants:
+            instances.extend(quadrant.instances)
+        return instances
+
     def is_neighbor(self, other_cluster):
         result = False
         for i in range(len(self.quadrants)):
