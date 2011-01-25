@@ -40,7 +40,7 @@ class Normal:
             
         
 
-def NaiveBayesClassify(instance, data, disregardY=False, m=2, k=1):
+def NaiveBayesClassify(instance, data,discrete=False, disregardY=False, m=2, k=1):
     Classification = ["blank", -100]
     (ClassList,ClassNormal) = GenerateNormalForClasses(data)
     if disregardY:
@@ -52,7 +52,10 @@ def NaiveBayesClassify(instance, data, disregardY=False, m=2, k=1):
         tmp = log( ClassNormal[ClassIndex].n[0] + k ) / ( len(data) + ( k * len(ClassList)))
         for FeatureIndex in FeatureRange:
             # Gaussian PDF fun ction.  May fix for Discrete values later.
-            tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
+            if  discrete == False:
+                tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
+            else:
+                tmp = tmp + float(len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == instance[-1],data))) / float(len(filter(lambda datum: datum[-1] == instance[-1],data)))
         if Classification[1] < tmp:
             Classification[0] = ClassList[ClassIndex]
             Classification[1] = tmp

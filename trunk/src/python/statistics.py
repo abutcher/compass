@@ -2,6 +2,7 @@ from NaiveBayes import *
 from knn import *
 from util import distance
 import sys
+from cliffav import DiscreteClosestTo
 from runtime import *
 
 # This contains functions for defect prediction statistics.  If you're looking
@@ -26,17 +27,22 @@ def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER",
     del Stats
 
 #@print_timing
-def PerformBaseline(data,test,dataset="Unknown",treatment="None"):
+def PerformBaseline(data,test,dataset="Unknown",treatment="None",discreteIt=False):
     Stats = DefectStats()
-    if type(test[0].klass()) is str:
-        train = [ inst.datum for inst in data ]
-        for instance in test:
-            Stats.Evaluate(NaiveBayesClassify(instance.datum, train), instance.klass())
-        Stats.StatsLine(dataset,treatment)
+    for instance in test:
+        Stats.Evaluate(NaiveBayesClassify(instance, data, discrete=discreteIt), instance[-1])
+    Stats.StatsLine(dataset,treatment)
+    del Stats
+
+def Perform1NN(data,test,dataset="Unknown",treatment="1NN"):
+    Stats = DefectStats()
+    for instance in test:
+        Stats.Evaluate(DiscreteClosestTo(instance,data)[-1], instance[-1])
+    Stats.StatsLine(dataset,treatment)
     del Stats
 
 def PrintHeaderLine():
-    print "dataset,treatment,CLASS,TotalNumOfClass,A,B,C,D,pd,pf,precision,accuracy,HarmonicMean"
+    print "dataset\ttreatment\tCLASS\tTotalNumOfClass\tA\tB\tC\tD\tpd\tpf\tprec\tacc\tHM"
 
 class DefectStats:
     # TRUE && FALSE is [a,b,c,d]
@@ -129,8 +135,8 @@ class DefectStats:
         return self.__A__(CLASS) + self.__B__(CLASS) + self.__C__(CLASS) + self.__D__(CLASS)
 
     def StatsLine(self, dataset,treatment):
-        print "%s,%s,%s,%d, %d,%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset,treatment,"TRUE",self.ClassCount("TRUE"),self.__A__("TRUE"),self.__B__("TRUE"),self.__C__("TRUE"), self.__D__("TRUE"), self.pd("TRUE"), self.pf("TRUE"), self.precision("TRUE"), self.accuracy("TRUE"), self.HarmonicMean("TRUE"))
-        print "%s,%s,%s,%d,%d, %d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f" % (dataset, treatment, "FALSE",self.ClassCount("FALSE"),self.__A__("FALSE"),self.__B__("FALSE"), self.__C__("FALSE"), self.__D__("FALSE"), self.pd("FALSE"), self.pf("FALSE"), self.precision("FALSE"), self.accuracy("FALSE"), self.HarmonicMean("FALSE"))
+        print "%s\t%s\t%s\t%d\t%d\t%d\t%d\t%d\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f" % (dataset,treatment,"TRUE",self.ClassCount("TRUE"),self.__A__("TRUE"),self.__B__("TRUE"),self.__C__("TRUE"), self.__D__("TRUE"), self.pd("TRUE"), self.pf("TRUE"), self.precision("TRUE"), self.accuracy("TRUE"), self.HarmonicMean("TRUE"))
+        print "%s\t%s\t%s\t%d\t%d\t%d\t%d\t%d\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f" % (dataset, treatment, "FALSE",self.ClassCount("FALSE"),self.__A__("FALSE"),self.__B__("FALSE"), self.__C__("FALSE"), self.__D__("FALSE"), self.pd("FALSE"), self.pf("FALSE"), self.precision("FALSE"), self.accuracy("FALSE"), self.HarmonicMean("FALSE"))
 
 
     # Private classes for grabbing A,B,C, and D
