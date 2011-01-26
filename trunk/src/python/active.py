@@ -29,58 +29,63 @@ def main():
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
-    era_list = ic.k_fold_stratified_cross_val(int(len(arff.data)/args.era))
-    for era in era_list:
-        era = log_y(log_x(deepcopy(era)))
-    score_list = []
-
-    train = deepcopy(squash(era_list[0:1]))
-    era_list.remove(era_list[0])
-    era_list.remove(era_list[0])
-    
-    for i in range(len(era_list)):
-        quadrants = QuadrantTree(train).leaves()
-        clusters = GRIDCLUS(quadrants, args.accept)
-
-        clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
+    total_score_list = []
+    for i in range(args.xval):
         
-        #culled_rules = Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes").top_rules(args.rules)
+        era_list = ic.k_fold_stratified_cross_val(int(len(arff.data)/args.era))
+        for era in era_list:
+            era = log_y(log_x(deepcopy(era)))
+        score_list = []
 
-        if i != len(era_list)-1:
-            score = DefectStats()
-            for instance in era_list[i+1]:
-                closest_cluster = [sys.maxint, None]
-                for i in range(len(clusters)):
-                    for quadrant in clusters[i].quadrants:
-                        tmp_distance = distance(instance.Coord(), quadrant.center())
-                        if tmp_distance < closest_cluster[0]:
-                            closest_cluster[0] = tmp_distance
-                            closest_cluster[1] = i
+        train = deepcopy(era_list[0])
+        era_list.remove(era_list[0])
+    
+        for i in range(len(era_list)):
+            quadrants = QuadrantTree(train).leaves()
+            clusters = GRIDCLUS(quadrants, args.accept)
+            
+            clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
+            
+#            culled_rules = Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes").top_rules(args.rules)
+
+            if i != len(era_list)-1:
+                score = DefectStats()
+                for instance in era_list[i+1]:
+                    closest_cluster = [sys.maxint, None]
+                    for i in range(len(clusters)):
+                        for quadrant in clusters[i].quadrants:
+                            tmp_distance = distance(instance.Coord(), quadrant.center())
+                            if tmp_distance < closest_cluster[0]:
+                                closest_cluster[0] = tmp_distance
+                                closest_cluster[1] = i
                             
-                    modified_train = []
-                    for quadrant in clusters[closest_cluster[1]].quadrants:
-                        modified_train.extend(quadrant.ClassCoords())
+                        modified_train = []
+                        for quadrant in clusters[closest_cluster[1]].quadrants:
+                            modified_train.extend(quadrant.ClassCoords())
 
-                    got = classify(instance.Coord(), modified_train, "DEFECT")
-                    score.Evaluate(got, instance.klass())
-            score_list.append(score.HarmonicMean("TRUE"))
+                        got = classify(instance.Coord(), modified_train, "DEFECT")
+                        score.Evaluate(got, instance.klass())
+                score_list.append(score.HarmonicMean("TRUE"))
 
-        """
-        if i != len(era_list)-1:
+            """
+            #if i != len(era_list)-1:
             removed_instances = [inst for inst in data_matching_rules(era_list[i+1], culled_rules)]
-
+            
             for instance in removed_instances:
                 era_list[i+1].remove(instance)
-        """
-        
-        if i != len(era_list)-1:
-            train = []
-            for cluster in clusters:
-                train.extend(cluster.instances())
-            train.extend(era_list[i+1])
-    print score_list
+            """
+            if i != len(era_list)-1:
+                train = []
+                for cluster in clusters:
+                    train.extend(cluster.instances())
+                train.extend(era_list[i+1])
 
+        total_score_list.append(score_list)
 
+    total_score_list = transpose(total_score_list)
+    for score_list in total_score_list:
+        print median(score_list)
+    
 def data_matching_rules(data, rules):
     matching_instances = []
     for instance in data:
@@ -137,6 +142,11 @@ def parse_options():
                         metavar='INT',
                         type=int,
                         help='Specify the size of the eras.')
+    parser.add_argument('--xval',
+                        dest='xval',
+                        metavar='INT',
+                        type=int,
+                        help='Specify the number of x v x cross validations.')
 
 
     args = parser.parse_args()
