@@ -11,6 +11,7 @@ from figure import *
 import time
 from util import *
 from copy import deepcopy
+from discretize import *
 
 def main():
     """All of the magic happens here"""

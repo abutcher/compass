@@ -48,7 +48,7 @@ def main():
             
 #            culled_rules = Bore(squash([clus.datums() for clus in culled_clusters]), arff.headers, "trueyes").top_rules(args.rules)
 
-            if i != len(era_list)-1:
+            if i+1 < len(era_list):
                 score = DefectStats()
                 for instance in era_list[i+1]:
                     closest_cluster = [sys.maxint, None]
@@ -74,12 +74,13 @@ def main():
             for instance in removed_instances:
                 era_list[i+1].remove(instance)
             """
-            if i != len(era_list)-1:
+            if i+1 < len(era_list):
                 train = []
                 for cluster in clusters:
                     train.extend(cluster.instances())
                 train.extend(era_list[i+1])
 
+        del era_list
         total_score_list.append(score_list)
 
     total_score_list = transpose(total_score_list)
