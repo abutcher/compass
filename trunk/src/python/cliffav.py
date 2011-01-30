@@ -34,7 +34,7 @@ def main():
         print "Round "+str(i)
         print "Oracle: "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
         PrintHeaderLine()
-        PerformBaseline(Train,Test,setname,"nb")
+        PerformBaseline(Train,Test,setname,"nb",True)
         TrainingPrototypes = CliffBORE(Train)
         PerformBaseline(TrainingPrototypes.prototypes,Test,setname,"nb+cliff")
         Perform1NN(TrainingPrototypes.prototypes,Test,setname,"1NN+cliff")

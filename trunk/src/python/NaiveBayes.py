@@ -55,10 +55,19 @@ def NaiveBayesClassify(instance, data,discrete=False, disregardY=False, m=2, k=1
             if  discrete == False:
                 tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
             else:
-                tmp = tmp + float(len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == instance[-1],data))) / float(len(filter(lambda datum: datum[-1] == instance[-1],data)))
+                #print ClassList[ClassIndex]
+                #print len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == ClassList[ClassIndex],data))
+                freq = len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == ClassList[ClassIndex],data))
+                if freq != 0:
+                    tmp = tmp + log(float(len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == ClassList[ClassIndex],data))) / float( ClassNormal[ClassIndex].n[0]))
+                else:
+                    tmp = tmp + log(0.00001)
+        #print ClassList[ClassIndex]
+        #print tmp
         if Classification[1] < tmp:
             Classification[0] = ClassList[ClassIndex]
             Classification[1] = tmp
+    #print ""
     return Classification[0]
             
 
