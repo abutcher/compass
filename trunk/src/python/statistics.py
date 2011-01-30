@@ -42,7 +42,7 @@ def Perform1NN(data,test,dataset="Unknown",treatment="1NN"):
     del Stats
 
 def PrintHeaderLine():
-    print "dataset\ttreatment\tCLASS\tTotalNumOfClass\tA\tB\tC\tD\tpd\tpf\tprec\tacc\tHM"
+    print "dataset\t\ttreatment\tCLASS\tN\tA\tB\tC\tD\tpd\tpf\tprec\tacc\tHM"
 
 class DefectStats:
     # TRUE && FALSE is [a,b,c,d]

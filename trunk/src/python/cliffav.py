@@ -11,6 +11,13 @@ def main():
     args = parse_options()
     arff = Arff(args.train)
     data = discretize(arff.data)
+
+    klasses = []
+    
+    for datum in data:
+        if datum[-1] not in klasses:
+            klasses.append(datum[-1])
+
     setname = args.train[0]
     print "Set: "+setname
 
@@ -19,25 +26,36 @@ def main():
     Test = []
 
     [Oracle, Test] = stratified_cross_val(data,[4,1])
-    [Oracle, Train] = stratified_cross_val(Oracle,[3,1])
 
-    N = int(floor(float(len(Oracle)) / 9.0))
-    for i in range(1,11):
-        if i != 1:
-            for j in range(N):
-                RandomItem = random.choice(Train)
-                Closest = DiscreteClosestTo(RandomItem, GetInstancesForOtherClass(RandomItem[-1],Train))
-                NewPoint = DiscreteClosestTo(Midpoint(RandomItem,Closest),Oracle)
-                Oracle.remove(NewPoint)
-                Train.append(NewPoint)
+    N_alpha = 50
+    
+    for i in range(N_alpha/len(klasses)):
+        for j in range(len(klasses)):
+            Train.append(random.choice(filter(lambda datum: datum[-1] == klasses[j],Oracle)))
+
+    while True:
         print "\n"
-        print "Round "+str(i)
-        print "Oracle: "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
+        print "N: "+ str(len(Train)) + (" (All)" if len(Oracle) == 0 else "")
+        print "Oracle (Remaining): "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
         PrintHeaderLine()
-        PerformBaseline(Train,Test,setname,"nb",True)
+        PerformBaseline(Train,Test,setname.split('/')[-1],"nb\t",True)
         TrainingPrototypes = CliffBORE(Train)
-        PerformBaseline(TrainingPrototypes.prototypes,Test,setname,"nb+cliff")
-        Perform1NN(TrainingPrototypes.prototypes,Test,setname,"1NN+cliff")
+        PerformBaseline(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"nb+cliff",True)
+        Perform1NN(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"1NN+cliff")
+
+        if (len(Oracle) == 0):
+            break
+        elif (len(Oracle) < N_alpha):
+            ToAdd = len(Oracle)
+        else:
+            ToAdd = N_alpha
+
+        for j in range(ToAdd):
+            RandomItem = random.choice(Train)
+            Closest = DiscreteClosestTo(RandomItem, GetInstancesForOtherClass(RandomItem[-1],Train))
+            NewPoint = DiscreteClosestTo(Midpoint(RandomItem,Closest),Oracle)
+            Oracle.remove(NewPoint)
+            Train.append(NewPoint)
 
 def stratified_cross_val(data, option):
     if type(data[0][-1]) is str:

@@ -36,7 +36,7 @@ class Normal:
         try:
             return ( 1 / sqrt(2 * pi * pow(self.stdev(Index),2) )) * pow(e,-1 * ( pow( x - self.mean(Index),2) / (2 * pow(self.stdev(Index),2))))
         except:
-            return 0.0
+            return 0.00001
             
         
 
@@ -51,9 +51,9 @@ def NaiveBayesClassify(instance, data,discrete=False, disregardY=False, m=2, k=1
         # Calculate the prior
         tmp = log( ClassNormal[ClassIndex].n[0] + k ) / ( len(data) + ( k * len(ClassList)))
         for FeatureIndex in FeatureRange:
-            # Gaussian PDF fun ction.  May fix for Discrete values later.
+            # Gaussian PDF function.  Fixed for Discrete values later.
             if  discrete == False:
-                tmp = tmp + ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex])
+                tmp = tmp + log(ClassNormal[ClassIndex].GaussianPDF(FeatureIndex,instance[FeatureIndex]))
             else:
                 #print ClassList[ClassIndex]
                 #print len(filter(lambda datum: datum[FeatureIndex] == instance[FeatureIndex] and datum[-1] == ClassList[ClassIndex],data))
