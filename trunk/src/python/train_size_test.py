@@ -25,40 +25,50 @@ def main():
     ic.normalize_coordinates()
 
     k_fold = ic.k_fold_stratified_cross_val(4)
-
+    trains = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 650, 600, 700, 750, 800]#, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500]
     total_score_list = []
-    for i in range(args.xval):
+
+    for i in range(len(trains)):
+        score_list = []
         train_grab_bag = squash(k_fold[1:-1])
-        random.shuffle(train_grab_bag, random.random)
-        train = train_grab_bag[0:args.trainsize]
         test = k_fold[0]
-        trainXY = log_y(log_x(deepcopy(train)))
-        testXY = log_y(log_x(deepcopy(test)))
-
-        quadrants = QuadrantTree(trainXY).leaves()
-        clusters = GRIDCLUS(quadrants, args.accept)
-
-        clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
-
-        score = DefectStats()
-        for instance in testXY:
-            closest_cluster = [sys.maxint, None]
-            for i in range(len(clusters)):
-                for quadrant in clusters[i].quadrants:
-                    tmp_distance = distance(instance.Coord(), quadrant.center())
-                    if tmp_distance < closest_cluster[0]:
-                        closest_cluster[0] = tmp_distance
-                        closest_cluster[1] = i
-
+        
+        for j in range(args.xval):
+            random.shuffle(train_grab_bag, random.random)
+            train = train_grab_bag[0:trains[i]]
+            
+            trainXY = log_y(log_x(deepcopy(train)))
+            testXY = log_y(log_x(deepcopy(test)))
+            
+            quadrants = QuadrantTree(trainXY).leaves()
+            clusters = GRIDCLUS(quadrants, args.accept)
+            
+            clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
+            
+            score = DefectStats()
+            for instance in testXY:
+                closest_cluster = [sys.maxint, None]
+                for i in range(len(clusters)):
+                    for quadrant in clusters[i].quadrants:
+                        tmp_distance = distance(instance.Coord(), quadrant.center())
+                        if tmp_distance < closest_cluster[0]:
+                            closest_cluster[0] = tmp_distance
+                            closest_cluster[1] = i
+                            
                 modified_train = []
                 for quadrant in clusters[closest_cluster[1]].quadrants:
                     modified_train.extend(quadrant.ClassCoords())
 
                 got = classify(instance.Coord(), modified_train, "DEFECT")
                 score.Evaluate(got, instance.klass())
-        total_score_list.append(score.HarmonicMean("TRUE"))
+            score_list.append(score.HarmonicMean("TRUE"))
+        del trainXY, testXY, train, quadrants, clusters, culled_clusters, score
+        total_score_list.append(score_list)
 
-    print "%.2f\t%.2f" % (args.trainsize, median(total_score_list))
+    print len(trains)
+    print len(total_score_list)
+    for i in range(len(trains)):
+        print "%.2f\t%.2f" % (trains[i], median(total_score_list[i]))
 
             
 def parse_options():
