@@ -30,13 +30,13 @@ def equal_width_discretize(data, n=10):
         WorkingData = sorted(WorkingData, key=lambda datum: datum[i])
         Min = WorkingData[0][i]
         Max = WorkingData[-1][i]
-        print Max
+#        print Max
         # compute ranges
         Ranges = (Max - Min) / n
         RangeList = [Min]
         for wut in range(n):
             RangeList.append(RangeList[wut] + Ranges)
-        print RangeList
+#        print RangeList
         # do it.
         for j in range(len(WorkingData)):
             for k in range(len(RangeList) - 1):

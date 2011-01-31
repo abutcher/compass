@@ -30,7 +30,10 @@ def PerformIDEACluster(clusters,test,dataset="Unknown", treatment="IDEACLUSTER",
 def PerformBaseline(data,test,dataset="Unknown",treatment="None",discreteIt=False):
     Stats = DefectStats()
     for instance in test:
-        Stats.Evaluate(NaiveBayesClassify(instance, data, discrete=discreteIt), instance[-1])
+        got = NaiveBayesClassify(instance, data, discrete=discreteIt)
+        #print got
+        #print instance[-1]
+        Stats.Evaluate(got, instance[-1])
     Stats.StatsLine(dataset,treatment)
     del Stats
 

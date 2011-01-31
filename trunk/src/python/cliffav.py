@@ -10,7 +10,8 @@ from statistics import *
 def main():
     args = parse_options()
     arff = Arff(args.train)
-    data = discretize(arff.data)
+    #data = equal_width_discretize(arff.data)
+    data = arff.data
 
     klasses = []
     
@@ -25,7 +26,7 @@ def main():
     Train = []
     Test = []
 
-    [Oracle, Test] = stratified_cross_val(data,[4,1])
+    [Oracle, Test] = stratified_cross_val(data,[3,1])
 
     N_alpha = 50
     
@@ -38,10 +39,10 @@ def main():
         print "N: "+ str(len(Train)) + (" (All)" if len(Oracle) == 0 else "")
         print "Oracle (Remaining): "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
         PrintHeaderLine()
-        PerformBaseline(Train,Test,setname.split('/')[-1],"nb\t",True)
-        TrainingPrototypes = CliffBORE(Train)
-        PerformBaseline(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"nb+cliff",True)
-        Perform1NN(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"1NN+cliff")
+        PerformBaseline(Train,Test,setname.split('/')[-1],"nb\t",False)
+        #TrainingPrototypes = CliffBORE(Train)
+        #PerformBaseline(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"nb+cliff",True)
+        #Perform1NN(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"1NN+cliff")
 
         if (len(Oracle) == 0):
             break
