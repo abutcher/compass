@@ -30,12 +30,14 @@ def main():
     ic.normalize_coordinates()
 
     total_score_list = []
+    total_train_list = []
     for i in range(args.xval):
         
         era_list = ic.k_fold_stratified_cross_val(int(len(arff.data)/args.era))
         for era in era_list:
             era = log_y(log_x(deepcopy(era)))
         score_list = []
+        train_list = []
 
         train = deepcopy(era_list[0])
         era_list.remove(era_list[0])
@@ -66,14 +68,8 @@ def main():
                         got = classify(instance.Coord(), modified_train, "DEFECT")
                         score.Evaluate(got, instance.klass())
                 score_list.append(score.HarmonicMean("TRUE"))
+                train_list.append(len(squash([clus.instances() for clus in clusters])))
 
-            """
-            #if i != len(era_list)-1:
-            removed_instances = [inst for inst in data_matching_rules(era_list[i+1], culled_rules)]
-            
-            for instance in removed_instances:
-                era_list[i+1].remove(instance)
-            """
             if i+1 < len(era_list):
                 train = []
                 for cluster in clusters:
@@ -82,10 +78,12 @@ def main():
 
         del era_list
         total_score_list.append(score_list)
+        total_train_list.append(train_list)
 
     total_score_list = transpose(total_score_list)
-    for score_list in total_score_list:
-        print median(score_list)
+    for i in range(len(total_score_list)):
+        print median(total_score_list[i]), median(total_train_list[i])                                  
+                                  
     
 def data_matching_rules(data, rules):
     matching_instances = []

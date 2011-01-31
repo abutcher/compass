@@ -106,6 +106,9 @@ class InstanceCollection:
 		g2 = self.instances[(len(self.instances)/2)+1:-1]
 		return g1, g2
 
+	def shuffle(self):
+		random.shuffle(self.instances, random.random)
+
 class DataCoordinate:
 	def __init__(self, x, y):
 		self.x = x
