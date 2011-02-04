@@ -11,32 +11,52 @@ from copy import deepcopy
 from bore2 import *
 from NaiveBayes import *
 import random
+import math
 
 def main():
-    random.seed(2)
+    random.seed(1)
     
     args = parse_options()
 
     title = args.train.split("/")[-1].split(".")[0]
     arff = Arff(args.train)
 
-    dc = DataCollection(discretize(arff.data))
+    dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
     k_fold = ic.k_fold_stratified_cross_val(4)
-    trains = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 650, 600, 700, 750, 800]#, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500]
-    total_score_list = []
+    train_grab_bag = squash(k_fold[1:-1])
+    idea_hm_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
+    idea_pd_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]    
+    idea_pf_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
+    idea_prec_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]    
+    nb_hm_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
+    nb_pd_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
+    nb_pf_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
+    nb_prec_list = [[] for i in range(int(math.ceil(len(train_grab_bag)/50))+1)]
 
-    for i in range(len(trains)):
-        score_list = []
+    for x in range(args.xval):
+        print "X: %d" % (x)
         train_grab_bag = squash(k_fold[1:-1])
-        test = k_fold[0]
-        
-        for j in range(args.xval):
-            random.shuffle(train_grab_bag, random.random)
-            train = train_grab_bag[0:trains[i]]
-            
+        test = k_fold[0]    
+        random.shuffle(train_grab_bag)
+
+        train = []
+        c = 0
+        while len(train_grab_bag) > 0:
+            idea_score = DefectStats()
+            nb_score = DefectStats()
+            if len(train_grab_bag) > 50:
+                train.extend(train_grab_bag[0:50])
+                for i in range(50):
+                    train_grab_bag.remove(train_grab_bag[0])
+            else:
+                train.extend(train_grab_bag)
+                for i in range(len(train_grab_bag)):
+                    train_grab_bag.remove(train_grab_bag[0])
+
+            print "TRAIN: %d" % (len(train))
             trainXY = log_y(log_x(deepcopy(train)))
             testXY = log_y(log_x(deepcopy(test)))
             
@@ -45,7 +65,6 @@ def main():
             
             clusters, culled_clusters = prune_clusters_classic(deepcopy(clusters), args.cull)
             
-            score = DefectStats()
             for instance in testXY:
                 closest_cluster = [sys.maxint, None]
                 for i in range(len(clusters)):
@@ -58,18 +77,37 @@ def main():
                 modified_train = []
                 for quadrant in clusters[closest_cluster[1]].quadrants:
                     modified_train.extend(quadrant.ClassCoords())
-
+                
                 got = classify(instance.Coord(), modified_train, "DEFECT")
-                score.Evaluate(got, instance.klass())
-            score_list.append(score.HarmonicMean("TRUE"))
-        del trainXY, testXY, train, quadrants, clusters, culled_clusters, score
-        total_score_list.append(score_list)
+                idea_score.Evaluate(got, instance.klass())
+                got = classify(instance.datum, [inst.datum for inst in train], "DEFECT")
+                nb_score.Evaluate(got, instance.klass())
+            idea_hm_list[c].append(idea_score.HarmonicMean("TRUE"))
+            idea_pd_list[c].append(idea_score.pd("TRUE"))
+            idea_pf_list[c].append(idea_score.pf("TRUE"))
+            idea_prec_list[c].append(idea_score.precision("TRUE"))            
+            nb_hm_list[c].append(nb_score.HarmonicMean("TRUE"))
+            nb_pd_list[c].append(nb_score.pd("TRUE"))
+            nb_pf_list[c].append(nb_score.pf("TRUE"))
+            nb_prec_list[c].append(nb_score.precision("TRUE"))            
+            c += 1
 
-    print len(trains)
-    print len(total_score_list)
-    for i in range(len(trains)):
-        print "%.2f\t%.2f" % (trains[i], median(total_score_list[i]))
+    train_grab_bag = squash(k_fold[1:-1])        
+    print "SIZE\tHM_TRUE\tPD_TRUE\tPF_TRUE\tPREC_TRUE"
+    for i in range(len(idea_hm_list)):
+        if idea_hm_list[i] != []:
+            if i+1 * 50 > len(train_grab_bag):
+                print "%.2f\t%.2f\t%.2f\t%.2f\t%.2f" % (len(train_grab_bag), median(idea_hm_list[i]), median(idea_pd_list[i]), median(idea_pf_list[i]), median(idea_prec_list[i]))
+            else:
+                print "%.2f\t%.2f\t%.2f\t%.2f\t%.2f" % ((i+1)*50, median(idea_hm_list[i]), median(idea_pd_list[i]), median(idea_pf_list[i]), median(idea_prec_list[i]))
 
+    print "SIZE\tHM_TRUE\tPD_TRUE\tPF_TRUE\tPREC_TRUE"
+    for i in range(len(nb_hm_list)):
+        if nb_hm_list[i] != []:
+            if i+1 * 50 > len(train_grab_bag):
+                print "%.2f\t%.2f\t%.2f\t%.2f\t%.2f" % (len(train_grab_bag), median(nb_hm_list[i]), median(nb_pd_list[i]), median(nb_pf_list[i]), median(nb_prec_list[i]))
+            else:
+                print "%.2f\t%.2f\t%.2f\t%.2f\t%.2f" % ((i+1)*50, median(nb_hm_list[i]), median(nb_pd_list[i]), median(nb_pf_list[i]), median(nb_prec_list[i]))            
             
 def parse_options():
     """Place new options that you would like to be parsed here."""

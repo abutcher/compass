@@ -3,6 +3,7 @@ from knn import *
 from util import distance
 import sys
 from runtime import *
+import math
 
 # This contains functions for defect prediction statistics.  If you're looking
 # for related functions such as MRE() that aren't in this file, check util.py.
@@ -158,3 +159,16 @@ class DefectStats:
         elif CLASS is "FALSE":
             return self.FALSE[3]
 
+class EffortStats:
+
+    def __init__(self):
+        self.mre_list = []
+
+    def Evaluate(self, got, want):
+        self.mre_list.append(math.abs(got - want) / want)
+
+    def MDMRE(self):
+        return median(self.mre_list)
+
+
+    
