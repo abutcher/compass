@@ -54,6 +54,36 @@ class QuadrantTree:
 		collect_leaves(self.root)
 		return leaves
 
+	def max_variance(self):
+		maxv = 0
+		def keep_searching(quadrant):
+			if quadrant.qvariance() > maxv:
+				maxv = quadrant.qvariance()
+			if quadrant.children != []:
+				for child in quadrant.children:
+					keep_searching(child)
+		keep_searching(self.root)
+		return maxv
+
+	def classify(self, inst):
+		got = 0
+		def keep_searching(quadrant):
+			if quadrant.qvariance() < quadrant.weighted_variance():
+				got = quadrant.qmedian()
+			else:
+				if quadrant.children != []:
+					minq = None
+					minv = sys.maxint
+					for child in children:
+						if child.qvariance() < minv:
+							minv = child.qvariance()
+							minq = child
+					keep_searching(minv)
+		keep_searching(self.root)
+		if got == 0:
+			got = self.root.qmedian()
+		return got
+		
 class Quadrant:
 
 	def __init__(self, xmin, xmax, ymin, ymax, instances):
@@ -109,3 +139,22 @@ class Quadrant:
 	def describe(self):
 		print "Quadrant:"
 		print "\tSize: %d" % (len(self.instances))
+
+	def qvariance(self):
+		return variance([inst.datum for inst in self.instances])
+	
+	def weighted_variance(self):
+		if self.children == []:
+			return self.qvariance()
+		else:
+			num = 0
+			denom = 0
+			for child in self.children:
+				num += (child.qvariance() * len(child.instances))
+				denom += (len(child.instances))
+			return (num / denom)
+			
+	def qmedian(self):
+		median(transpose([inst.datum for inst in self.instances])[-1])
+
+		
