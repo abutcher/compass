@@ -83,7 +83,21 @@ class QuadrantTree:
 		if got == 0:
 			got = self.root.qmedian()
 		return got
-		
+
+
+	def prune(self, alpha, beta):
+		maxv = self.max_variance()
+		def keep_cutting(quadrant, level=0):
+			if level > 3:
+				if quadrant.children != []:
+					for child in quadrant.children:
+						if alpha*quadrant.qvariance() < child.qvariance() or beta*maxv < child.qvariance():
+							quadrant.children.remove(child)
+					if quadrant.children != []:
+						for child in quadrant.children:
+							keep_cutting(child, level + 1)
+		keep_cutting(self.root)
+	
 class Quadrant:
 
 	def __init__(self, xmin, xmax, ymin, ymax, instances):
