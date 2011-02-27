@@ -68,7 +68,7 @@ class CliffBORE:
         likeRest = float(freqE(rest,val,col)) * prest
         rank = math.pow(likeBest,2.0) / (likeBest+likeRest)
 
-        return [val, math.pow(likeBest,2.0) / (likeBest + likeRest),col]
+        return [val, rank, col]
 
     #----------------------------------------------------------
     #- Functions below to grab best and rest sets for each klass

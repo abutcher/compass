@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 import argparse
 import random
-from math import floor
+from copy import deepcopy
+from math import floor,log
 from arff import *
 from cliffBORE import *
 from discretize import *
@@ -9,9 +12,20 @@ from statistics import *
 
 def main():
     args = parse_options()
-    arff = Arff(args.train)
-    #data = equal_width_discretize(arff.data)
-    data = arff.data
+    try:
+        arff = Arff(args.data[0])
+    except:
+        print "File could not be loaded."
+        return
+
+    if (args.log == True):
+        data = log_data(arff.data)
+    if (args.equalwidth != 0):
+        data = equal_width_discretize(arff.data,args.equalwidth[0])
+    elif (args.equalfreq != 0):
+        data = equal_width_discretize(arff.data,args.equalfreq[0])
+    else:
+        data = arff.data
 
     klasses = []
     
@@ -19,7 +33,7 @@ def main():
         if datum[-1] not in klasses:
             klasses.append(datum[-1])
 
-    setname = args.train[0]
+    setname = args.data[0]
     print "Set: "+setname
 
     Oracle = []
@@ -39,10 +53,15 @@ def main():
         print "N: "+ str(len(Train)) + (" (All)" if len(Oracle) == 0 else "")
         print "Oracle (Remaining): "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
         PrintHeaderLine()
-        PerformBaseline(Train,Test,setname.split('/')[-1],"nb\t",False)
-        #TrainingPrototypes = CliffBORE(Train)
-        #PerformBaseline(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"nb+cliff",True)
-        #Perform1NN(TrainingPrototypes.prototypes,Test,setname.split('/')[-1],"1NN+cliff")
+        if (args.cliff):
+            TrainSet = CliffBORE(deepcopy(Train))
+            PerformBaseline(TrainSet,Test,setname.split('/')[-1],"nb+cliff",True)
+        elif (args.equalfreq != 0):
+            PerformBaseline(Train,Test,setname.split('/')[-1],"nb+eqfq"+str(args.equalfreq[0])+"\t",True)
+        elif(args.equalwidth != 0):
+            PerformBaseline(Train,Test,setname.split('/')[-1],"nb+eqwd"+str(args.equalwidth[0])+"\t",True)
+        else:
+            PerformBaseline(Train,Test,setname.split('/')[-1],"nb\t",False)
 
         if (len(Oracle) == 0):
             break
@@ -57,6 +76,12 @@ def main():
             NewPoint = DiscreteClosestTo(Midpoint(RandomItem,Closest),Oracle)
             Oracle.remove(NewPoint)
             Train.append(NewPoint)
+
+def log_data(data):
+    for datum in data:
+        for i in range(len(datum) - 1):
+            datum[i] = log(datum[i] + 0.00001)
+    return data
 
 def stratified_cross_val(data, option):
     if type(data[0][-1]) is str:
@@ -105,15 +130,38 @@ def DiscreteClosestTo(this,these):
 
 def parse_options():
     """Place new options that you would like to be parsed here."""
-    parser = argparse.ArgumentParser(description='Perform IDEA on given train and test sets.')
-    parser.add_argument('--train',
-                        dest='train',
+    parser = argparse.ArgumentParser(description='Perform Active Learning on given train and test sets.')
+    parser.add_argument('--data',
+                        dest='data',
                         metavar='FILE',
                         type=str,
-                        nargs='+',
-                        help='Specify arff file[s] from which to construct the training set.')
-    args = parser.parse_args()
-    return args
+                        nargs=1,
+                        help='Specify arff file from which to construct the training set.')
+    parser.add_argument('--log',
+                        dest='log',
+                        default=False,
+                        action='store_true',
+                        help='Enable logging on numeric data before discretization.')
+    parser.add_argument('--equalwidth',
+                        dest='equalwidth',
+                        metavar='N',
+                        type=int,
+                        nargs=1,
+                        default=0,
+                        help='Specify number of bins for equal-width discretization.')
+    parser.add_argument('--equalfreq',
+                        dest='equalfreq',
+                        metavar='N',
+                        type=int,
+                        nargs=1,
+                        default=0,
+                        help='Specify number of bins for equal-frequency discretization.')
+    parser.add_argument('--cliff',
+                        dest='cliff',
+                        default=False,
+                        action='store_true',
+                        help='Enable cliff instance selection on the training test.')
+    return parser.parse_args()
 
 if __name__ == "__main__":
     main()

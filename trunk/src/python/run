@@ -12,7 +12,7 @@ mc2="mc2.arff"
 for file in $sets
 do
 #    echo "Running arff/defect/$file"
-    /usr/bin/env python cliffav.py --train ../python/arff/defect/$file
+    /usr/bin/env python cliffav.py --data arff/defect/$file
 #    grep Perform $file.csv > $file.perform.csv;
 #    grep __init__ $file.csv > $file.quadrants.csv
 done
