@@ -6,7 +6,7 @@ from statistics import *
 from gridclus2 import *
 from instance import *
 from quadrant import *
-from figure import *
+from figure2 import *
 import time
 from util import *
 from copy import deepcopy
@@ -33,17 +33,11 @@ def main():
     print "Generating quadrant tree..."
     qtree = QuadrantTree(trainXY)
 
-    print "Culling high variance branches..."
-    # Implement method for culling high variance quadrants.
-
-    print "Creating image from regions of good/badness..."
-    # Pass of quadrants to Figure to generate good and bad regions
-    # based on variance.
-        
     print "Writing figure %s.png ..." % (title)
-    fig = Figure(title, trainXY, quadrants, culled_quadrants)
+    fig = Figure(title, trainXY, qtree.leaves())
     fig.write_png()
-
+    fig.show()
+    
 def parse_options():
     """Place new options that you would like to be parsed here."""
     parser = argparse.ArgumentParser(description='Perform IDEA on given train and test sets.')

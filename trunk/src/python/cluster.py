@@ -69,8 +69,8 @@ def prune_clusters_classic_within_max(clusters, cull, t="SCORE"):
     culled_clusters = []
 
     if t == "VARIANCE":
-        clusters_copy = sorted(clusters_copy, key=lambda clus: entropy(clus.datums()), reverse=True)
-        maxn = entropy(clusters_copy[0].datums())
+        clusters_copy = sorted(clusters_copy, key=lambda clus: variance(clus.datums()), reverse=True)
+        maxn = variance(clusters_copy[0].datums())
     elif t == "SCORE":
         clusters_copy = sorted(clusters_copy, key=lambda clus: clus.stats.HarmonicMean("TRUE"))
         maxn = clusters_copy[0].stats.HarmonicMean("TRUE")
@@ -80,8 +80,9 @@ def prune_clusters_classic_within_max(clusters, cull, t="SCORE"):
     for cluster in clusters_copy:
         if t == "SCORE" and (maxn+(maxn*cull)) > cluster.stats.HarmonicMean("TRUE") and (maxn-(maxn*cull)) < cluster.stats.HarmonicMean("TRUE") and len(clusters_copy) - len(culled_clusters) > 1:
             culled_clusters.append(cluster)
-        elif t == "VARIANCE" and (maxn+(maxn*cull)) > entropy(cluster.datums()) and (maxn-(maxn*cull)) < entropy(cluster.datums()) and len(clusters_copy) - len(culled_clusters) > 1:
-            culled_clusters.append(cluster)
+        elif t == "VARIANCE":
+            if ((maxn+(maxn*cull)) > variance(cluster.datums()) or (maxn-(maxn*cull)) < variance(cluster.datums())) and len(clusters_copy) - len(culled_clusters) > 1:
+                culled_clusters.append(cluster)
 
     for cluster in culled_clusters:
         clusters_copy.remove(cluster)

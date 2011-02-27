@@ -20,10 +20,15 @@ class QuadrantTree:
 				maxy = instance.coord.y
 		self.root = Quadrant(minx, maxx, miny, maxy, instances)
 		self.minsize = math.sqrt(len(instances))
+		self.max_variance = 0.0
+		self.got = 0.0
 
 		def grow(quadrant):
 			if len(quadrant.instances) > self.minsize:
 				quadrant.children = quadrant.split()
+				for child in quadrant.children:
+					if len(child.instances) == 0:
+						quadrant.children.remove(child)
 				for child in quadrant.children:
 					grow(child)
 
@@ -43,6 +48,8 @@ class QuadrantTree:
 		else:
 			grow(self.root)
 
+		self.maxv()
+			
 	def leaves(self):
 		leaves = []
 		def collect_leaves(quadrant):
@@ -54,42 +61,46 @@ class QuadrantTree:
 		collect_leaves(self.root)
 		return leaves
 
-	def max_variance(self):
-		maxv = 0
+	def maxv(self):
 		def keep_searching(quadrant):
-			if quadrant.qvariance() > maxv:
-				maxv = quadrant.qvariance()
+			if quadrant.qvariance() > self.max_variance:
+				self.max_variance = quadrant.qvariance()
+			for child in quadrant.children:
+				if len(child.instances) == 0:
+					quadrant.children.remove(child)
 			if quadrant.children != []:
 				for child in quadrant.children:
 					keep_searching(child)
 		keep_searching(self.root)
-		return maxv
+		return self.max_variance
 
 	def classify(self, inst):
-		got = 0
+		self.got = 0.0
 		def keep_searching(quadrant):
-			if quadrant.qvariance() < quadrant.weighted_variance():
-				got = quadrant.qmedian()
+			if quadrant.qvariance() < 1.5 * quadrant.weighted_variance():
+				self.got = quadrant.qmedian()
 			else:
 				if quadrant.children != []:
 					minq = None
 					minv = sys.maxint
-					for child in children:
+					for child in quadrant.children:
 						if child.qvariance() < minv:
 							minv = child.qvariance()
 							minq = child
-					keep_searching(minv)
+					keep_searching(minq)
 		keep_searching(self.root)
-		if got == 0:
-			got = self.root.qmedian()
-		return got
-
+		if self.got == 0.0:
+			self.got = self.root.qmedian()
+		return self.got
 
 	def prune(self, alpha, beta):
-		maxv = self.max_variance()
+		maxv = self.max_variance
 		def keep_cutting(quadrant, level=0):
 			if level > 3:
 				if quadrant.children != []:
+					for child in quadrant.children:
+						if len(child.instances) == 0:
+							quadrant.children.remove(child)
 					for child in quadrant.children:
 						if alpha*quadrant.qvariance() < child.qvariance() or beta*maxv < child.qvariance():
 							quadrant.children.remove(child)
@@ -169,6 +180,4 @@ class Quadrant:
 			return (num / denom)
 			
 	def qmedian(self):
-		median(transpose([inst.datum for inst in self.instances])[-1])
-
-		
+		return median(transpose([inst.datum for inst in self.instances])[-1])

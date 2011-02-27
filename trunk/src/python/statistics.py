@@ -163,12 +163,30 @@ class EffortStats:
 
     def __init__(self):
         self.mre_list = []
+        self.pred_25_list = []
+        self.pred_30_list = []
 
     def Evaluate(self, got, want):
-        self.mre_list.append(math.abs(got - want) / want)
+        self.mre_list.append(math.fabs(got - want) / want)
+        if self.within_x_percent(got, want, .25):
+            self.pred_25_list.append(got)
+        if self.within_x_percent(got, want, .30):
+            self.pred_30_list.append(got)
 
     def MDMRE(self):
         return median(self.mre_list)
 
+    def PRED25(self):
+        return (float(len(self.pred_25_list))/float(len(self.mre_list)))*100
 
-    
+    def PRED30(self):
+        return (float(len(self.pred_30_list))/float(len(self.mre_list)))*100
+
+    def within_x_percent(self, got, want, x):
+        upper = want * (1 + x)
+        lower = want * (1 - x)
+
+        if got > lower and got < upper:
+            return True
+        else:
+            return False

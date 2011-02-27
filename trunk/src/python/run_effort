@@ -1,0 +1,9 @@
+#!/bin/bash
+
+sets="coc81 finnish kemerer china nasa93 desharnais_1_1 telecom1 cocomo_sdr albrecht"
+
+for file in $sets;
+do
+    echo "Running $file";
+    /opt/local/bin/python2.6 idea_effort.py --train arff/$file.arff --accept 0.5 >> effort.csv
+done
