@@ -54,8 +54,8 @@ def main():
         print "Oracle (Remaining): "+str(len(Oracle))+"\tTrain: "+str(len(Train))+"\tTest: "+str(len(Test))
         PrintHeaderLine()
         if (args.cliff):
-            TrainSet = CliffBORE(deepcopy(Train))
-            PerformBaseline(TrainSet,Test,setname.split('/')[-1],"nb+cliff",True)
+            Cliff = CliffBORE(deepcopy(Train))
+            PerformBaseline(Cliff.prototypes,Test,setname.split('/')[-1],"nb+cliff",True)
         elif (args.equalfreq != 0):
             PerformBaseline(Train,Test,setname.split('/')[-1],"nb+eqfq"+str(args.equalfreq[0])+"\t",True)
         elif(args.equalwidth != 0):

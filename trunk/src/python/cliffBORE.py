@@ -45,9 +45,11 @@ class CliffBORE:
             inputrank = sorted(rank, key=lambda instance: instance[1])
             inputrank.reverse()
             ranks3.append(inputrank)
-
+        print ranks3
         tmpRank = sorted(map(lambda rank: rank[0], ranks3),key=lambda instance: instance[1])
         tmpRank.reverse()
+        print tmpRank
+        input()
         return tmpRank
 
             
