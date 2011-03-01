@@ -68,17 +68,29 @@ def log_datum(data):
 def log_x(data):
     if type(data) is list:
         for i in range(len(data)):
-            data[i].coord.x = math.log(data[i].coord.x + 0.0001)
+            try:
+                data[i].coord.x = math.log(data[i].coord.x + 0.0001)
+            except ValueError:
+                data[i].coord.x = math.log(0.0001)
     else:
-        data.coord.x = math.log(data.coord.x + 0.0001)
+        try:
+            data.coord.x = math.log(data.coord.x + 0.0001)
+        except ValueError:
+            data.coord.x = math.log(0.0001)
     return data
 
 def log_y(data):
     if type(data) is list:
         for i in range(len(data)):
-            data[i].coord.y = math.log(data[i].coord.y + 0.0001)
+            try:
+                data[i].coord.y = math.log(data[i].coord.y + 0.0001)
+            except ValueError:
+                data[i].coord.y = math.log(0.0001)
     else:
-        data.coord.y = math.log(data.coord.y + 0.0001)
+        try:
+            data.coord.y = math.log(data.coord.y + 0.0001)
+        except ValueError:
+            data[i].coord.y = math.log(0.0001)
     return data
             
 def sort_by_class(instances):
