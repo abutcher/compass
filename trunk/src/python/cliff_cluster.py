@@ -13,58 +13,71 @@ from statistics import *
 from gridclus2 import *
 
 def main():
+    # Control our seed for testing purposes.
     random.seed(1)
 
+    # Function to parse the command line options.
     args = parse_options()
 
     title = args.train.split("/")[-1].split(".")[0]
     arff = Arff(args.train)
 
     print "dataset, %s" % (title)
-    
+
+    # Compute the projected 2 dimensional coordinates and normalize.
     dc = DataCollection(arff.data)
     ic = InstanceCollection(dc)
     ic.normalize_coordinates()
 
+    # Set our sampling size for each round.
     N_alpha = 50
-    klasses = []
 
+    # Discover the unique classes for each.
+    klasses = []
     for inst in ic.instances:
         if inst.klass() not in klasses:
             klasses.append(inst.klass())
 
-    
-    
+    # Separate the data into two parts.  75% to the oracle, 25% left over as a test set.    
     k_fold = ic.k_fold_stratified_cross_val(4)
 
     test = deepcopy(k_fold[0])
     oracle = deepcopy(squash(k_fold[1:-1]))
     train = []
-
+    
+    # Randomly place an equal amount of klasses in the train set to make sure we have classes to find the decision boundary with (especially necessary with smaller sets).
     for i in range(N_alpha/len(klasses)):
         for j in range(len(klasses)):
             train.append(random.choice(filter(lambda datum: datum.klass() == klasses[j],oracle)))
 
+    # Break when we have no more items in the oracle.
     while True:
         print "\n"
         print "N: "+ str(len(train)) + (" (All)" if len(oracle) == 0 else "")
         print "Oracle (Remaining): "+str(len(oracle))+"\tTrain: "+str(len(train))+"\tTest: "+str(len(test))
 
+        # Perform equal frequency discretization required by cliff (see discretize2.py)
         DiscOb = CliffDiscretize([inst.datum for inst in train], args.BINS)
 
+        # Get our reduced training set back from Cliff.
         cliffTrain = DiscOb.GetQualifyingInstances(CliffBORE(DiscOb.DiscretizeSet(deepcopy([inst.datum for inst in train]))).prototypes,deepcopy([inst.datum for inst in train]))
-
+        
+        # Using the prototypes we received back from Cliff, we find the instance objects in our train data.  Not necessary if you don't use our instance object
+        # See instance.py
         cliffInstTrain = []
         for inst in train:
             if inst.datum in cliffTrain:
                 cliffInstTrain.append(inst)
 
+        # Log the two dimensional coordinates.
         cliffInstTrainXY = log_y(log_x(deepcopy(cliffInstTrain)))
         testXY = log_y(log_x(deepcopy(test)))
 
+        # Create a QuadrantTree (k2-tree) and cluster them using the GRIDCLUS algorithm.
         quadrants = QuadrantTree(deepcopy(cliffInstTrainXY)).leaves()
         clusters = GRIDCLUS(quadrants, args.accept)
 
+        # Prepare a DefectStats object to perform evaluation and scoring.
         cliffNB = DefectStats()
     
         # Classification stuff
@@ -91,6 +104,7 @@ def main():
 
         cliffNB.StatsLine(title, "Cliff+NB")
 
+        # Decide how many items to add from the oracle.  If we don't have any left, we break from the loop and exit the program.
         if (len(oracle) == 0):
             break
         elif (len(oracle) < N_alpha):
@@ -98,6 +112,11 @@ def main():
         else:
             ToAdd = N_alpha
 
+        # Sample N_alpha points to add to the training set.
+        # We sample by:
+        # Pick a random point in the train set.
+        # Find the closest point belonging to the other class
+        # Find the midpoint of these two points and ask the oracle for the point closest to this midpoint.
         for j in range(ToAdd):
             RandomItem = random.choice(train)
             Closest = closest_to(RandomItem,GetInstancesForOtherClass(RandomItem.klass(),train))
@@ -153,11 +172,6 @@ def parse_options():
                         metavar='CONCAT',
                         default='',
                         help='Specify an output dir.')
-    parser.add_argument('--xval',
-                        dest='xval',
-                        metavar='INT',
-                        type=int,
-                        help='Specify the number of folds for cross validation.')
     args = parser.parse_args()
     return args
 
