@@ -1,0 +1,574 @@
+1 ar3 , 63
+instance + data collection , 0.00621104240417
+logging coordinates , 0.00725197792053
+quadrant creation , 0.000823020935059
+cluster creation , 0.00021505355835
+2 ar3 , 126
+instance + data collection , 0.0119829177856
+logging coordinates , 0.0115518569946
+quadrant creation , 0.00158309936523
+cluster creation , 0.000493049621582
+3 ar3 , 189
+instance + data collection , 0.0179858207703
+logging coordinates , 0.0144679546356
+quadrant creation , 0.00216507911682
+cluster creation , 0.000779151916504
+4 ar3 , 252
+instance + data collection , 0.0236768722534
+logging coordinates , 0.017520904541
+quadrant creation , 0.00319814682007
+cluster creation , 0.00078010559082
+5 ar3 , 315
+instance + data collection , 0.0305378437042
+logging coordinates , 0.0205860137939
+quadrant creation , 0.00339007377625
+cluster creation , 0.00104689598083
+6 ar3 , 378
+instance + data collection , 0.03586602211
+logging coordinates , 0.0239889621735
+quadrant creation , 0.00513386726379
+cluster creation , 0.00124406814575
+7 ar3 , 441
+instance + data collection , 0.0424451828003
+logging coordinates , 0.0252730846405
+quadrant creation , 0.00636291503906
+cluster creation , 0.00206303596497
+8 ar3 , 504
+instance + data collection , 0.0471150875092
+logging coordinates , 0.0299580097198
+quadrant creation , 0.00617098808289
+cluster creation , 0.00125098228455
+
+1 ar4 , 107
+instance + data collection , 0.0104320049286
+logging coordinates , 0.0125968456268
+quadrant creation , 0.00121402740479
+cluster creation , 0.000355958938599
+2 ar4 , 214
+instance + data collection , 0.020544052124
+logging coordinates , 0.0197551250458
+quadrant creation , 0.00282788276672
+cluster creation , 0.000886917114258
+3 ar4 , 321
+instance + data collection , 0.0302939414978
+logging coordinates , 0.0271990299225
+quadrant creation , 0.00410389900208
+cluster creation , 0.000927925109863
+4 ar4 , 428
+instance + data collection , 0.0406029224396
+logging coordinates , 0.0304210186005
+quadrant creation , 0.0057201385498
+cluster creation , 0.00153207778931
+5 ar4 , 535
+instance + data collection , 0.0505011081696
+logging coordinates , 0.0377290248871
+quadrant creation , 0.00911593437195
+cluster creation , 0.00235795974731
+6 ar4 , 642
+instance + data collection , 0.0609459877014
+logging coordinates , 0.0473501682281
+quadrant creation , 0.0119020938873
+cluster creation , 0.00180006027222
+7 ar4 , 749
+instance + data collection , 0.0747880935669
+logging coordinates , 0.0492279529572
+quadrant creation , 0.0100750923157
+cluster creation , 0.00255513191223
+8 ar4 , 856
+instance + data collection , 0.080836057663
+logging coordinates , 0.0510339736938
+quadrant creation , 0.0103659629822
+cluster creation , 0.00168704986572
+
+1 ar5 , 36
+instance + data collection , 0.00361704826355
+logging coordinates , 0.00442910194397
+quadrant creation , 0.000530004501343
+cluster creation , 0.000143051147461
+2 ar5 , 72
+instance + data collection , 0.00702118873596
+logging coordinates , 0.00688195228577
+quadrant creation , 0.000905990600586
+cluster creation , 0.00026798248291
+3 ar5 , 108
+instance + data collection , 0.0104260444641
+logging coordinates , 0.0095489025116
+quadrant creation , 0.00113821029663
+cluster creation , 0.000302076339722
+4 ar5 , 144
+instance + data collection , 0.0142889022827
+logging coordinates , 0.0113689899445
+quadrant creation , 0.00317597389221
+cluster creation , 0.000530958175659
+5 ar5 , 180
+instance + data collection , 0.0184659957886
+logging coordinates , 0.0133781433105
+quadrant creation , 0.00197219848633
+cluster creation , 0.000591993331909
+6 ar5 , 216
+instance + data collection , 0.0215899944305
+logging coordinates , 0.0149390697479
+quadrant creation , 0.00203084945679
+cluster creation , 0.000540018081665
+7 ar5 , 252
+instance + data collection , 0.023784160614
+logging coordinates , 0.0150101184845
+quadrant creation , 0.00268602371216
+cluster creation , 0.000562906265259
+8 ar5 , 288
+instance + data collection , 0.0272791385651
+logging coordinates , 0.0164699554443
+quadrant creation , 0.00368690490723
+cluster creation , 0.000571012496948
+
+1 cm1 , 498
+instance + data collection , 0.0367341041565
+logging coordinates , 0.0530998706818
+quadrant creation , 0.00781512260437
+cluster creation , 0.00267195701599
+2 cm1 , 996
+instance + data collection , 0.0717198848724
+logging coordinates , 0.0794911384583
+quadrant creation , 0.0139760971069
+cluster creation , 0.00449109077454
+3 cm1 , 1494
+instance + data collection , 0.110061883926
+logging coordinates , 0.147242069244
+quadrant creation , 0.0210781097412
+cluster creation , 0.0063111782074
+4 cm1 , 1992
+instance + data collection , 0.14439702034
+logging coordinates , 0.140300035477
+quadrant creation , 0.0336351394653
+cluster creation , 0.00872182846069
+5 cm1 , 2490
+instance + data collection , 0.180118083954
+logging coordinates , 0.178382158279
+quadrant creation , 0.0457780361176
+cluster creation , 0.0106801986694
+6 cm1 , 2988
+instance + data collection , 0.225524902344
+logging coordinates , 0.232832193375
+quadrant creation , 0.0540239810944
+cluster creation , 0.0120160579681
+7 cm1 , 3486
+instance + data collection , 0.253868103027
+logging coordinates , 0.223260879517
+quadrant creation , 0.0751240253448
+cluster creation , 0.0136761665344
+8 cm1 , 3984
+instance + data collection , 0.291368961334
+logging coordinates , 0.245522022247
+quadrant creation , 0.0879218578339
+cluster creation , 0.0148439407349
+
+1 kc1 , 2109
+instance + data collection , 0.15783905983
+logging coordinates , 0.237749099731
+quadrant creation , 0.032634973526
+cluster creation , 0.00524210929871
+2 kc1 , 4218
+instance + data collection , 0.343018054962
+logging coordinates , 0.394760131836
+quadrant creation , 0.0877730846405
+cluster creation , 0.0167789459229
+3 kc1 , 6327
+instance + data collection , 0.459473133087
+logging coordinates , 0.508785009384
+quadrant creation , 0.119363069534
+cluster creation , 0.0182750225067
+4 kc1 , 8436
+instance + data collection , 0.689170837402
+logging coordinates , 0.727180957794
+quadrant creation , 0.208353042603
+cluster creation , 0.0263569355011
+5 kc1 , 10545
+instance + data collection , 0.79060792923
+logging coordinates , 0.928054094315
+quadrant creation , 0.322881937027
+cluster creation , 0.0401899814606
+6 kc1 , 12654
+instance + data collection , 1.5371940136
+logging coordinates , 1.05916595459
+quadrant creation , 0.394877910614
+cluster creation , 0.0471911430359
+7 kc1 , 14763
+instance + data collection , 1.26799678802
+logging coordinates , 1.21741700172
+quadrant creation , 0.384459972382
+cluster creation , 0.0474779605865
+8 kc1 , 16872
+instance + data collection , 1.25477099419
+logging coordinates , 1.25137495995
+quadrant creation , 0.644025087357
+cluster creation , 0.0464329719543
+
+1 kc2 , 522
+instance + data collection , 0.0418310165405
+logging coordinates , 0.0601329803467
+quadrant creation , 0.00806188583374
+cluster creation , 0.00178694725037
+2 kc2 , 1044
+instance + data collection , 0.0913870334625
+logging coordinates , 0.0894618034363
+quadrant creation , 0.0141868591309
+cluster creation , 0.00320482254028
+3 kc2 , 1566
+instance + data collection , 0.118354082108
+logging coordinates , 0.152611017227
+quadrant creation , 0.0255520343781
+cluster creation , 0.00534391403198
+4 kc2 , 2088
+instance + data collection , 0.159358978271
+logging coordinates , 0.155161857605
+quadrant creation , 0.0361211299896
+cluster creation , 0.00735306739807
+5 kc2 , 2610
+instance + data collection , 0.197685956955
+logging coordinates , 0.185903072357
+quadrant creation , 0.045914888382
+cluster creation , 0.00838804244995
+6 kc2 , 3132
+instance + data collection , 0.253076076508
+logging coordinates , 0.214590787888
+quadrant creation , 0.0521829128265
+cluster creation , 0.0081639289856
+7 kc2 , 3654
+instance + data collection , 0.277186870575
+logging coordinates , 0.239403963089
+quadrant creation , 0.0666959285736
+cluster creation , 0.0112490653992
+8 kc2 , 4176
+instance + data collection , 0.364724874496
+logging coordinates , 0.261651039124
+quadrant creation , 0.0792768001556
+cluster creation , 0.0112419128418
+
+1 kc3 , 458
+instance + data collection , 0.0570738315582
+logging coordinates , 0.0719771385193
+quadrant creation , 0.00599694252014
+cluster creation , 0.00187301635742
+2 kc3 , 916
+instance + data collection , 0.114619016647
+logging coordinates , 0.110795974731
+quadrant creation , 0.0116889476776
+cluster creation , 0.00303602218628
+3 kc3 , 1374
+instance + data collection , 0.171035051346
+logging coordinates , 0.137542009354
+quadrant creation , 0.0209228992462
+cluster creation , 0.00590419769287
+4 kc3 , 1832
+instance + data collection , 0.256093978882
+logging coordinates , 0.165921926498
+quadrant creation , 0.0276119709015
+cluster creation , 0.0057008266449
+5 kc3 , 2290
+instance + data collection , 0.28361082077
+logging coordinates , 0.194473981857
+quadrant creation , 0.0353269577026
+cluster creation , 0.00728416442871
+6 kc3 , 2748
+instance + data collection , 0.341787099838
+logging coordinates , 0.263203859329
+quadrant creation , 0.0459558963776
+cluster creation , 0.0101940631866
+7 kc3 , 3206
+instance + data collection , 0.399449825287
+logging coordinates , 0.248544931412
+quadrant creation , 0.053778886795
+cluster creation , 0.00938582420349
+8 kc3 , 3664
+instance + data collection , 0.455701112747
+logging coordinates , 0.315984964371
+quadrant creation , 0.0713701248169
+cluster creation , 0.0113198757172
+
+1 mw1 , 403
+instance + data collection , 0.0484929084778
+logging coordinates , 0.0559320449829
+quadrant creation , 0.00548219680786
+cluster creation , 0.00485396385193
+2 mw1 , 806
+instance + data collection , 0.0955109596252
+logging coordinates , 0.0937378406525
+quadrant creation , 0.010969877243
+cluster creation , 0.00370311737061
+3 mw1 , 1209
+instance + data collection , 0.146330118179
+logging coordinates , 0.115138053894
+quadrant creation , 0.0151309967041
+cluster creation , 0.00411486625671
+4 mw1 , 1612
+instance + data collection , 0.190654993057
+logging coordinates , 0.139556884766
+quadrant creation , 0.0237789154053
+cluster creation , 0.0060248374939
+5 mw1 , 2015
+instance + data collection , 0.239010095596
+logging coordinates , 0.165591001511
+quadrant creation , 0.032411813736
+cluster creation , 0.00794291496277
+6 mw1 , 2418
+instance + data collection , 0.28769993782
+logging coordinates , 0.187133073807
+quadrant creation , 0.0362839698792
+cluster creation , 0.00993204116821
+7 mw1 , 2821
+instance + data collection , 0.339177846909
+logging coordinates , 0.20929980278
+quadrant creation , 0.0441429615021
+cluster creation , 0.0100240707397
+8 mw1 , 3224
+instance + data collection , 0.378767967224
+logging coordinates , 0.231533050537
+quadrant creation , 0.0534729957581
+cluster creation , 0.0123071670532
+
+1 pc1 , 1109
+instance + data collection , 0.081218957901
+logging coordinates , 0.127382993698
+quadrant creation , 0.0158851146698
+cluster creation , 0.00417184829712
+2 pc1 , 2218
+instance + data collection , 0.164350986481
+logging coordinates , 0.235231876373
+quadrant creation , 0.033931016922
+cluster creation , 0.00869703292847
+3 pc1 , 3327
+instance + data collection , 0.245491981506
+logging coordinates , 0.266340017319
+quadrant creation , 0.0581700801849
+cluster creation , 0.0158140659332
+4 pc1 , 4436
+instance + data collection , 0.330731868744
+logging coordinates , 0.331047058105
+quadrant creation , 0.0975720882416
+cluster creation , 0.0173709392548
+5 pc1 , 5545
+instance + data collection , 0.425300836563
+logging coordinates , 0.473125934601
+quadrant creation , 0.129612922668
+cluster creation , 0.026508808136
+6 pc1 , 6654
+instance + data collection , 0.499699115753
+logging coordinates , 0.523433923721
+quadrant creation , 0.186516046524
+cluster creation , 0.0236759185791
+7 pc1 , 7763
+instance + data collection , 0.580569028854
+logging coordinates , 0.525099992752
+quadrant creation , 0.169695138931
+cluster creation , 0.0331199169159
+8 pc1 , 8872
+instance + data collection , 0.664658069611
+logging coordinates , 0.675841093063
+quadrant creation , 0.228133916855
+cluster creation , 0.033618927002
+
+1 pc2 , 5589
+instance + data collection , 0.66130900383
+logging coordinates , 0.933329105377
+quadrant creation , 0.139683961868
+cluster creation , 0.0197710990906
+2 pc2 , 11178
+instance + data collection , 1.41847991943
+logging coordinates , 1.54894709587
+quadrant creation , 0.250358819962
+cluster creation , 0.0333690643311
+3 pc2 , 16767
+instance + data collection , 2.08556103706
+logging coordinates , 2.04532408714
+quadrant creation , 0.471515893936
+cluster creation , 0.0522131919861
+4 pc2 , 22356
+instance + data collection , 2.79113197327
+logging coordinates , 2.44873690605
+quadrant creation , 0.759425878525
+cluster creation , 0.0634989738464
+5 pc2 , 27945
+instance + data collection , 3.47217488289
+logging coordinates , 3.12926387787
+quadrant creation , 0.720257043839
+cluster creation , 0.0737981796265
+6 pc2 , 33534
+instance + data collection , 4.49209713936
+logging coordinates , 4.24423122406
+quadrant creation , 0.963549852371
+cluster creation , 0.0903751850128
+7 pc2 , 39123
+instance + data collection , 5.12993001938
+logging coordinates , 4.34502601624
+quadrant creation , 1.28082513809
+cluster creation , 0.0984928607941
+8 pc2 , 44712
+instance + data collection , 6.01802897453
+logging coordinates , 5.01302099228
+quadrant creation , 1.40566396713
+cluster creation , 0.110090017319
+
+1 pc3 , 1563
+instance + data collection , 0.192368984222
+logging coordinates , 0.252447128296
+quadrant creation , 0.0219769477844
+cluster creation , 0.00617599487305
+2 pc3 , 3126
+instance + data collection , 0.380377054214
+logging coordinates , 0.384346961975
+quadrant creation , 0.0611820220947
+cluster creation , 0.0145628452301
+3 pc3 , 4689
+instance + data collection , 0.566534996033
+logging coordinates , 0.560335159302
+quadrant creation , 0.0976560115814
+cluster creation , 0.0222198963165
+4 pc3 , 6252
+instance + data collection , 0.760910987854
+logging coordinates , 0.694752931595
+quadrant creation , 0.143314123154
+cluster creation , 0.0302410125732
+5 pc3 , 7815
+instance + data collection , 0.94851398468
+logging coordinates , 0.793125152588
+quadrant creation , 0.173789978027
+cluster creation , 0.0363600254059
+6 pc3 , 9378
+instance + data collection , 1.14863300323
+logging coordinates , 0.796071052551
+quadrant creation , 0.224087953568
+cluster creation , 0.0447041988373
+7 pc3 , 10941
+instance + data collection , 1.45268011093
+logging coordinates , 0.991286993027
+quadrant creation , 0.244754076004
+cluster creation , 0.0482919216156
+8 pc3 , 12504
+instance + data collection , 1.64837098122
+logging coordinates , 1.11931586266
+quadrant creation , 0.324360132217
+cluster creation , 0.0709969997406
+
+1 pc4 , 1458
+instance + data collection , 0.183642148972
+logging coordinates , 0.242311954498
+quadrant creation , 0.0241808891296
+cluster creation , 0.00986504554749
+2 pc4 , 2916
+instance + data collection , 0.394440889359
+logging coordinates , 0.394165039062
+quadrant creation , 0.0879399776459
+cluster creation , 0.0202000141144
+3 pc4 , 4374
+instance + data collection , 0.624422073364
+logging coordinates , 0.531765937805
+quadrant creation , 0.0792000293732
+cluster creation , 0.0219559669495
+4 pc4 , 5832
+instance + data collection , 0.71063709259
+logging coordinates , 0.545385122299
+quadrant creation , 0.121215105057
+cluster creation , 0.0288450717926
+5 pc4 , 7290
+instance + data collection , 0.957350969315
+logging coordinates , 0.761062145233
+quadrant creation , 0.146519899368
+cluster creation , 0.0331959724426
+6 pc4 , 8748
+instance + data collection , 1.0597910881
+logging coordinates , 0.799635887146
+quadrant creation , 0.177875995636
+cluster creation , 0.040275812149
+7 pc4 , 10206
+instance + data collection , 1.23367500305
+logging coordinates , 0.950140953064
+quadrant creation , 0.215219974518
+cluster creation , 0.0493960380554
+8 pc4 , 11664
+instance + data collection , 1.41457986832
+logging coordinates , 1.0336689949
+quadrant creation , 0.287174940109
+cluster creation , 0.049556016922
+
+1 mc2 , 161
+instance + data collection , 0.0203537940979
+logging coordinates , 0.0233540534973
+quadrant creation , 0.00186586380005
+cluster creation , 0.000577926635742
+2 mc2 , 322
+instance + data collection , 0.0400450229645
+logging coordinates , 0.0348658561707
+quadrant creation , 0.0043261051178
+cluster creation , 0.00134706497192
+3 mc2 , 483
+instance + data collection , 0.0613448619843
+logging coordinates , 0.0436940193176
+quadrant creation , 0.00606679916382
+cluster creation , 0.00138306617737
+4 mc2 , 644
+instance + data collection , 0.0797939300537
+logging coordinates , 0.0538959503174
+quadrant creation , 0.00766706466675
+cluster creation , 0.0021390914917
+5 mc2 , 805
+instance + data collection , 0.0990419387817
+logging coordinates , 0.0612559318542
+quadrant creation , 0.00973606109619
+cluster creation , 0.00193691253662
+6 mc2 , 966
+instance + data collection , 0.121747016907
+logging coordinates , 0.102420806885
+quadrant creation , 0.0184829235077
+cluster creation , 0.00354909896851
+7 mc2 , 1127
+instance + data collection , 0.138923168182
+logging coordinates , 0.0810759067535
+quadrant creation , 0.0143299102783
+cluster creation , 0.00350093841553
+8 mc2 , 1288
+instance + data collection , 0.158850908279
+logging coordinates , 0.0884609222412
+quadrant creation , 0.0169458389282
+cluster creation , 0.00336003303528
+
+1 jm1 , 10880
+instance + data collection , 0.84480214119
+logging coordinates , 1.39192700386
+quadrant creation , 0.286372184753
+cluster creation , 0.0520370006561
+2 jm1 , 21760
+instance + data collection , 1.72266101837
+logging coordinates , 2.58782696724
+quadrant creation , 0.669934034348
+cluster creation , 0.115333795547
+3 jm1 , 32640
+instance + data collection , 2.74663901329
+logging coordinates , 3.68365216255
+quadrant creation , 1.05365800858
+cluster creation , 0.194736003876
+4 jm1 , 43520
+instance + data collection , 3.7411608696
+logging coordinates , 4.94308686256
+quadrant creation , 1.44631505013
+cluster creation , 0.259244918823
+5 jm1 , 54400
+instance + data collection , 4.78634095192
+logging coordinates , 5.86893701553
+quadrant creation , 2.64125800133
+cluster creation , 0.387131929398
+6 jm1 , 65280
+instance + data collection , 5.74785399437
+logging coordinates , 7.25072598457
+quadrant creation , 2.55093598366
+cluster creation , 0.360736846924
+7 jm1 , 76160
+instance + data collection , 7.22579813004
+logging coordinates , 9.26335215569
+quadrant creation , 3.2703359127
+cluster creation , 0.406011104584
+8 jm1 , 87040
+instance + data collection , 8.25364303589
+logging coordinates , 11.0880711079
+quadrant creation , 3.90781402588
+cluster creation , 0.508090019226
+

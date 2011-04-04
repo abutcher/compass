@@ -14,6 +14,12 @@ from bore import *
 from NaiveBayes import *
 import random
 
+class Timer:
+    def __init__(self, operation):
+        self.operation = operation
+    def __enter__(self): self.start = time.time()
+    def __exit__(self, *args): print self.operation, ",", time.time() - self.start
+    
 def main():
     random.seed(5)
     args = parse_options()
@@ -21,26 +27,31 @@ def main():
     title = args.train[0].split("/")[-1].split(".")[0]
     arff = Arff(args.train[0])
     
-    print "Running dataset %s, outputting to %s.png" % (title, title)
+    #print "Running dataset %s, outputting to %s.png" % (title, title)
+    for i in range(8):
+        print "%d" % (i+1), title,",",len(arff.data*(i+1))
+        with Timer("instance + data collection"):
+            dc = DataCollection(arff.data*(i+1))
+            ic = InstanceCollection(dc)
+            ic.normalize_coordinates()
+        
+        k_fold = ic.k_fold_stratified_cross_val(args.stratified[0])
+        
+        test = k_fold[0]
+        k_fold.remove(test)
+        train = squash(deepcopy(k_fold))
+        
+        with Timer("logging coordinates"):
+            trainXY = log_y(log_x(deepcopy(train)))
+            testXY = log_y(log_x(deepcopy(test)))
 
-    dc = DataCollection(arff.data)
-    ic = InstanceCollection(dc)
-    ic.normalize_coordinates()
+        with Timer("quadrant creation"):
+            quadrants = QuadrantTree(trainXY).leaves()
+            
+        with Timer("cluster creation"):
+            clusters = GRIDCLUS(quadrants, args.accept[0])
 
-    k_fold = ic.k_fold_stratified_cross_val(args.stratified[0])
-
-    test = k_fold[0]
-    k_fold.remove(test)
-    train = squash(deepcopy(k_fold))
-
-    trainXY = log_y(log_x(deepcopy(train)))
-    testXY = log_y(log_x(deepcopy(test)))
-
-    print "Building clusters (with IDEA 1.0)..."
-    
-    quadrants = QuadrantTree(trainXY).leaves()
-    clusters = GRIDCLUS(quadrants, args.accept[0])
-
+    """
     print "Scoring clusters (with IDEA 1.0)..."
     for instance in trainXY:
 
@@ -157,6 +168,8 @@ def main():
     print "Writing figure %s.png ..." % (title)
     fig = Figure(title, trainXY, quadrants, clusters, culled_clusters, global_test, global_pre_test, global_test_culled, global_nb)
     fig.write_png()
+    """
+    
 
 def parse_options():
     """Place new options that you would like to be parsed here."""

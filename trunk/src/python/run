@@ -1,18 +1,10 @@
 #!/bin/bash
 
 
-sets="cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff"
-jm1="jm1.arff"
-cm1="cm1.arff"
-kc1="kc1.arff"
-kc2="kc2.arff"
-kc3="kc3.arff"
-mc2="mc2.arff"
+sets="ar3.arff ar4.arff ar5.arff cm1.arff kc1.arff kc2.arff kc3.arff mw1.arff pc1.arff pc2.arff pc3.arff pc4.arff mc2.arff jm1.arff"
 
 for file in $sets
 do
-    echo "Running arff/defect/$file"
-    /usr/bin/env python idea.py --train ../python/arff/defect/$file --xval 5 > $file.csv
-#    grep Perform $file.csv > $file.perform.csv;
-#    grep __init__ $file.csv > $file.quadrants.csv
+    /opt/local/bin/python2.6 idea_img.py --train arff/defect/$file --accept 0.5 --stratified 5
+    echo ""
 done
